@@ -1,6 +1,9 @@
 package sk.scerbak.lambdainterpreter;
 
-public class LambdaConstant extends LambdaExpression {
+/**
+ * @author The0retico Predefined constant or internal function.
+ */
+public class LambdaConstant extends AbstractLambdaExpression {
 
 	@Override
 	public int evaluate() {

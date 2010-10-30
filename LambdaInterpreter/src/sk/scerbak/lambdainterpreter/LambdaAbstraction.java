@@ -1,12 +1,19 @@
 package sk.scerbak.lambdainterpreter;
 
-public class LambdaAbstraction extends LambdaExpression {
-	private final String variable;
-	private final LambdaExpression expression;
+/**
+ * @author The0retico Lambda abstraction interpreter class.
+ */
+public class LambdaAbstraction extends AbstractLambdaExpression {
 
-	public LambdaAbstraction(String variable, LambdaExpression expression) {
-		this.variable = variable;
-		this.expression = expression;
+	/**
+	 * @param variable
+	 *            for this abstraction
+	 * @param expression
+	 *            abstraction body
+	 */
+	public LambdaAbstraction(final String variable,
+			final AbstractLambdaExpression expression) {
+
 	}
 
 	@Override

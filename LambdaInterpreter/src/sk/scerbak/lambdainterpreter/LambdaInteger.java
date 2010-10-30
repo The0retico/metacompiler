@@ -1,11 +1,21 @@
 package sk.scerbak.lambdainterpreter;
 
-public class LambdaInteger extends LambdaExpression {
+/**
+ * @author The0retico Lambda expression containing integer constant
+ */
+class LambdaInteger extends AbstractLambdaExpression {
 
+	/**
+	 * May be invalid, checked during evaluate method call.
+	 */
 	private final int value;
 
-	public LambdaInteger(Integer value) {
-		this.value = value;
+	/**
+	 * @param value
+	 *            any Integer
+	 */
+	public LambdaInteger(final Integer number) {
+		this.value = number;
 	}
 
 	@Override

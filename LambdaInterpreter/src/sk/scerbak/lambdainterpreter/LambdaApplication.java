@@ -1,6 +1,9 @@
 package sk.scerbak.lambdainterpreter;
 
-public class LambdaApplication extends LambdaExpression {
+/**
+ * @author The0retico Lambda application interpreter class.
+ */
+public class LambdaApplication extends AbstractLambdaExpression {
 
 	@Override
 	public int evaluate() {
