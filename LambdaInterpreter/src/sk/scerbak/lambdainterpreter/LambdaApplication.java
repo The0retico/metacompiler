@@ -1,5 +1,6 @@
 package sk.scerbak.lambdainterpreter;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -35,8 +36,11 @@ class LambdaApplication implements ILambdaExpression {
 
 	@Override
 	public List<ILambdaExpression> subterm() {
-		// TODO Auto-generated method stub
-		return null;
+		List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
+		result.add(this);
+		result.addAll(function.subterm());
+		result.addAll(argument.subterm());
+		return result;
 	}
 
 	@Override
