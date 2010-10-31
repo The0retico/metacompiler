@@ -14,10 +14,11 @@ public final class StringUtils {
 
 	/**
 	 * @param string
+	 *            input
 	 * @param opening
-	 *            resulting substring starts after first index of this character
+	 *            character after which result starts
 	 * @param closing
-	 *            resulting substring ends before last index of this character
+	 *            character before which result ends
 	 * @return extracted substring within opening and closing characters
 	 */
 	public static String substringOfWithin(final String string,
@@ -32,7 +33,9 @@ public final class StringUtils {
 
 	/**
 	 * @param string
+	 *            input
 	 * @param index
+	 *            after which will start the result
 	 * @return substring of string starting after index
 	 */
 	public static String substringOfAfter(final String string, final int index) {

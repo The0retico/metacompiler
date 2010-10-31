@@ -1,9 +1,11 @@
 package sk.scerbak.lambdainterpreter;
 
+import java.util.List;
+
 /**
  * @author The0retico Lambda expression containing integer constant
  */
-class LambdaInteger extends AbstractLambdaExpression {
+class LambdaInteger implements ILambdaExpression {
 
 	/**
 	 * May be invalid, checked during evaluate method call.
@@ -11,7 +13,7 @@ class LambdaInteger extends AbstractLambdaExpression {
 	private final int value;
 
 	/**
-	 * @param value
+	 * @param number
 	 *            any Integer
 	 */
 	public LambdaInteger(final Integer number) {
@@ -19,11 +21,36 @@ class LambdaInteger extends AbstractLambdaExpression {
 	}
 
 	@Override
-	public int evaluate() {
+	public boolean free(final String variable) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List<ILambdaExpression> subterm() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ILambdaExpression substitute(final String variable,
+			final ILambdaExpression expression) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ILambdaExpression oneStepBetaReduce() {
 		if (value < 0) {
 			throw new IllegalArgumentException();
 		}
-		return value;
+		return this;
+	}
+
+	@Override
+	public ILambdaExpression normalForm() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

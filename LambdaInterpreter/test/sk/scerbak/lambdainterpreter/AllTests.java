@@ -5,9 +5,11 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * @author The0retico Test suite with all unit tests.
+ * Test suite with all unit tests.
+ * 
+ * @author The0retico
  */
 @RunWith(Suite.class)
-@SuiteClasses(value = { EvaluateTest.class, FromStringTest.class })
+@SuiteClasses(value = { LambdaVariableTest.class, LambdaAbstractionTest.class })
 public class AllTests {
 }

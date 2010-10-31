@@ -5,34 +5,14 @@ import sk.scerbak.utils.StringUtils;
 /**
  * @author The0retico lambda expression root interpreter with factory method
  */
-public abstract class AbstractLambdaExpression {
-	/**
-	 * @return value of this lambda expression
-	 */
-	public abstract int evaluate();
+class ParenthesisPipeSyntax implements ILambdaSyntax {
 
 	/**
 	 * @param string
-	 *            input containing lambda expressions
-	 * @return root of object model representing lambda expressions from string
-	 */
-	public static AbstractLambdaExpression fromString(final String string) {
-		if (StringUtils.isInteger(string)) {
-			return parseLambdaInteger(string);
-		}
-		final String unpackedString = StringUtils.substringOfWithin(string,
-				'(', ')');
-		if (!unpackedString.isEmpty()) {
-			return parseLambdaAbstraction(unpackedString);
-		}
-		throw new IllegalArgumentException(string);
-	}
-
-	/**
-	 * @param string
+	 *            input containing integer constant
 	 * @return object representation of lambda integer from string
 	 */
-	private static LambdaInteger parseLambdaInteger(final String string) {
+	private static LambdaInteger parseInteger(final String string) {
 		return new LambdaInteger(Integer.parseInt(string));
 	}
 
@@ -41,8 +21,7 @@ public abstract class AbstractLambdaExpression {
 	 *            input containing lambda abstraction without parenthesis
 	 * @return object represetnation of unpackedString
 	 */
-	private static LambdaAbstraction parseLambdaAbstraction(
-			final String unpackedString) {
+	private LambdaAbstraction parseAbstraction(final String unpackedString) {
 		final int delimiterIndex = unpackedString.indexOf('|');
 		if (delimiterIndex == -1) {
 			throw new IllegalArgumentException(unpackedString);
@@ -52,4 +31,24 @@ public abstract class AbstractLambdaExpression {
 				delimiterIndex);
 		return new LambdaAbstraction(variable, fromString(expression));
 	}
+
+	@Override
+	public String toString(final ILambdaExpression expression) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ILambdaExpression fromString(final String input) {
+		if (StringUtils.isInteger(input)) {
+			return parseInteger(input);
+		}
+		final String unpackedString = StringUtils.substringOfWithin(input, '(',
+				')');
+		if (!unpackedString.isEmpty()) {
+			return parseAbstraction(unpackedString);
+		}
+		throw new IllegalArgumentException(input);
+	}
+
 }

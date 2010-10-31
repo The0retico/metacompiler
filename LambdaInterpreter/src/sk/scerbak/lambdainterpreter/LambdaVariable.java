@@ -3,32 +3,29 @@ package sk.scerbak.lambdainterpreter;
 import java.util.List;
 
 /**
- * @author The0retico Lambda application interpreter class.
+ * Variable in the lambda expressions.
+ * 
+ * @author The0retico
+ * 
  */
-class LambdaApplication implements ILambdaExpression {
+class LambdaVariable implements ILambdaExpression {
 
 	/**
-	 * Lambda expression representing function of this application.
+	 * String label for this variable.
 	 */
-	private final ILambdaExpression function;
-	/**
-	 * Lambda expression representing argument to this application.
-	 */
-	private final ILambdaExpression argument;
+	private final String label;
 
 	/**
-	 * @param functionLambda
-	 * @param argumentLambda
+	 * @param variableLabel
+	 *            lowercase string name for this variable
 	 */
-	public LambdaApplication(final ILambdaExpression functionLambda,
-			final ILambdaExpression argumentLambda) {
-		this.function = functionLambda;
-		this.argument = argumentLambda;
+	public LambdaVariable(final String variableLabel) {
+		this.label = variableLabel;
 	}
 
 	@Override
 	public boolean free(final String variable) {
-		return function.free(variable) && argument.free(variable);
+		return true;
 	}
 
 	@Override
