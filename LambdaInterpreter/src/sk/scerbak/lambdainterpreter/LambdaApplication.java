@@ -18,7 +18,9 @@ class LambdaApplication implements ILambdaExpression {
 
 	/**
 	 * @param functionLambda
+	 *            expression
 	 * @param argumentLambda
+	 *            expression
 	 */
 	public LambdaApplication(final ILambdaExpression functionLambda,
 			final ILambdaExpression argumentLambda) {

@@ -7,10 +7,22 @@ import java.util.List;
  */
 class LambdaConstant implements ILambdaExpression {
 
+	/**
+	 * Name of this constant.
+	 */
+	private final String constant;
+
+	/**
+	 * @param constantLabel
+	 *            uppercase string name of this lambda constant
+	 */
+	public LambdaConstant(final String constantLabel) {
+		this.constant = constantLabel;
+	}
+
 	@Override
 	public boolean free(final String variable) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override

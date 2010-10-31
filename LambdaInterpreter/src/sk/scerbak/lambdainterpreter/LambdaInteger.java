@@ -22,8 +22,7 @@ class LambdaInteger implements ILambdaExpression {
 
 	@Override
 	public boolean free(final String variable) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override

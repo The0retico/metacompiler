@@ -10,6 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author The0retico
  */
 @RunWith(Suite.class)
-@SuiteClasses(value = { LambdaVariableTest.class, LambdaAbstractionTest.class })
+@SuiteClasses(value = { LambdaVariableTest.class, LambdaAbstractionTest.class,
+		LambdaApplicationTest.class, LambdaConstantTest.class,
+		LambdaIntegerTest.class })
 public class AllTests {
 }
