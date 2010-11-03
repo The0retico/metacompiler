@@ -53,14 +53,49 @@ public class LambdaApplicationTest {
 	 */
 	@Test
 	public final void itselfAndFunctionSubtermsAndArgumentSubterms() {
-		List<ILambdaExpression> subterms = appliedXToI.subterm();
-		assertNotNull(subterms);
-		final int numberOfAppliedXToISubterms = 5;
-		assertEquals(numberOfAppliedXToISubterms, subterms.size());
-		assertEquals(appliedXToI, subterms.get(0));
-		assertEquals(identity, subterms.get(1));
-		assertEquals(variableX, subterms.get(2));
-		assertEquals(constantX, subterms.get(3));
-		assertEquals(variableX, subterms.get(4));
+		final List<ILambdaExpression> subterms = appliedXToI.subterm();
+		assertNotNull("Application should be its own subterm", subterms);
+		final ILambdaExpression[] expected = { appliedXToI, identity,
+				variableX, constantX, variableX };
+		assertListContentEquals(expected, subterms);
 	}
+
+	/**
+	 * Assert contents of actual list contents equal contents of expected array.
+	 * 
+	 * @param <T>
+	 *            type
+	 * 
+	 * @param expected
+	 *            array
+	 * 
+	 * @param actual
+	 *            list
+	 */
+	private <T> void assertListContentEquals(final T[] expected,
+			final List<T> actual) {
+		assertEquals(expected + " should have size of " + actual,
+				expected.length, actual.size());
+		for (int i = 0; i < expected.length; i++) {
+			assertEquals(actual.get(i) + " should be " + expected[i],
+					expected[i], actual.get(i));
+		}
+	}
+
+	/**
+	 * Substitution to lambda applications should substitute to function and
+	 * argument.
+	 */
+	// @Test
+	// public final void substituteToFunctionAndArgument() {
+	// final ILambdaExpression substituted = appliedXToI.substitute("x",
+	// new LambdaVariable("z"));
+	// assertNotNull("Every application substitution should be sucessful",
+	// substituted);
+	// assertTrue("Application should be substituted for application",
+	// substituted instanceof LambdaApplication);
+	// final LambdaApplication other = (LambdaApplication) substituted;
+	// assertTrue(other + " should be " + appliedXToI,
+	// appliedXToI.equals(other));
+	// }
 }

@@ -39,8 +39,7 @@ class LambdaVariable implements ILambdaExpression {
 	@Override
 	public ILambdaExpression substitute(final String variable,
 			final ILambdaExpression expression) {
-		// TODO Auto-generated method stub
-		return null;
+		return label.equals(variable) ? expression : this;
 	}
 
 	@Override
@@ -55,4 +54,18 @@ class LambdaVariable implements ILambdaExpression {
 		return null;
 	}
 
+	@Override
+	public boolean equals(final Object obj) {
+		boolean result = false;
+		if (obj != null && obj instanceof LambdaVariable) {
+			final LambdaVariable other = (LambdaVariable) obj;
+			result = this.label.equals(other.label);
+		}
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return this.label;
+	}
 }

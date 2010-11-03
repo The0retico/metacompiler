@@ -36,8 +36,7 @@ class LambdaConstant implements ILambdaExpression {
 	@Override
 	public ILambdaExpression substitute(final String variable,
 			final ILambdaExpression expression) {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override
@@ -50,6 +49,16 @@ class LambdaConstant implements ILambdaExpression {
 	public ILambdaExpression normalForm() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		boolean result = false;
+		if (obj != null && obj instanceof LambdaConstant) {
+			final LambdaConstant other = (LambdaConstant) obj;
+			result = this.constant.equals(other.constant);
+		}
+		return result;
 	}
 
 }

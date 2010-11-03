@@ -56,8 +56,18 @@ class LambdaAbstraction implements ILambdaExpression {
 	@Override
 	public ILambdaExpression substitute(final String variableLabel,
 			final ILambdaExpression expression) {
-		// TODO Auto-generated method stub
-		return null;
+		LambdaAbstraction result = null;
+		if (this.variable.equals(variableLabel)) {
+			result = this;
+		} else if (this.body.free(variableLabel) && expression.free(variable)) {
+			result = new LambdaAbstraction("z", this.body.substitute(
+					this.variable, new LambdaVariable("z")).substitute(
+					variableLabel, expression));
+		} else {
+			result = new LambdaAbstraction(this.variable, this.body.substitute(
+					variableLabel, expression));
+		}
+		return result;
 	}
 
 	@Override
@@ -72,4 +82,25 @@ class LambdaAbstraction implements ILambdaExpression {
 		return null;
 	}
 
+	@Override
+	public boolean equals(final Object obj) {
+		boolean result = false;
+		if (obj != null && obj instanceof LambdaAbstraction) {
+			final LambdaAbstraction other = (LambdaAbstraction) obj;
+			final boolean areVariablesEqual = this.variable
+					.equals(other.variable);
+			boolean areBodiesEqual = this.body.equals(other.body);
+			if (!areVariablesEqual) {
+				areBodiesEqual = this.body.equals(other.body.substitute(
+						other.variable, new LambdaVariable(this.variable)));
+			}
+			result = areBodiesEqual;
+		}
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "(" + this.variable + "|" + this.body.toString() + ")";
+	}
 }

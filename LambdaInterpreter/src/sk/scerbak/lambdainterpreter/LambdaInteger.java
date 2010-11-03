@@ -19,6 +19,9 @@ class LambdaInteger implements ILambdaExpression {
 	 */
 	public LambdaInteger(final Integer number) {
 		this.value = number;
+		if (value < 0) {
+			throw new IllegalArgumentException();
+		}
 	}
 
 	@Override
@@ -36,22 +39,31 @@ class LambdaInteger implements ILambdaExpression {
 	@Override
 	public ILambdaExpression substitute(final String variable,
 			final ILambdaExpression expression) {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override
 	public ILambdaExpression oneStepBetaReduce() {
-		if (value < 0) {
-			throw new IllegalArgumentException();
-		}
 		return this;
 	}
 
 	@Override
 	public ILambdaExpression normalForm() {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
+	@Override
+	public String toString() {
+		return String.valueOf(value);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		boolean result = false;
+		if (obj != null && obj instanceof LambdaInteger) {
+			final LambdaInteger other = (LambdaInteger) obj;
+			result = this.value == other.value;
+		}
+		return result;
+	}
 }

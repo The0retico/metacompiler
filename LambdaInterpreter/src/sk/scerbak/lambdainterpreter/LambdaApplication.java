@@ -46,8 +46,8 @@ class LambdaApplication implements ILambdaExpression {
 	@Override
 	public ILambdaExpression substitute(final String variable,
 			final ILambdaExpression expression) {
-		// TODO Auto-generated method stub
-		return null;
+		return new LambdaApplication(function.substitute(variable, expression),
+				argument.substitute(variable, expression));
 	}
 
 	@Override
@@ -62,4 +62,21 @@ class LambdaApplication implements ILambdaExpression {
 		return null;
 	}
 
+	@Override
+	public boolean equals(final Object obj) {
+		boolean result = false;
+		if (obj instanceof LambdaApplication) {
+			final LambdaApplication other = (LambdaApplication) obj;
+			if (function.equals(other.function)
+					&& argument.equals(other.argument)) {
+				result = true;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "(" + this.function + " " + this.argument + ")";
+	}
 }

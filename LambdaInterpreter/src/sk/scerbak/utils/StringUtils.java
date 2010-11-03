@@ -26,9 +26,9 @@ public final class StringUtils {
 		final int openingIndex = string.indexOf(opening);
 		final int closingIndex = string.lastIndexOf(closing);
 		if (openingIndex == -1 || openingIndex >= closingIndex) {
-			throw new IllegalArgumentException(string + opening + closing);
+			throw new IllegalArgumentException(string);
 		}
-		return string.substring(openingIndex, closingIndex);
+		return string.substring(openingIndex + 1, closingIndex);
 	}
 
 	/**

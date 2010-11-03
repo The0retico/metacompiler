@@ -1,6 +1,7 @@
 package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -15,6 +16,11 @@ import org.junit.Test;
  * 
  */
 public class LambdaConstantTest {
+
+	/**
+	 * Simple constant.
+	 */
+	private final ILambdaExpression constantX = new LambdaConstant("X");
 
 	/**
 	 * Simple constant.
@@ -38,5 +44,28 @@ public class LambdaConstantTest {
 		assertNotNull(subterms);
 		assertEquals(1, subterms.size());
 		assertEquals(constantY, subterms.get(0));
+	}
+
+	/**
+	 * Constants cannot be substituted.
+	 */
+	@Test
+	public final void constantsShouldNotBeSubstituted() {
+		final ILambdaExpression substituted = constantY.substitute("y",
+				constantX);
+		assertNotNull(substituted);
+		assertTrue(substituted instanceof LambdaConstant);
+		assertEquals(constantY, substituted);
+	}
+
+	/**
+	 * Constants with same names are structuraly equivalent.
+	 */
+	@Test
+	public final void constantsWithSameNamesAreEqual() {
+		assertTrue(constantX.equals(constantX));
+		assertFalse(constantX.equals(constantY));
+		assertFalse(constantY.equals(constantX));
+		assertTrue(constantX.equals(new LambdaConstant("X")));
 	}
 }

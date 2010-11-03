@@ -26,7 +26,7 @@ class ParenthesisPipeSyntax implements ILambdaSyntax {
 		if (delimiterIndex == -1) {
 			throw new IllegalArgumentException(unpackedString);
 		}
-		final String variable = unpackedString.substring(delimiterIndex);
+		final String variable = unpackedString.substring(0, delimiterIndex);
 		final String expression = StringUtils.substringOfAfter(unpackedString,
 				delimiterIndex);
 		return new LambdaAbstraction(variable, fromString(expression));
@@ -34,8 +34,7 @@ class ParenthesisPipeSyntax implements ILambdaSyntax {
 
 	@Override
 	public String toString(final ILambdaExpression expression) {
-		// TODO Auto-generated method stub
-		return null;
+		return expression.toString();
 	}
 
 	@Override
@@ -43,12 +42,35 @@ class ParenthesisPipeSyntax implements ILambdaSyntax {
 		if (StringUtils.isInteger(input)) {
 			return parseInteger(input);
 		}
+		if (input.length() == 1) {
+			return parseVariable(input);
+		}
 		final String unpackedString = StringUtils.substringOfWithin(input, '(',
 				')');
 		if (!unpackedString.isEmpty()) {
-			return parseAbstraction(unpackedString);
+			final int indexOfPipe = unpackedString.indexOf('|');
+			final int indexOfSpace = unpackedString.indexOf(' ');
+			if (indexOfPipe != -1) {
+				return parseAbstraction(unpackedString);
+			} else if (indexOfSpace == -1) {
+				throw new IllegalArgumentException(unpackedString);
+			} else {
+				return parseApplication(unpackedString);
+			}
 		}
 		throw new IllegalArgumentException(input);
+	}
+
+	private ILambdaExpression parseVariable(String input) {
+		return new LambdaVariable(input.substring(0, 1));
+	}
+
+	private ILambdaExpression parseApplication(String unpackedString) {
+		final int indexOfSpace = unpackedString.indexOf(' ');
+		final String function = unpackedString.substring(0, indexOfSpace);
+		final String argument = StringUtils.substringOfAfter(unpackedString,
+				indexOfSpace);
+		return new LambdaApplication(fromString(function), fromString(argument));
 	}
 
 }
