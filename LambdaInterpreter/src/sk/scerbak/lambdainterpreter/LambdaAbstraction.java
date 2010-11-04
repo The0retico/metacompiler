@@ -47,7 +47,7 @@ class LambdaAbstraction implements ILambdaExpression {
 
 	@Override
 	public List<ILambdaExpression> subterm() {
-		List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
+		final List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
 		result.add(this);
 		result.addAll(body.subterm());
 		return result;
@@ -85,7 +85,7 @@ class LambdaAbstraction implements ILambdaExpression {
 	@Override
 	public boolean equals(final Object obj) {
 		boolean result = false;
-		if (obj != null && obj instanceof LambdaAbstraction) {
+		if (obj instanceof LambdaAbstraction) {
 			final LambdaAbstraction other = (LambdaAbstraction) obj;
 			final boolean areVariablesEqual = this.variable
 					.equals(other.variable);

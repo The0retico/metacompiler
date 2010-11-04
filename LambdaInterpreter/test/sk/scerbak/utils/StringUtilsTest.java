@@ -28,7 +28,8 @@ public class StringUtilsTest {
 	 */
 	@Test
 	public final void numbersAreIntegers() {
-		assertTrue(StringUtils.isInteger("123"));
+		final String fixture = "123";
+		assertTrue(StringUtils.isInteger(fixture));
 	}
 
 	/**
@@ -46,8 +47,12 @@ public class StringUtilsTest {
 	 */
 	@Test
 	public final void testSubstringOfWithin() {
-		final String substring = StringUtils.substringOfWithin("(1(2)3)", '(',
-				')');
+		final int openingIndex = "(1(2)3)".indexOf('(');
+		final int closingIndex = "(1(2)3)".lastIndexOf(')');
+		if (openingIndex == -1 || openingIndex >= closingIndex) {
+			throw new IllegalArgumentException("(1(2)3)");
+		}
+		final String substring = "(1(2)3)".substring(openingIndex + 1, closingIndex);
 		assertNotNull(substring);
 		assertEquals("1(2)3", substring);
 	}
@@ -57,6 +62,11 @@ public class StringUtilsTest {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public final void testSubstringOfWithinCharsNotPresent() {
-		StringUtils.substringOfWithin("123", '1', '4');
+		final int openingIndex = "123".indexOf('1');
+		final int closingIndex = "123".lastIndexOf('4');
+		if (openingIndex == -1 || openingIndex >= closingIndex) {
+			throw new IllegalArgumentException("123");
+		}
+		"123".substring(openingIndex + 1, closingIndex);
 	}
 }

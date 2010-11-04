@@ -31,7 +31,7 @@ class LambdaInteger implements ILambdaExpression {
 
 	@Override
 	public List<ILambdaExpression> subterm() {
-		List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
+		final List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
 		result.add(this);
 		return result;
 	}

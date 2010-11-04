@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -18,45 +19,45 @@ import org.junit.Test;
 public class LambdaAbstractionTest {
 
 	/**
-	 * Helper used in fixtures and tests.
+	 * Test fixture.
 	 */
-	private final LambdaVariable variableX = new LambdaVariable("x");
+	private LambdaAbstraction fixture;
 
 	/**
-	 * Simple lambda expression for identity function (aka I).
+	 * Set up method for fixture.
 	 */
-	private final LambdaAbstraction identity = new LambdaAbstraction("x",
-			variableX);
-
-	/**
-	 * Compound lambda abstraction representing 0 in Church numbering.
-	 */
-	private final LambdaAbstraction zero = new LambdaAbstraction("f", identity);
-
-	private final int numberOfZeroSubterms = 3;
+	@Before
+	public final void setUp() {
+		fixture = new LambdaAbstraction("x",
+				FakeExpression.create("B"));
+	}
 
 	/**
 	 * Variable bound in this abstraction is not free.
 	 */
 	@Test
 	public final void boundVariableIsNotFree() {
-		assertFalse("Identity should bound its argument", identity.free("x"));
+		assertFalse("Variable should be bound", fixture.free("x"));
+		assertEquals("(x|B)", fixture.toString());
 	}
 
 	/**
 	 * Variable which is not bound in this abstraction is free.
 	 */
 	@Test
-	public final void variableNotBoundIsFree() {
-		assertTrue("Variable should not be bound", identity.free("y"));
+	public final void notBoundVariableIsFree() {
+		assertTrue("Variable should not be bound", fixture.free("y"));
+		assertEquals("(x|B.free)", fixture.toString());
 	}
 
 	/**
 	 * Variable in compound abstractions can be bound in any of them.
 	 */
 	@Test
-	public final void variableBoundElsewhereIsNotFree() {
-		assertFalse("Variable should be bound also by subterm", zero.free("x"));
+	public final void boundVariableElsewhereIsNotFree() {
+		assertFalse("Variable should be bound also by subterm",
+				fixture.free("x"));
+		assertEquals("(x|B)", fixture.toString());
 	}
 
 	/**
@@ -65,16 +66,9 @@ public class LambdaAbstractionTest {
 	 */
 	@Test
 	public final void itselfAndBodySubterms() {
-		final List<ILambdaExpression> subterms = zero.subterm();
+		final List<ILambdaExpression> subterms = fixture.subterm();
 		assertNotNull("The expression itself is always its subterm", subterms);
-		assertEquals("Zero should have " + numberOfZeroSubterms,
-				numberOfZeroSubterms, subterms.size());
-		assertEquals("Zero should contain itself as a subterm", zero,
-				subterms.get(0));
-		assertEquals("Zero should contain identity as its subterm", identity,
-				subterms.get(1));
-		assertEquals("Zero should contain variableX as its subterm", variableX,
-				subterms.get(2));
+		assertEquals("[(x|B.subterm), B.subterm]", subterms.toString());
 	}
 
 	/**
@@ -82,30 +76,26 @@ public class LambdaAbstractionTest {
 	 */
 	@Test
 	public final void boundVariablesCannotBeSubstituted() {
-		final ILambdaExpression substituted = identity
-				.substitute("x", identity);
+		final ILambdaExpression substituted = fixture.substitute(
+				"x", FakeExpression.create("M"));
 		assertNotNull("Abstraction substitution should be successful",
 				substituted);
 		assertTrue("Abstraction should be substituted for abstraction",
 				substituted instanceof LambdaAbstraction);
-		assertEquals(substituted + " should be " + identity, identity,
-				substituted);
+		assertEquals("(x|B)", substituted.toString());
 	}
 
-	// /**
-	// * Substition of a variable bound in body of this lambda abstraction
-	// should
-	// * substitute the body.
-	// */
+	/**
+	 * Substition of a variable bound in body of this lambda abstraction should
+	 * substitute the body.
+	 */
 	// @Test
 	// public final void variableBoundInBodySubstitution() {
-	// final ILambdaExpression substituted = zero.substitute("x", identity);
+	// final ILambdaExpression substituted = fixtureAbstraction.substitute(
+	// "y", FakeExpression.create("M"));
 	// assertNotNull(substituted);
 	// assertTrue(substituted instanceof LambdaAbstraction);
-	// final LambdaAbstraction other = (LambdaAbstraction) substituted;
-	// final LambdaAbstraction one = new LambdaAbstraction("f",
-	// new LambdaAbstraction("x", identity));
-	// assertTrue(other + " should be " + one, one.equals(other));
+	// assertEquals("(x|B[y:M])", substituted.toString());
 	// }
 
 	/**
@@ -114,9 +104,9 @@ public class LambdaAbstractionTest {
 	 */
 	@Test
 	public final void abstractionsEqualIfTheirVariableAndBodyDo() {
-		assertEquals(zero + " should be " + zero, zero, zero);
-		assertFalse(zero.equals(identity));
-		assertFalse(identity.equals(zero));
-		assertEquals(identity, new LambdaAbstraction("x", variableX));
+		assertEquals(fixture, fixture);
+		assertFalse(fixture.equals(FakeExpression.create("M")));
+		// assertFalse(identity.equals(zero));
+		// assertEquals(identity, new LambdaAbstraction("x", variableX));
 	}
 }

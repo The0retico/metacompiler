@@ -28,7 +28,7 @@ class LambdaConstant implements ILambdaExpression {
 
 	@Override
 	public List<ILambdaExpression> subterm() {
-		List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
+		final List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
 		result.add(this);
 		return result;
 	}
@@ -61,4 +61,8 @@ class LambdaConstant implements ILambdaExpression {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return this.constant;
+	}
 }

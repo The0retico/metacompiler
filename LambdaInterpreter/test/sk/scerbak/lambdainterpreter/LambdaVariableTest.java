@@ -40,7 +40,7 @@ public class LambdaVariableTest {
 	 */
 	@Test
 	public final void variableIsItsOwnSubterm() {
-		List<ILambdaExpression> subterms = variableX.subterm();
+		final List<ILambdaExpression> subterms = variableX.subterm();
 		assertNotNull(subterms);
 		assertEquals(1, subterms.size());
 		assertEquals(variableX, subterms.get(0));

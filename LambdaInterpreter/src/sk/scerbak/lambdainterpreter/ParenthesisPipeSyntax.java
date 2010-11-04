@@ -39,26 +39,48 @@ class ParenthesisPipeSyntax implements ILambdaSyntax {
 
 	@Override
 	public ILambdaExpression fromString(final String input) {
+		ILambdaExpression result = null;
 		if (StringUtils.isInteger(input)) {
-			return parseInteger(input);
-		}
-		if (input.length() == 1) {
-			return parseVariable(input);
-		}
-		final String unpackedString = StringUtils.substringOfWithin(input, '(',
-				')');
-		if (!unpackedString.isEmpty()) {
-			final int indexOfPipe = unpackedString.indexOf('|');
-			final int indexOfSpace = unpackedString.indexOf(' ');
-			if (indexOfPipe != -1) {
-				return parseAbstraction(unpackedString);
-			} else if (indexOfSpace == -1) {
-				throw new IllegalArgumentException(unpackedString);
+			result = parseInteger(input);
+		} else if (input.length() == 1) {
+			final Character symbol = input.charAt(0);
+			if (Character.isLowerCase(symbol)) {
+				result = parseVariable(input);
 			} else {
-				return parseApplication(unpackedString);
+				result = parseConstant(input);
+			}
+		} else {
+			final int openingIndex = input.indexOf('(');
+			final int closingIndex = input.lastIndexOf(')');
+			if (openingIndex != -1 && closingIndex != -1) {
+				ILambdaExpression result1 = result;
+				if (openingIndex == -1 || openingIndex >= closingIndex) {
+					throw new IllegalArgumentException(input);
+				}
+				final String unpackedString = input.substring(openingIndex + 1,
+						closingIndex);
+				if (!unpackedString.isEmpty()) {
+					final int indexOfPipe = unpackedString.indexOf('|');
+					final int indexOfSpace = unpackedString.indexOf(' ');
+					if (indexOfPipe != -1) {
+						result1 = parseAbstraction(unpackedString);
+					} else if (indexOfSpace == -1) {
+						throw new IllegalArgumentException(unpackedString);
+					} else {
+						result1 = parseApplication(unpackedString);
+					}
+				}
+				if (result1 == null) {
+					throw new IllegalArgumentException(input);
+				}
+				result = result1;
 			}
 		}
-		throw new IllegalArgumentException(input);
+		return result;
+	}
+
+	private ILambdaExpression parseConstant(String input) {
+		return new LambdaConstant(input.substring(0, 1));
 	}
 
 	private ILambdaExpression parseVariable(String input) {

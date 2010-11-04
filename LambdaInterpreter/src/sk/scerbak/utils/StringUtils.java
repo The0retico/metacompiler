@@ -15,25 +15,6 @@ public final class StringUtils {
 	/**
 	 * @param string
 	 *            input
-	 * @param opening
-	 *            character after which result starts
-	 * @param closing
-	 *            character before which result ends
-	 * @return extracted substring within opening and closing characters
-	 */
-	public static String substringOfWithin(final String string,
-			final char opening, final char closing) {
-		final int openingIndex = string.indexOf(opening);
-		final int closingIndex = string.lastIndexOf(closing);
-		if (openingIndex == -1 || openingIndex >= closingIndex) {
-			throw new IllegalArgumentException(string);
-		}
-		return string.substring(openingIndex + 1, closingIndex);
-	}
-
-	/**
-	 * @param string
-	 *            input
 	 * @param index
 	 *            after which will start the result
 	 * @return substring of string starting after index

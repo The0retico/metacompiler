@@ -52,6 +52,30 @@ public class ParenthesisPipeSyntaxTest {
 	}
 
 	/**
+	 * Lowercase letter should be parsed as LambdaVariable.
+	 */
+	@Test
+	public final void parseVariable() {
+		final ILambdaExpression expression = syntax.fromString("x");
+		assertNotNull("x should be parsed successfully", expression);
+		assertTrue("x should be parsed as LambdaVariable",
+				expression instanceof LambdaVariable);
+		assertEquals("Parsing error", new LambdaVariable("x"), expression);
+	}
+
+	/**
+	 * Uppercase letter should be parsed as LambdaConstant.
+	 */
+	@Test
+	public final void parseConstant() {
+		final ILambdaExpression expression = syntax.fromString("Y");
+		assertNotNull("Y should be parsed successfully", expression);
+		assertTrue("Y should be parsed as LambdaVariable",
+				expression instanceof LambdaConstant);
+		assertEquals("Parsing error", new LambdaConstant("Y"), expression);
+	}
+
+	/**
 	 * Abstractions are enclosed in parenthesis and have pipe between thir
 	 * variable and body.
 	 */

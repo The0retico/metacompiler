@@ -4,33 +4,44 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Variable in the lambda expressions.
+ * Library class with helper methods for tests.
  * 
  * @author The0retico
  * 
  */
-class LambdaVariable implements ILambdaExpression {
+final class FakeExpression implements ILambdaExpression {
+
+	private FakeExpression(final String label) {
+		this.message = new StringBuilder(label);
+	}
 
 	/**
-	 * String label for this variable.
+	 * Create fakes to decouple tests from implementation.
+	 * 
+	 * @param label
+	 *            to be printed as contents of this expression
+	 * @return newly created fake lambda expression
 	 */
-	private final String label;
+	static ILambdaExpression create(final String label) {
+		return new FakeExpression(label);
+	}
 
-	/**
-	 * @param variableLabel
-	 *            lowercase string name for this variable
-	 */
-	public LambdaVariable(final String variableLabel) {
-		this.label = variableLabel;
+	private final StringBuilder message;
+
+	@Override
+	public String toString() {
+		return this.message.toString();
 	}
 
 	@Override
 	public boolean free(final String variable) {
+		this.message.append(".free");
 		return true;
 	}
 
 	@Override
 	public List<ILambdaExpression> subterm() {
+		this.message.append(".subterm");
 		final List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
 		result.add(this);
 		return result;
@@ -39,7 +50,8 @@ class LambdaVariable implements ILambdaExpression {
 	@Override
 	public ILambdaExpression substitute(final String variable,
 			final ILambdaExpression expression) {
-		return label.equals(variable) ? expression : this;
+		this.message.append("[" + variable + ":" + expression + "]");
+		return this;
 	}
 
 	@Override
@@ -54,18 +66,4 @@ class LambdaVariable implements ILambdaExpression {
 		return null;
 	}
 
-	@Override
-	public boolean equals(final Object obj) {
-		boolean result = false;
-		if (obj != null && obj instanceof LambdaVariable) {
-			final LambdaVariable other = (LambdaVariable) obj;
-			result = this.label.equals(other.label);
-		}
-		return result;
-	}
-
-	@Override
-	public String toString() {
-		return this.label;
-	}
 }
