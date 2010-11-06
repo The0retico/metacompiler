@@ -73,14 +73,31 @@ public class LambdaParserTest {
 	 * separated by space.
 	 */
 	@Test
+	public final void parseApplicationWithAbstraction() {
+		final ILambdaExpression expression = parser.fromString("((x|x) y)");
+		assertNotNull(expression);
+		assertEquals("((x|x) y)", expression.toString());
+	}
+
+	/**
+	 * Application is enclosed in parenthesis and function and argument are
+	 * separated by space.
+	 */
+	@Test
 	public final void parseApplication() {
 		final ILambdaExpression expression = parser.fromString("(x y)");
 		assertNotNull(expression);
-		assertTrue(expression instanceof LambdaApplication);
-		final LambdaApplication other = (LambdaApplication) expression;
-		final LambdaApplication applyYtoX = new LambdaApplication(
-				new LambdaVariable("x"), new LambdaVariable("y"));
-		assertEquals(other + " should be " + applyYtoX, applyYtoX, other);
+		assertEquals("(x y)", expression.toString());
 	}
 
+	/**
+	 * Application is enclosed in parenthesis and function and argument are
+	 * separated by space.
+	 */
+	@Test
+	public final void parseNestedApplications() {
+		final ILambdaExpression expression = parser.fromString("((x z) y)");
+		assertNotNull(expression);
+		assertEquals("((x z) y)", expression.toString());
+	}
 }
