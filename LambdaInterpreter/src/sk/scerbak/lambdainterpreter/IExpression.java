@@ -6,7 +6,7 @@ import java.util.List;
  * @author The0retico Every type of lambda expression should implement this
  *         interface.
  */
-interface ILambdaExpression {
+interface IExpression {
 
 	/**
 	 * Determines if variable is free in this lambda expression.
@@ -21,7 +21,7 @@ interface ILambdaExpression {
 	/**
 	 * @return all subterm lambda expressions (including this one)
 	 */
-	List<ILambdaExpression> subterm();
+	List<IExpression> subterm();
 
 	/**
 	 * @param variable
@@ -30,29 +30,16 @@ interface ILambdaExpression {
 	 *            which will substitute variable
 	 * @return TODO
 	 */
-	ILambdaExpression substitute(String variable, ILambdaExpression expression);
-
-	/**
-	 * Equivalence by alpha conversion. Alpha conversion is process of
-	 * substituting variable for other variable, which is bound in current
-	 * lambda expression.
-	 * 
-	 * @param other
-	 *            object to which this should be equal
-	 * @return true if other is of same type of lambda expression as this and
-	 *         other can be alpha converted to this
-	 */
-	@Override
-	boolean equals(Object other);
+	IExpression substitute(String variable, IExpression expression);
 
 	/**
 	 * @return reduced lambda expression by one step or the same expression,
 	 *         when it cannot be reduced further
 	 */
-	ILambdaExpression oneStepBetaReduce();
+	IExpression oneStepBetaReduce();
 
 	/**
 	 * @return equivalent lambda expression in normal form
 	 */
-	ILambdaExpression normalForm();
+	IExpression normalForm();
 }

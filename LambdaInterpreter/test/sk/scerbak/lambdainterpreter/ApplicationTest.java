@@ -15,15 +15,20 @@ import org.junit.Test;
  * @author The0retico
  * 
  */
-public class LambdaApplicationTest extends LambdaFixtureTest {
+public class ApplicationTest {
+
+	/**
+	 * Fixture for this test.
+	 */
+	private IExpression fixture;
 
 	/**
 	 * Set up a test fixture for every test.
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new LambdaApplication(new LambdaMock("A"),
-				new LambdaMock("B"));
+		fixture = new Application(new Mock("A"),
+				new Mock("B"));
 	}
 
 	/**
@@ -49,7 +54,7 @@ public class LambdaApplicationTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void itselfAndFunctionSubtermsAndArgumentSubterms() {
-		final List<ILambdaExpression> subterms = fixture.subterm();
+		final List<IExpression> subterms = fixture.subterm();
 		assertNotNull("Application should be its own subterm", subterms);
 		assertEquals("[(A.subterm B.subterm), A.subterm, B.subterm]",
 				subterms.toString());
@@ -61,12 +66,12 @@ public class LambdaApplicationTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void substituteToFunctionAndArgument() {
-		final ILambdaExpression substituted = fixture.substitute("x",
-				new LambdaMock("M"));
+		final IExpression substituted = fixture.substitute("x",
+				new Mock("M"));
 		assertNotNull("Every application substitution should be sucessful",
 				substituted);
 		assertTrue("Application should be substituted for application",
-				substituted instanceof LambdaApplication);
+				substituted instanceof Application);
 		assertEquals("(A[x:M] B[x:M])", substituted.toString());
 	}
 }

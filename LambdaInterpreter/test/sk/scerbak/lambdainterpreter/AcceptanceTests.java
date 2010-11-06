@@ -16,13 +16,9 @@ import org.junit.Test;
 public class AcceptanceTests {
 
 	/**
-	 * Concrete syntax to ease writing of tests.
-	 */
-	private final ILambdaSyntax syntax = new LambdaParser();
-	/**
 	 * Fixture for example1.
 	 */
-	private final ILambdaExpression fixture1 = syntax
+	private final IExpression fixture1 = Parser
 			.fromString("(x|(y|(x z)))");
 
 	/**
@@ -32,8 +28,8 @@ public class AcceptanceTests {
 	public final void example1() {
 		assertFalse("x should be bound in " + fixture1, fixture1.free("x"));
 		assertTrue("z should be free in " + fixture1, fixture1.free("z"));
-		final ILambdaExpression variableY = syntax.fromString("y");
-		final List<ILambdaExpression> subterms = fixture1.subterm();
+		final IExpression variableY = Parser.fromString("y");
+		final List<IExpression> subterms = fixture1.subterm();
 		assertFalse(subterms + " should not contain y",
 				subterms.contains(variableY));
 	}

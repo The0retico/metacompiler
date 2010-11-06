@@ -16,14 +16,24 @@ import org.junit.Test;
  * @author The0retico
  * 
  */
-public class LambdaAbstractionTest extends LambdaFixtureTest {
+public class AbstractionTest {
+
+	/**
+	 * Fixture for this test.
+	 */
+
+	private IExpression fixture;
+	/**
+	 * 
+	 */
+	private final String abstraction = "(x|B)";
 
 	/**
 	 * Set up method for fixture.
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new LambdaAbstraction("x", new LambdaMock("B"));
+		fixture = new Abstraction("x", new Mock("B"));
 	}
 
 	/**
@@ -31,7 +41,7 @@ public class LambdaAbstractionTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void toStringIsItsVariableAndBody() {
-		assertEquals("(x|B)", fixture.toString());
+		assertEquals(abstraction, fixture.toString());
 	}
 
 	/**
@@ -68,7 +78,7 @@ public class LambdaAbstractionTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void itselfAndBodySubterms() {
-		final List<ILambdaExpression> subterms = fixture.subterm();
+		final List<IExpression> subterms = fixture.subterm();
 		assertNotNull("The expression itself is always its subterm", subterms);
 		assertEquals("[(x|B.subterm), B.subterm]", subterms.toString());
 	}
@@ -78,12 +88,11 @@ public class LambdaAbstractionTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void boundVariablesCannotBeSubstituted() {
-		final ILambdaExpression substituted = fixture.substitute("x",
-				new LambdaMock("M"));
+		final IExpression substituted = fixture.substitute("x", new Mock("M"));
 		assertNotNull("Abstraction substitution should be successful",
 				substituted);
 		assertTrue("Abstraction should be substituted for abstraction",
-				substituted instanceof LambdaAbstraction);
+				substituted instanceof Abstraction);
 		assertEquals("(x|B)", substituted.toString());
 	}
 
@@ -107,7 +116,7 @@ public class LambdaAbstractionTest extends LambdaFixtureTest {
 	@Test
 	public final void abstractionsEqualIfTheirVariableAndBodyDo() {
 		assertEquals(fixture, fixture);
-		assertFalse(fixture.equals(new LambdaMock("M")));
+		assertFalse(fixture.equals(new Mock("M")));
 		// assertFalse(identity.equals(zero));
 		// assertEquals(identity, new LambdaAbstraction("x", variableX));
 	}

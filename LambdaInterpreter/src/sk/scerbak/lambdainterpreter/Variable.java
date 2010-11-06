@@ -6,7 +6,7 @@ package sk.scerbak.lambdainterpreter;
  * @author The0retico
  * 
  */
-class LambdaVariable extends LambdaSymbol implements ILambdaExpression {
+class Variable extends Symbol implements IExpression {
 
 	/**
 	 * String label for this variable.
@@ -17,36 +17,27 @@ class LambdaVariable extends LambdaSymbol implements ILambdaExpression {
 	 * @param variableLabel
 	 *            lowercase string name for this variable
 	 */
-	public LambdaVariable(final String variableLabel) {
+	public Variable(final String variableLabel) {
+		super();
 		this.label = variableLabel;
 	}
 
 	@Override
-	public ILambdaExpression substitute(final String variable,
-			final ILambdaExpression expression) {
+	public IExpression substitute(final String variable,
+			final IExpression expression) {
 		return label.equals(variable) ? expression : this;
 	}
 
 	@Override
-	public ILambdaExpression oneStepBetaReduce() {
+	public IExpression oneStepBetaReduce() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ILambdaExpression normalForm() {
+	public IExpression normalForm() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		boolean result = false;
-		if (obj != null && obj instanceof LambdaVariable) {
-			final LambdaVariable other = (LambdaVariable) obj;
-			result = this.label.equals(other.label);
-		}
-		return result;
 	}
 
 	@Override

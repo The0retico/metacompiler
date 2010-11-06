@@ -1,0 +1,44 @@
+package sk.scerbak.lambdainterpreter;
+
+/**
+ * @author The0retico Predefined constant or internal function.
+ */
+class Constant extends Symbol implements IExpression {
+
+	/**
+	 * Name of this constant.
+	 */
+	private final String label;
+
+	/**
+	 * @param constantLabel
+	 *            uppercase string name of this lambda constant
+	 */
+	public Constant(final String constantLabel) {
+		super();
+		this.label = constantLabel;
+	}
+
+	@Override
+	public IExpression substitute(final String variable,
+			final IExpression expression) {
+		return this;
+	}
+
+	@Override
+	public IExpression oneStepBetaReduce() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IExpression normalForm() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return this.label;
+	}
+}

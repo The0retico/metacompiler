@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import sk.scerbak.utils.StringUtilsTest;
+import sk.scerbak.utility.StringUtilityTest;
 
 /**
  * Test suite with all unit tests.
@@ -12,9 +12,9 @@ import sk.scerbak.utils.StringUtilsTest;
  * @author The0retico
  */
 @RunWith(Suite.class)
-@SuiteClasses(value = { StringUtilsTest.class, LambdaVariableTest.class,
-		LambdaAbstractionTest.class, LambdaApplicationTest.class,
-		LambdaConstantTest.class, LambdaIntegerTest.class,
-		LambdaParserTest.class, AcceptanceTests.class })
+@SuiteClasses(value = { StringUtilityTest.class, VariableTest.class,
+		AbstractionTest.class, ApplicationTest.class,
+		ConstantTest.class, NaturalTest.class,
+		ParserTest.class, AcceptanceTests.class })
 public class AllTests {
 };

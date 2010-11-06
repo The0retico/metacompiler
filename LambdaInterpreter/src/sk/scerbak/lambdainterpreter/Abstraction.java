@@ -8,12 +8,12 @@ import java.util.List;
  * 
  * @author The0retico
  */
-class LambdaAbstraction implements ILambdaExpression {
+class Abstraction implements IExpression {
 
 	/**
 	 * Body of this lambda abstraction, which is any lambda expression.
 	 */
-	private final ILambdaExpression body;
+	private final IExpression body;
 	/**
 	 * Label for variable of this lambda abstraction.
 	 */
@@ -25,8 +25,8 @@ class LambdaAbstraction implements ILambdaExpression {
 	 * @param expression
 	 *            abstraction body
 	 */
-	public LambdaAbstraction(final String variableLabel,
-			final ILambdaExpression expression) {
+	public Abstraction(final String variableLabel,
+			final IExpression expression) {
 		this.variable = variableLabel;
 		this.body = expression;
 	}
@@ -46,57 +46,40 @@ class LambdaAbstraction implements ILambdaExpression {
 	}
 
 	@Override
-	public List<ILambdaExpression> subterm() {
-		final List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
+	public List<IExpression> subterm() {
+		final List<IExpression> result = new LinkedList<IExpression>();
 		result.add(this);
 		result.addAll(body.subterm());
 		return result;
 	}
 
 	@Override
-	public ILambdaExpression substitute(final String variableLabel,
-			final ILambdaExpression expression) {
-		LambdaAbstraction result = null;
+	public IExpression substitute(final String variableLabel,
+			final IExpression expression) {
+		Abstraction result = null;
 		if (this.variable.equals(variableLabel)) {
 			result = this;
 		} else if (this.body.free(variableLabel) && expression.free(variable)) {
-			result = new LambdaAbstraction("z", this.body.substitute(
-					this.variable, new LambdaVariable("z")).substitute(
+			result = new Abstraction("z", this.body.substitute(
+					this.variable, new Variable("z")).substitute(
 					variableLabel, expression));
 		} else {
-			result = new LambdaAbstraction(this.variable, this.body.substitute(
+			result = new Abstraction(this.variable, this.body.substitute(
 					variableLabel, expression));
 		}
 		return result;
 	}
 
 	@Override
-	public ILambdaExpression oneStepBetaReduce() {
+	public IExpression oneStepBetaReduce() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ILambdaExpression normalForm() {
+	public IExpression normalForm() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		boolean result = false;
-		if (obj instanceof LambdaAbstraction) {
-			final LambdaAbstraction other = (LambdaAbstraction) obj;
-			final boolean areVariablesEqual = this.variable
-					.equals(other.variable);
-			boolean areBodiesEqual = this.body.equals(other.body);
-			if (!areVariablesEqual) {
-				areBodiesEqual = this.body.equals(other.body.substitute(
-						other.variable, new LambdaVariable(this.variable)));
-			}
-			result = areBodiesEqual;
-		}
-		return result;
 	}
 
 	@Override

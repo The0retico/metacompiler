@@ -15,16 +15,24 @@ import org.junit.Test;
  * @author The0retico
  * 
  */
-public class LambdaIntegerTest extends LambdaFixtureTest {
+public class NaturalTest {
+
+	/**
+	 * Fixture for this test.
+	 */
+	private IExpression fixture;
 
 	/**
 	 * Constant integer value for fixture.
 	 */
 	private final Integer value = 1;
 
+	/**
+	 * Prepare fixture for this tests.
+	 */
 	@Before
 	public final void setUp() {
-		fixture = new LambdaInteger(value);
+		fixture = new Natural(value);
 	}
 
 	/**
@@ -48,7 +56,7 @@ public class LambdaIntegerTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void integerIsItsOwnSubterm() {
-		final List<ILambdaExpression> subterms = fixture.subterm();
+		final List<IExpression> subterms = fixture.subterm();
 		assertNotNull(subterms);
 		assertEquals(1, subterms.size());
 		assertEquals(fixture, subterms.get(0));
@@ -59,8 +67,8 @@ public class LambdaIntegerTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void integersAreNotSubstituted() {
-		final ILambdaExpression substituted = fixture.substitute(
-				value.toString(), new LambdaMock("M"));
+		final IExpression substituted = fixture.substitute(value.toString(),
+				new Mock("M"));
 		assertEquals(fixture.toString(), substituted.toString());
 	}
 
@@ -69,8 +77,7 @@ public class LambdaIntegerTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void integersAreReducedToThemselves() {
-		assertEquals(fixture, fixture.oneStepBetaReduce());
-		assertEquals(new LambdaInteger(1), fixture.oneStepBetaReduce());
+		assertEquals(value.toString(), fixture.oneStepBetaReduce().toString());
 	}
 
 	/**
@@ -79,7 +86,6 @@ public class LambdaIntegerTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void integersAreInNormalForm() {
-		assertEquals(fixture, fixture.normalForm());
-		assertEquals(new LambdaInteger(1), fixture.normalForm());
+		assertEquals(value.toString(), fixture.normalForm().toString());
 	}
 }

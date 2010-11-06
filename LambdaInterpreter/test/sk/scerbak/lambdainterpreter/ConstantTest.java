@@ -15,16 +15,24 @@ import org.junit.Test;
  * @author The0retico
  * 
  */
-public class LambdaConstantTest extends LambdaFixtureTest {
+public class ConstantTest {
+
+	/**
+	 * Fixture for this test.
+	 */
+	private IExpression fixture;
 
 	/**
 	 * Constant value for name of fixture.
 	 */
 	private final String value = "X";
 
+	/**
+	 * Prepare fixture for tests.
+	 */
 	@Before
 	public final void setUp() {
-		fixture = new LambdaConstant(value);
+		fixture = new Constant(value);
 	}
 
 	/**
@@ -40,7 +48,7 @@ public class LambdaConstantTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void constantIsItsOnlySubterm() {
-		final List<ILambdaExpression> subterms = fixture.subterm();
+		final List<IExpression> subterms = fixture.subterm();
 		assertNotNull(subterms);
 		assertEquals(1, subterms.size());
 		assertEquals(fixture.toString(), subterms.get(0).toString());
@@ -51,8 +59,7 @@ public class LambdaConstantTest extends LambdaFixtureTest {
 	 */
 	@Test
 	public final void constantsShouldNotBeSubstituted() {
-		final ILambdaExpression substituted = fixture.substitute("y",
-				new LambdaMock("M"));
+		final IExpression substituted = fixture.substitute("y", new Mock("M"));
 		assertEquals(fixture.toString(), substituted.toString());
 	}
 

@@ -6,16 +6,16 @@ import java.util.List;
 /**
  * @author The0retico Lambda application interpreter class.
  */
-class LambdaApplication implements ILambdaExpression {
+class Application implements IExpression {
 
 	/**
 	 * Lambda expression representing function of this application.
 	 */
-	private final ILambdaExpression function;
+	private final IExpression function;
 	/**
 	 * Lambda expression representing argument to this application.
 	 */
-	private final ILambdaExpression argument;
+	private final IExpression argument;
 
 	/**
 	 * @param functionLambda
@@ -23,8 +23,8 @@ class LambdaApplication implements ILambdaExpression {
 	 * @param argumentLambda
 	 *            expression
 	 */
-	public LambdaApplication(final ILambdaExpression functionLambda,
-			final ILambdaExpression argumentLambda) {
+	public Application(final IExpression functionLambda,
+			final IExpression argumentLambda) {
 		this.function = functionLambda;
 		this.argument = argumentLambda;
 	}
@@ -35,8 +35,8 @@ class LambdaApplication implements ILambdaExpression {
 	}
 
 	@Override
-	public List<ILambdaExpression> subterm() {
-		final List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
+	public List<IExpression> subterm() {
+		final List<IExpression> result = new LinkedList<IExpression>();
 		result.add(this);
 		result.addAll(function.subterm());
 		result.addAll(argument.subterm());
@@ -44,35 +44,22 @@ class LambdaApplication implements ILambdaExpression {
 	}
 
 	@Override
-	public ILambdaExpression substitute(final String variable,
-			final ILambdaExpression expression) {
-		return new LambdaApplication(function.substitute(variable, expression),
+	public IExpression substitute(final String variable,
+			final IExpression expression) {
+		return new Application(function.substitute(variable, expression),
 				argument.substitute(variable, expression));
 	}
 
 	@Override
-	public ILambdaExpression oneStepBetaReduce() {
+	public IExpression oneStepBetaReduce() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ILambdaExpression normalForm() {
+	public IExpression normalForm() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		boolean result = false;
-		if (obj instanceof LambdaApplication) {
-			final LambdaApplication other = (LambdaApplication) obj;
-			if (function.equals(other.function)
-					&& argument.equals(other.argument)) {
-				result = true;
-			}
-		}
-		return result;
 	}
 
 	@Override
