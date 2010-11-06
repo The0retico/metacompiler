@@ -9,21 +9,10 @@ import java.util.List;
  * @author The0retico
  * 
  */
-final class FakeExpression implements ILambdaExpression {
+final class LambdaMock implements ILambdaExpression {
 
-	private FakeExpression(final String label) {
+	LambdaMock(final String label) {
 		this.message = new StringBuilder(label);
-	}
-
-	/**
-	 * Create fakes to decouple tests from implementation.
-	 * 
-	 * @param label
-	 *            to be printed as contents of this expression
-	 * @return newly created fake lambda expression
-	 */
-	static ILambdaExpression create(final String label) {
-		return new FakeExpression(label);
 	}
 
 	private final StringBuilder message;

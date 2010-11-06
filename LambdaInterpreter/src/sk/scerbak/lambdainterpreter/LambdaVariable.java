@@ -1,15 +1,12 @@
 package sk.scerbak.lambdainterpreter;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Variable in the lambda expressions.
  * 
  * @author The0retico
  * 
  */
-class LambdaVariable implements ILambdaExpression {
+class LambdaVariable extends LambdaSymbol implements ILambdaExpression {
 
 	/**
 	 * String label for this variable.
@@ -22,18 +19,6 @@ class LambdaVariable implements ILambdaExpression {
 	 */
 	public LambdaVariable(final String variableLabel) {
 		this.label = variableLabel;
-	}
-
-	@Override
-	public boolean free(final String variable) {
-		return true;
-	}
-
-	@Override
-	public List<ILambdaExpression> subterm() {
-		final List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
-		result.add(this);
-		return result;
 	}
 
 	@Override

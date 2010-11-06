@@ -16,20 +16,22 @@ import org.junit.Test;
  * @author The0retico
  * 
  */
-public class LambdaAbstractionTest {
-
-	/**
-	 * Test fixture.
-	 */
-	private LambdaAbstraction fixture;
+public class LambdaAbstractionTest extends LambdaFixtureTest {
 
 	/**
 	 * Set up method for fixture.
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new LambdaAbstraction("x",
-				FakeExpression.create("B"));
+		fixture = new LambdaAbstraction("x", new LambdaMock("B"));
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public final void toStringIsItsVariableAndBody() {
+		assertEquals("(x|B)", fixture.toString());
 	}
 
 	/**
@@ -76,8 +78,8 @@ public class LambdaAbstractionTest {
 	 */
 	@Test
 	public final void boundVariablesCannotBeSubstituted() {
-		final ILambdaExpression substituted = fixture.substitute(
-				"x", FakeExpression.create("M"));
+		final ILambdaExpression substituted = fixture.substitute("x",
+				new LambdaMock("M"));
 		assertNotNull("Abstraction substitution should be successful",
 				substituted);
 		assertTrue("Abstraction should be substituted for abstraction",
@@ -105,7 +107,7 @@ public class LambdaAbstractionTest {
 	@Test
 	public final void abstractionsEqualIfTheirVariableAndBodyDo() {
 		assertEquals(fixture, fixture);
-		assertFalse(fixture.equals(FakeExpression.create("M")));
+		assertFalse(fixture.equals(new LambdaMock("M")));
 		// assertFalse(identity.equals(zero));
 		// assertEquals(identity, new LambdaAbstraction("x", variableX));
 	}

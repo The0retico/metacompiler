@@ -15,6 +15,6 @@ import sk.scerbak.utils.StringUtilsTest;
 @SuiteClasses(value = { StringUtilsTest.class, LambdaVariableTest.class,
 		LambdaAbstractionTest.class, LambdaApplicationTest.class,
 		LambdaConstantTest.class, LambdaIntegerTest.class,
-		ParenthesisPipeSyntaxTest.class, AcceptanceTests.class })
+		LambdaParserTest.class, AcceptanceTests.class })
 public class AllTests {
 };

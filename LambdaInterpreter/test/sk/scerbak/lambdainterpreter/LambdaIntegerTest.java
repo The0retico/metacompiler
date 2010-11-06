@@ -1,12 +1,12 @@
 package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -15,23 +15,32 @@ import org.junit.Test;
  * @author The0retico
  * 
  */
-public class LambdaIntegerTest {
+public class LambdaIntegerTest extends LambdaFixtureTest {
 
 	/**
-	 * Lambda integer representing number 1.
+	 * Constant integer value for fixture.
 	 */
-	private final LambdaInteger one = new LambdaInteger(1);
+	private final Integer value = 1;
+
+	@Before
+	public final void setUp() {
+		fixture = new LambdaInteger(value);
+	}
+
 	/**
-	 * Lambda integer representing number 0.
+	 * Integers are printed as numbers.
 	 */
-	private final ILambdaExpression zero = new LambdaInteger(0);
+	@Test
+	public final void toStringIsValueToString() {
+		assertEquals(value.toString(), fixture.toString());
+	}
 
 	/**
 	 * Integers are constants as well, so they bind no variables.
 	 */
 	@Test
 	public final void integersBindNoVariables() {
-		assertTrue("Integer should not bind any variables", one.free("x"));
+		assertTrue("Integer should not bind any variables", fixture.free("x"));
 	}
 
 	/**
@@ -39,10 +48,10 @@ public class LambdaIntegerTest {
 	 */
 	@Test
 	public final void integerIsItsOwnSubterm() {
-		final List<ILambdaExpression> subterms = one.subterm();
+		final List<ILambdaExpression> subterms = fixture.subterm();
 		assertNotNull(subterms);
 		assertEquals(1, subterms.size());
-		assertEquals(one, subterms.get(0));
+		assertEquals(fixture, subterms.get(0));
 	}
 
 	/**
@@ -50,21 +59,9 @@ public class LambdaIntegerTest {
 	 */
 	@Test
 	public final void integersAreNotSubstituted() {
-		final ILambdaExpression substituted = one.substitute("1", zero);
-		assertNotNull(substituted);
-		assertTrue(substituted instanceof LambdaInteger);
-		assertEquals(one, substituted);
-	}
-
-	/**
-	 * Two lambda integers are structuraly equal if they have same value.
-	 */
-	@Test
-	public final void integersWithSameValueAreEqual() {
-		assertTrue(one.equals(one));
-		assertTrue(one.equals(new LambdaInteger(1)));
-		assertFalse(one.equals(zero));
-		assertFalse(zero.equals(one));
+		final ILambdaExpression substituted = fixture.substitute(
+				value.toString(), new LambdaMock("M"));
+		assertEquals(fixture.toString(), substituted.toString());
 	}
 
 	/**
@@ -72,8 +69,8 @@ public class LambdaIntegerTest {
 	 */
 	@Test
 	public final void integersAreReducedToThemselves() {
-		assertEquals(one, one.oneStepBetaReduce());
-		assertEquals(new LambdaInteger(1), one.oneStepBetaReduce());
+		assertEquals(fixture, fixture.oneStepBetaReduce());
+		assertEquals(new LambdaInteger(1), fixture.oneStepBetaReduce());
 	}
 
 	/**
@@ -82,7 +79,7 @@ public class LambdaIntegerTest {
 	 */
 	@Test
 	public final void integersAreInNormalForm() {
-		assertEquals(one, one.normalForm());
-		assertEquals(new LambdaInteger(1), one.normalForm());
+		assertEquals(fixture, fixture.normalForm());
+		assertEquals(new LambdaInteger(1), fixture.normalForm());
 	}
 }

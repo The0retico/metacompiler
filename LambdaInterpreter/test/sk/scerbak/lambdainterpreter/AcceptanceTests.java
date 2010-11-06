@@ -18,7 +18,7 @@ public class AcceptanceTests {
 	/**
 	 * Concrete syntax to ease writing of tests.
 	 */
-	private final ILambdaSyntax syntax = new ParenthesisPipeSyntax();
+	private final ILambdaSyntax syntax = new LambdaParser();
 	/**
 	 * Fixture for example1.
 	 */

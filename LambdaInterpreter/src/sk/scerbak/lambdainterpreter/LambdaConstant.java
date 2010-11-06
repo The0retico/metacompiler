@@ -1,12 +1,10 @@
 package sk.scerbak.lambdainterpreter;
 
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author The0retico Predefined constant or internal function.
  */
-class LambdaConstant implements ILambdaExpression {
+class LambdaConstant extends LambdaSymbol implements ILambdaExpression {
 
 	/**
 	 * Name of this constant.
@@ -19,18 +17,6 @@ class LambdaConstant implements ILambdaExpression {
 	 */
 	public LambdaConstant(final String constantLabel) {
 		this.constant = constantLabel;
-	}
-
-	@Override
-	public boolean free(final String variable) {
-		return true;
-	}
-
-	@Override
-	public List<ILambdaExpression> subterm() {
-		final List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
-		result.add(this);
-		return result;
 	}
 
 	@Override

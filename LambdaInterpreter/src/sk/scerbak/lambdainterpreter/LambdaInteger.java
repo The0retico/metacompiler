@@ -1,12 +1,10 @@
 package sk.scerbak.lambdainterpreter;
 
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author The0retico Lambda expression containing integer constant
  */
-class LambdaInteger implements ILambdaExpression {
+class LambdaInteger extends LambdaSymbol implements ILambdaExpression {
 
 	/**
 	 * May be invalid, checked during evaluate method call.
@@ -22,18 +20,6 @@ class LambdaInteger implements ILambdaExpression {
 		if (value < 0) {
 			throw new IllegalArgumentException();
 		}
-	}
-
-	@Override
-	public boolean free(final String variable) {
-		return true;
-	}
-
-	@Override
-	public List<ILambdaExpression> subterm() {
-		final List<ILambdaExpression> result = new LinkedList<ILambdaExpression>();
-		result.add(this);
-		return result;
 	}
 
 	@Override

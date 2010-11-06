@@ -15,20 +15,23 @@ import org.junit.Test;
  * @author The0retico
  * 
  */
-public class LambdaApplicationTest {
-
-	/**
-	 * Test fixture.
-	 */
-	private LambdaApplication fixture;
+public class LambdaApplicationTest extends LambdaFixtureTest {
 
 	/**
 	 * Set up a test fixture for every test.
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new LambdaApplication(FakeExpression.create("A"),
-				FakeExpression.create("B"));
+		fixture = new LambdaApplication(new LambdaMock("A"),
+				new LambdaMock("B"));
+	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public final void toStringIsFunctionAndArgument() {
+		assertEquals("(A B)", fixture.toString());
 	}
 
 	/**
@@ -58,8 +61,8 @@ public class LambdaApplicationTest {
 	 */
 	@Test
 	public final void substituteToFunctionAndArgument() {
-		final ILambdaExpression substituted = fixture.substitute(
-				"x", FakeExpression.create("M"));
+		final ILambdaExpression substituted = fixture.substitute("x",
+				new LambdaMock("M"));
 		assertNotNull("Every application substitution should be sucessful",
 				substituted);
 		assertTrue("Application should be substituted for application",

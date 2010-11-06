@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -15,12 +16,17 @@ import org.junit.Test;
  * @author The0retico
  * 
  */
-public class LambdaVariableTest {
+public class LambdaVariableTest extends LambdaFixtureTest {
 
 	/**
-	 * Simplest example of a variable in a lambda expression.
+	 * Name of the fixture variable.
 	 */
-	private final LambdaVariable variableX = new LambdaVariable("x");
+	private final String variableLabel = "x";
+
+	@Before
+	public final void setUp() {
+		fixture = new LambdaVariable(variableLabel);
+	}
 
 	/**
 	 * Simplest example of a variable in a lambda expression.
@@ -28,11 +34,19 @@ public class LambdaVariableTest {
 	private final LambdaVariable variableY = new LambdaVariable("y");
 
 	/**
+	 * Lambda variable toString() is its label.
+	 */
+	@Test
+	public final void variableToStringIsItsLabel() {
+		assertEquals(variableLabel, fixture.toString());
+	}
+
+	/**
 	 * Every lambda variable at its own is free.
 	 */
 	@Test
 	public final void variableWithoutContextIsFree() {
-		assertTrue("Variable appears to be bound", variableX.free("x"));
+		assertTrue("Variable appears to be bound", fixture.free(variableLabel));
 	}
 
 	/**
@@ -40,10 +54,10 @@ public class LambdaVariableTest {
 	 */
 	@Test
 	public final void variableIsItsOwnSubterm() {
-		final List<ILambdaExpression> subterms = variableX.subterm();
+		final List<ILambdaExpression> subterms = fixture.subterm();
 		assertNotNull(subterms);
 		assertEquals(1, subterms.size());
-		assertEquals(variableX, subterms.get(0));
+		assertEquals(fixture, subterms.get(0));
 	}
 
 	/**
@@ -52,7 +66,7 @@ public class LambdaVariableTest {
 	 */
 	@Test
 	public final void variablesWithSameNameAreSubstituted() {
-		final ILambdaExpression substituted = variableX.substitute("x",
+		final ILambdaExpression substituted = fixture.substitute(variableLabel,
 				variableY);
 		assertNotNull(substituted);
 		assertTrue(substituted instanceof LambdaVariable);
@@ -65,11 +79,11 @@ public class LambdaVariableTest {
 	 */
 	@Test
 	public final void variablesWithDifferentNamesAreNotSubstituted() {
-		final ILambdaExpression substituted = variableX.substitute("y",
-				variableY);
+		final ILambdaExpression substituted = fixture
+				.substitute("y", variableY);
 		assertNotNull(substituted);
 		assertTrue(substituted instanceof LambdaVariable);
-		assertEquals(variableX, substituted);
+		assertEquals(fixture, substituted);
 	}
 
 	/**
@@ -78,16 +92,9 @@ public class LambdaVariableTest {
 	 */
 	@Test
 	public final void variablesWithSameNamesAreEqual() {
-		assertTrue(variableX.equals(variableX));
-		assertFalse(variableX.equals(variableY));
-		assertFalse(variableY.equals(variableX));
+		assertTrue(fixture.equals(fixture));
+		assertFalse(fixture.equals(variableY));
+		assertFalse(variableY.equals(fixture));
 	}
 
-	/**
-	 * Lambda variable toString() is its label.
-	 */
-	@Test
-	public final void variableToStringIsItsLabel() {
-		assertEquals("x", variableX.toString());
-	}
 }

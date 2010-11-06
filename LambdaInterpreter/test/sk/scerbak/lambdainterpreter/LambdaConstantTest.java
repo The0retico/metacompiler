@@ -1,12 +1,12 @@
 package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -15,24 +15,24 @@ import org.junit.Test;
  * @author The0retico
  * 
  */
-public class LambdaConstantTest {
+public class LambdaConstantTest extends LambdaFixtureTest {
 
 	/**
-	 * Simple constant.
+	 * Constant value for name of fixture.
 	 */
-	private final ILambdaExpression constantX = new LambdaConstant("X");
+	private final String value = "X";
 
-	/**
-	 * Simple constant.
-	 */
-	private final LambdaConstant constantY = new LambdaConstant("Y");
+	@Before
+	public final void setUp() {
+		fixture = new LambdaConstant(value);
+	}
 
 	/**
 	 * Constants should not bound variables.
 	 */
 	@Test
 	public final void constantsBindNoVariables() {
-		assertTrue("Constants should not bind variables", constantY.free("x"));
+		assertTrue("Constants should not bind variables", fixture.free("x"));
 	}
 
 	/**
@@ -40,10 +40,10 @@ public class LambdaConstantTest {
 	 */
 	@Test
 	public final void constantIsItsOnlySubterm() {
-		final List<ILambdaExpression> subterms = constantY.subterm();
+		final List<ILambdaExpression> subterms = fixture.subterm();
 		assertNotNull(subterms);
 		assertEquals(1, subterms.size());
-		assertEquals(constantY, subterms.get(0));
+		assertEquals(fixture.toString(), subterms.get(0).toString());
 	}
 
 	/**
@@ -51,21 +51,9 @@ public class LambdaConstantTest {
 	 */
 	@Test
 	public final void constantsShouldNotBeSubstituted() {
-		final ILambdaExpression substituted = constantY.substitute("y",
-				constantX);
-		assertNotNull(substituted);
-		assertTrue(substituted instanceof LambdaConstant);
-		assertEquals(constantY, substituted);
+		final ILambdaExpression substituted = fixture.substitute("y",
+				new LambdaMock("M"));
+		assertEquals(fixture.toString(), substituted.toString());
 	}
 
-	/**
-	 * Constants with same names are structuraly equivalent.
-	 */
-	@Test
-	public final void constantsWithSameNamesAreEqual() {
-		assertTrue(constantX.equals(constantX));
-		assertFalse(constantX.equals(constantY));
-		assertFalse(constantY.equals(constantX));
-		assertTrue(constantX.equals(new LambdaConstant("X")));
-	}
 }
