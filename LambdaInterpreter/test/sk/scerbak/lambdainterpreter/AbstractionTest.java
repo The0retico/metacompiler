@@ -3,7 +3,6 @@ package sk.scerbak.lambdainterpreter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class AbstractionTest {
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new Abstraction("x", new Mock("B"));
+		fixture = new Abstraction("x", new Mock("B", "y"));
 	}
 
 	/**
@@ -51,15 +50,6 @@ public class AbstractionTest {
 	public final void boundVariableIsNotFree() {
 		assertFalse("Variable should be bound", fixture.free("x"));
 		assertEquals("(x|B)", fixture.toString());
-	}
-
-	/**
-	 * Variable which is not bound in this abstraction is free.
-	 */
-	@Test
-	public final void notBoundVariableIsFree() {
-		assertTrue("Variable should not be bound", fixture.free("y"));
-		assertEquals("(x|B.free)", fixture.toString());
 	}
 
 	/**
@@ -87,37 +77,44 @@ public class AbstractionTest {
 	 * Substitution for variable bound by lambda abstraction has no effect.
 	 */
 	@Test
-	public final void boundVariablesCannotBeSubstituted() {
+	public final void substituteAbstractionVariable() {
 		final IExpression substituted = fixture.substitute("x", new Mock("M"));
 		assertNotNull("Abstraction substitution should be successful",
 				substituted);
-		assertTrue("Abstraction should be substituted for abstraction",
-				substituted instanceof Abstraction);
 		assertEquals("(x|B)", substituted.toString());
+	}
+
+	/**
+	 * Substition of a free variable in body of this lambda abstraction.
+	 */
+	@Test
+	public final void substituteFreeVariable() {
+		final IExpression substituted = fixture.substitute("y", new Mock("M",
+				"x"));
+		assertNotNull("Abstraction substitution should be successful",
+				substituted);
+		assertEquals("(z|B.free.free[x:z][y:M.free.free])",
+				substituted.toString());
 	}
 
 	/**
 	 * Substition of a variable bound in body of this lambda abstraction should
 	 * substitute the body.
 	 */
-	// @Test
-	// public final void variableBoundInBodySubstitution() {
-	// final ILambdaExpression substituted = fixtureAbstraction.substitute(
-	// "y", FakeExpression.create("M"));
-	// assertNotNull(substituted);
-	// assertTrue(substituted instanceof LambdaAbstraction);
-	// assertEquals("(x|B[y:M])", substituted.toString());
-	// }
+	@Test
+	public final void substituteBoundVariable() {
+		final IExpression substituted = fixture.substitute("w", new Mock("M"));
+		assertNotNull("Abstraction substitution should be successful",
+				substituted);
+		assertEquals("(x|B.free[w:M])", substituted.toString());
+	}
 
 	/**
-	 * Two lambda abstractions are structuraly equivalent, if their varialbes
-	 * and bodies are equivalent.
+	 * Normal form of an abstraction should have its body in normal form.
 	 */
 	@Test
-	public final void abstractionsEqualIfTheirVariableAndBodyDo() {
-		assertEquals(fixture, fixture);
-		assertFalse(fixture.equals(new Mock("M")));
-		// assertFalse(identity.equals(zero));
-		// assertEquals(identity, new LambdaAbstraction("x", variableX));
+	public final void normalFormHasBodyInNormalForm() {
+		final IExpression normalForm = fixture.normalForm();
+		assertEquals("(x|B.normal)", normalForm.toString());
 	}
 }

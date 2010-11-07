@@ -31,7 +31,7 @@ class Application implements IExpression {
 
 	@Override
 	public boolean free(final String variable) {
-		return function.free(variable) && argument.free(variable);
+		return function.free(variable) || argument.free(variable);
 	}
 
 	@Override
@@ -52,18 +52,38 @@ class Application implements IExpression {
 
 	@Override
 	public IExpression oneStepBetaReduce() {
-		// TODO Auto-generated method stub
-		return null;
+		IExpression result;
+		if (this.function instanceof Abstraction) {
+			final Abstraction abstraction = (Abstraction) this.function;
+			result = abstraction.getBody().substitute(
+					abstraction.getVariable(), this.argument);
+		} else if (this.function.isReducible()) {
+			result = new Application(this.function.oneStepBetaReduce(),
+					this.argument);
+		} else {
+			result = new Application(this.function,
+					this.argument.oneStepBetaReduce());
+		}
+		return result;
 	}
 
 	@Override
 	public IExpression normalForm() {
-		// TODO Auto-generated method stub
-		return null;
+		IExpression result = this;
+		while (result.isReducible()) {
+			result = result.oneStepBetaReduce();
+		}
+		return result;
 	}
 
 	@Override
 	public String toString() {
 		return "(" + this.function + " " + this.argument + ")";
+	}
+
+	@Override
+	public boolean isReducible() {
+		return this.function instanceof Abstraction
+				|| this.function.isReducible() || this.argument.isReducible();
 	}
 }

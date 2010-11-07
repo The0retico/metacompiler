@@ -27,8 +27,7 @@ public class ApplicationTest {
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new Application(new Mock("A"),
-				new Mock("B"));
+		fixture = new Application(new Mock("A", "x"), new Mock("B", "y"));
 	}
 
 	/**
@@ -44,8 +43,10 @@ public class ApplicationTest {
 	 */
 	@Test
 	public final void variableNotBoundInApplicationIsFree() {
-		assertTrue("Variable should be free", fixture.free("z"));
-		assertEquals("(A.free B.free)", fixture.toString());
+		assertTrue("Variable should be free", fixture.free("x"));
+		assertEquals("(A.free B)", fixture.toString());
+		assertTrue("Variable should be free", fixture.free("y"));
+		assertEquals("(A.free.free B.free)", fixture.toString());
 	}
 
 	/**
@@ -66,12 +67,10 @@ public class ApplicationTest {
 	 */
 	@Test
 	public final void substituteToFunctionAndArgument() {
-		final IExpression substituted = fixture.substitute("x",
-				new Mock("M"));
+		final IExpression substituted = fixture.substitute("x", new Mock("M"));
 		assertNotNull("Every application substitution should be sucessful",
 				substituted);
-		assertTrue("Application should be substituted for application",
-				substituted instanceof Application);
 		assertEquals("(A[x:M] B[x:M])", substituted.toString());
 	}
+
 }

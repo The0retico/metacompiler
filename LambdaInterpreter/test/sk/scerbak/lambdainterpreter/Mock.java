@@ -1,10 +1,11 @@
 package sk.scerbak.lambdainterpreter;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Library class with helper methods for tests.
+ * Mock object class for lambda expressions.
  * 
  * @author The0retico
  * 
@@ -13,10 +14,14 @@ final class Mock implements IExpression {
 
 	/**
 	 * @param label
-	 *            name for this expression to be printed.
+	 *            name for this expression to be printed
+	 * @param variables
+	 *            which will be reported as free in this mock for lambda
+	 *            expressions
 	 */
-	Mock(final String label) {
+	Mock(final String label, final String... variables) {
 		this.message = new StringBuilder(label);
+		this.freeVariables.addAll(Arrays.asList(variables));
 	}
 
 	/**
@@ -24,6 +29,11 @@ final class Mock implements IExpression {
 	 * be stored.
 	 */
 	private final StringBuilder message;
+
+	/**
+	 * List of free variables.
+	 */
+	private final List<String> freeVariables = new LinkedList<String>();
 
 	@Override
 	public String toString() {
@@ -33,7 +43,7 @@ final class Mock implements IExpression {
 	@Override
 	public boolean free(final String variable) {
 		this.message.append(".free");
-		return true;
+		return this.freeVariables.contains(variable);
 	}
 
 	@Override
@@ -59,8 +69,13 @@ final class Mock implements IExpression {
 
 	@Override
 	public IExpression normalForm() {
-		// TODO Auto-generated method stub
-		return null;
+		this.message.append(".normal");
+		return this;
+	}
+
+	@Override
+	public boolean isReducible() {
+		return false;
 	}
 
 }

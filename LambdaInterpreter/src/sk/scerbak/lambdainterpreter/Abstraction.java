@@ -14,20 +14,34 @@ class Abstraction implements IExpression {
 	 * Body of this lambda abstraction, which is any lambda expression.
 	 */
 	private final IExpression body;
+
+	/**
+	 * @return the body
+	 */
+	public IExpression getBody() {
+		return body;
+	}
+
+	/**
+	 * @return the variable
+	 */
+	public String getVariable() {
+		return variable;
+	}
+
 	/**
 	 * Label for variable of this lambda abstraction.
 	 */
 	private final String variable;
 
 	/**
-	 * @param variableLabel
+	 * @param label
 	 *            for this abstraction
 	 * @param expression
 	 *            abstraction body
 	 */
-	public Abstraction(final String variableLabel,
-			final IExpression expression) {
-		this.variable = variableLabel;
+	public Abstraction(final String label, final IExpression expression) {
+		this.variable = label;
 		this.body = expression;
 	}
 
@@ -60,8 +74,9 @@ class Abstraction implements IExpression {
 		if (this.variable.equals(variableLabel)) {
 			result = this;
 		} else if (this.body.free(variableLabel) && expression.free(variable)) {
-			result = new Abstraction("z", this.body.substitute(
-					this.variable, new Variable("z")).substitute(
+			final String newVariableLabel = freshVariableFor(expression);
+			result = new Abstraction(newVariableLabel, this.body.substitute(
+					this.variable, new Variable(newVariableLabel)).substitute(
 					variableLabel, expression));
 		} else {
 			result = new Abstraction(this.variable, this.body.substitute(
@@ -70,20 +85,64 @@ class Abstraction implements IExpression {
 		return result;
 	}
 
+	/**
+	 * @param expression
+	 *            where variable should be free
+	 * @return new variable name, which is free in this abstractions body and in
+	 *         expression
+	 */
+	private String freshVariableFor(final IExpression expression) {
+		String newVariableLabel = "z";
+		while (!isFreshVariableFor(newVariableLabel, expression)) {
+			newVariableLabel = nextVariableName();
+		}
+		return newVariableLabel;
+	}
+
+	/**
+	 * Counter for unique IDs for variable substitution in this expression.
+	 */
+	private int lastVariableId = -1;
+
+	/**
+	 * @return unique name for a new variable
+	 */
+	private String nextVariableName() {
+		lastVariableId++;
+		return "v" + lastVariableId;
+	}
+
+	/**
+	 * @param newVariableLabel
+	 *            which will be tested if free in expression
+	 * @param expression
+	 *            where newVariableLabel will be tested if free
+	 * @return true if newVariableName is free in this body and in expression
+	 */
+	private boolean isFreshVariableFor(final String newVariableLabel,
+			final IExpression expression) {
+		final boolean notFreeInBody = !this.body.free(newVariableLabel);
+		final boolean notFreeInExpression = !expression.free(newVariableLabel);
+		return notFreeInBody && notFreeInExpression;
+	}
+
 	@Override
 	public IExpression oneStepBetaReduce() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Abstraction(this.variable, this.body.oneStepBetaReduce());
 	}
 
 	@Override
 	public IExpression normalForm() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Abstraction(this.variable, this.body.normalForm());
 	}
 
 	@Override
 	public String toString() {
 		return "(" + this.variable + "|" + this.body.toString() + ")";
+	}
+
+	@Override
+	public boolean isReducible() {
+		return this.body.isReducible();
 	}
 }

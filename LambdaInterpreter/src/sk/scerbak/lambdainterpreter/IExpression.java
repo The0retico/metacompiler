@@ -42,4 +42,9 @@ interface IExpression {
 	 * @return equivalent lambda expression in normal form
 	 */
 	IExpression normalForm();
+
+	/**
+	 * @return true if this expression can be reduced using beta reduction
+	 */
+	boolean isReducible();
 }

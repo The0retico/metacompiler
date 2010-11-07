@@ -13,11 +13,6 @@ import java.util.List;
 abstract class Symbol implements IExpression {
 
 	@Override
-	public boolean free(final String variable) {
-		return true;
-	}
-
-	@Override
 	public List<IExpression> subterm() {
 		final List<IExpression> result = new LinkedList<IExpression>();
 		result.add(this);

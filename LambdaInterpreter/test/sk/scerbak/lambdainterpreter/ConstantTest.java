@@ -1,8 +1,8 @@
 package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -39,8 +39,9 @@ public class ConstantTest {
 	 * Constants should not bound variables.
 	 */
 	@Test
-	public final void constantsBindNoVariables() {
-		assertTrue("Constants should not bind variables", fixture.free("x"));
+	public final void constantsHaveNoFreeVariables() {
+		assertFalse("Constants should not have free variables",
+				fixture.free("x"));
 	}
 
 	/**
@@ -63,4 +64,33 @@ public class ConstantTest {
 		assertEquals(fixture.toString(), substituted.toString());
 	}
 
+	/**
+	 * Constants can not be reduced.
+	 */
+	@Test
+	public final void constantsAreNotReducible() {
+		assertFalse(fixture + " should not be reducible", fixture.isReducible());
+	}
+
+	/**
+	 * Constants should be reduced to themselves - they cannot be reduced
+	 * further.
+	 */
+	@Test
+	public final void constantsAreReducedToThemselves() {
+		final IExpression reduced = fixture.oneStepBetaReduce();
+		assertEquals("Should be reduced to itself", fixture.toString(),
+				reduced.toString());
+	}
+
+	/**
+	 * Constants cannot be reduced further, so they are in their normal form.
+	 * Consider subclassing a constant to create reducible constants.
+	 */
+	@Test
+	public final void constantsAreInNormalForm() {
+		final IExpression normalForm = fixture.normalForm();
+		assertEquals("Should be its normal form", fixture.toString(),
+				normalForm.toString());
+	}
 }

@@ -92,4 +92,25 @@ public class VariableTest {
 		assertEquals(fixture, substituted);
 	}
 
+	/**
+	 * Variables should be reduced to themselves - they cannot be reduced
+	 * further.
+	 */
+	@Test
+	public final void variablesAreReducedToThemselves() {
+		final IExpression reduced = fixture.oneStepBetaReduce();
+		assertEquals("Should be reduced to itself", fixture.toString(),
+				reduced.toString());
+	}
+
+	/**
+	 * Variables cannot be reduced further, so they are in their normal form.
+	 */
+	@Test
+	public final void constantsAreInNormalForm() {
+		final IExpression normalForm = fixture.normalForm();
+		assertEquals("Should be its normal form", fixture.toString(),
+				normalForm.toString());
+	}
+
 }

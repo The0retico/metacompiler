@@ -1,8 +1,8 @@
 package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -47,8 +47,9 @@ public class NaturalTest {
 	 * Integers are constants as well, so they bind no variables.
 	 */
 	@Test
-	public final void integersBindNoVariables() {
-		assertTrue("Integer should not bind any variables", fixture.free("x"));
+	public final void integersHaveNoFreeVariables() {
+		assertFalse("Integer should not have any free variables",
+				fixture.free("x"));
 	}
 
 	/**
@@ -87,5 +88,13 @@ public class NaturalTest {
 	@Test
 	public final void integersAreInNormalForm() {
 		assertEquals(value.toString(), fixture.normalForm().toString());
+	}
+
+	/**
+	 * Natural cannot be negative.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public final void naturalIsNotNegative() {
+		new Natural(-1);
 	}
 }

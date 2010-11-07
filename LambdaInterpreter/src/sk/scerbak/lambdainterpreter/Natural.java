@@ -43,4 +43,14 @@ class Natural extends Symbol implements IExpression {
 		return String.valueOf(value);
 	}
 
+	@Override
+	public boolean free(final String variable) {
+		return false;
+	}
+
+	@Override
+	public boolean isReducible() {
+		return false;
+	}
+
 }

@@ -11,20 +11,28 @@ import sk.scerbak.utility.StringUtility.StringCase;
 final class Parser {
 
 	/**
+	 * Terminal for right parenthesis for enclosed expressions.
+	 */
+	private static final char RIGHT_CHAR = ')';
+	/**
+	 * Terminal for left parenthesis for enclosed expressions.
+	 */
+	private static final char LEFT_CHAR = '(';
+	/**
+	 * Terminal delimiter for application.
+	 */
+	private static final char APPLICATION_CHAR = ' ';
+	/**
+	 * Terminal delimiter for abstraction.
+	 */
+	private static final char ABSTRACTION_CHAR = '|';
+
+	/**
 	 * This is a Utility/Library class, which offers static methods, but cannot
 	 * be instantiated.
 	 */
 	private Parser() {
 
-	}
-
-	/**
-	 * @param expression
-	 *            to be converted to its string representation
-	 * @return string representation of the expression
-	 */
-	public static String toString(final IExpression expression) {
-		return expression.toString();
 	}
 
 	/**
@@ -37,7 +45,7 @@ final class Parser {
 			throw new IllegalArgumentException("empty string");
 		}
 		IExpression result = null;
-		if (StringUtility.isWithin(input, '(', ')')) {
+		if (StringUtility.isWithin(input, LEFT_CHAR, RIGHT_CHAR)) {
 			result = parseCompoundExpression(input);
 		} else {
 			result = parseSymbol(input);
@@ -54,9 +62,9 @@ final class Parser {
 		IExpression result = null;
 		final int index = indexOfTopLevelDelimiter(input);
 		final char delimiter = input.charAt(index);
-		if (delimiter == ' ') {
+		if (delimiter == APPLICATION_CHAR) {
 			result = parseApplication(input, index);
-		} else if (delimiter == '|') {
+		} else if (delimiter == ABSTRACTION_CHAR) {
 			result = parseAbstraction(input, index);
 		} else {
 			throw new IllegalArgumentException(input);
@@ -74,16 +82,32 @@ final class Parser {
 		int index = 0;
 		int counter = 0;
 		char current;
+		boolean foundDelimiter;
 		do {
 			index++;
 			current = input.charAt(index);
-			if (current == '(') {
-				counter++;
-			} else if (current == ')') {
-				counter--;
-			}
-		} while (!(counter == 0 && (current == ' ' || current == '|')));
+			counter = countLevelAt(counter, current);
+			foundDelimiter = current == APPLICATION_CHAR
+					|| current == ABSTRACTION_CHAR;
+		} while (!(counter == 0 && foundDelimiter));
 		return index;
+	}
+
+	/**
+	 * @param counter
+	 *            determining current level
+	 * @param current
+	 *            character to be considered when counting levels
+	 * @return current level
+	 */
+	private static int countLevelAt(final int counter, final char current) {
+		int level = counter;
+		if (current == LEFT_CHAR) {
+			level++;
+		} else if (current == RIGHT_CHAR) {
+			level--;
+		}
+		return level;
 	}
 
 	/**
@@ -119,7 +143,7 @@ final class Parser {
 					index + 1, input.length() - 1));
 			result = new Abstraction(variableLabel, bodyExpression);
 		} else {
-			throw new IllegalArgumentException(variableLabel + '|');
+			throw new IllegalArgumentException(variableLabel);
 		}
 		return result;
 	}

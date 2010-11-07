@@ -61,4 +61,27 @@ public class ParserTest {
 		assertEquals(expression, fixture.toString());
 	}
 
+	/**
+	 * Variable label in an abstraction should be all lower-case.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public final void fromMalformedAbstraction() {
+		Parser.fromString("(y|(X|X))");
+	}
+
+	/**
+	 * Empty string cannot be parsed to lambda expression.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public final void fromEmptyString() {
+		Parser.fromString("");
+	}
+
+	/**
+	 * Camel case is not allowed.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public final void fromCamelCaseString() {
+		Parser.fromString("(camelCase x)");
+	}
 }

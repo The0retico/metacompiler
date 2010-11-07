@@ -30,18 +30,26 @@ class Variable extends Symbol implements IExpression {
 
 	@Override
 	public IExpression oneStepBetaReduce() {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override
 	public IExpression normalForm() {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override
 	public String toString() {
 		return this.label;
+	}
+
+	@Override
+	public boolean free(final String variable) {
+		return this.label.equals(variable);
+	}
+
+	@Override
+	public boolean isReducible() {
+		return false;
 	}
 }
