@@ -2,7 +2,7 @@ package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static sk.scerbak.lambdainterpreter.LambdaAssert.assertFree;
+import static sk.scerbak.lambdainterpreter.Assertions.assertFree;
 
 import java.util.List;
 

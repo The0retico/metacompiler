@@ -3,6 +3,7 @@ package sk.scerbak.lambdainterpreter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
 
 import java.util.List;
 
@@ -40,8 +41,7 @@ public class ConstantTest {
 	 */
 	@Test
 	public final void constantsHaveNoFreeVariables() {
-		assertFalse("Constants should not have free variables",
-				fixture.free("x"));
+		assertNotFree("x", fixture);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class ConstantTest {
 	@Test
 	public final void constantIsItsOnlySubterm() {
 		final List<IExpression> subterms = fixture.subterm();
-		assertNotNull(subterms);
+		assertNotNull(fixture + " should have subterms", subterms);
 		assertEquals(1, subterms.size());
 		assertEquals(fixture.toString(), subterms.get(0).toString());
 	}

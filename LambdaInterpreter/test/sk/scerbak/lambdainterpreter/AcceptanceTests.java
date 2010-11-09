@@ -2,10 +2,11 @@ package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static sk.scerbak.lambdainterpreter.LambdaAssert.assertFree;
-import static sk.scerbak.lambdainterpreter.LambdaAssert.assertNotFree;
+import static sk.scerbak.lambdainterpreter.Assertions.assertFree;
+import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
+import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
+import static sk.scerbak.lambdainterpreter.Assertions.assertSubstitutes;
 
 import java.util.List;
 
@@ -91,9 +92,7 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void example4() {
-		final IExpression substituted = fixture4.substitute("z",
-				Parser.fromString("y"));
-		assertEquals("(x|(y x))", substituted.toString());
+		assertSubstitutes("(x|(y x))", fixture4, "z", "y");
 	}
 
 	/**
@@ -106,9 +105,7 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void example5() {
-		final IExpression substituted = fixture5.substitute("z",
-				Parser.fromString("y"));
-		assertEquals("(v0|(y v0))", substituted.toString());
+		assertSubstitutes("(v0|(y v0))", fixture5, "z", "y");
 	}
 
 	/**
@@ -172,9 +169,7 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void exercise2A() {
-		final IExpression result = fixtureE2A.normalForm();
-		assertNotNull(result);
-		assertEquals("(y|y)", result.toString());
+		assertNormalizes("(y|y)", fixtureE2A);
 	}
 
 	/**
@@ -188,9 +183,7 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void exercise2B() {
-		final IExpression result = fixtureE2B.normalForm();
-		assertNotNull(fixtureE2B + " should have normal form", result);
-		assertEquals("((plus 1) 5)", result.toString());
+		assertNormalizes("((plus 1) 5)", fixtureE2B);
 	}
 
 	/**
@@ -204,9 +197,7 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void exercise3() {
-		final IExpression result = fixtureE3.normalForm();
-		assertNotNull(fixtureE3 + " should have normal form", result);
-		assertEquals("((plus ((plus ((plus ((plus 0) 1)) 1)) 1)) 1)",
-				result.toString());
+		assertNormalizes("((plus ((plus ((plus ((plus 0) 1)) 1)) 1)) 1)",
+				fixtureE3);
 	}
 }

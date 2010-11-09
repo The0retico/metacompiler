@@ -3,6 +3,7 @@ package sk.scerbak.lambdainterpreter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static sk.scerbak.lambdainterpreter.Assertions.assertFree;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class VariableTest {
 	 */
 	@Test
 	public final void variableWithoutContextIsFree() {
-		assertTrue("Variable appears to be bound", fixture.free(variableLabel));
+		assertFree(variableLabel, fixture);
 	}
 
 	/**
@@ -76,7 +77,8 @@ public class VariableTest {
 		final IExpression substituted = fixture.substitute(variableLabel,
 				variableY);
 		assertNotNull(fixture + " should be substituted", substituted);
-		assertTrue(substituted instanceof Variable);
+		assertTrue(fixture + "should be substituted for a variable",
+				substituted instanceof Variable);
 		assertEquals(variableY, substituted);
 	}
 

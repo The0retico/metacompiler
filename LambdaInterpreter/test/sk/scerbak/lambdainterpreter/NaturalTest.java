@@ -1,8 +1,8 @@
 package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
 
 import java.util.List;
 
@@ -48,8 +48,7 @@ public class NaturalTest {
 	 */
 	@Test
 	public final void integersHaveNoFreeVariables() {
-		assertFalse("Integer should not have any free variables",
-				fixture.free("x"));
+		assertNotFree("x", fixture);
 	}
 
 	/**
@@ -58,7 +57,7 @@ public class NaturalTest {
 	@Test
 	public final void integerIsItsOwnSubterm() {
 		final List<IExpression> subterms = fixture.subterm();
-		assertNotNull(subterms);
+		assertNotNull(fixture + " should contain subterms", subterms);
 		assertEquals(1, subterms.size());
 		assertEquals(fixture, subterms.get(0));
 	}

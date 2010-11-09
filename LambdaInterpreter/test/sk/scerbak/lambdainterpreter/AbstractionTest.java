@@ -2,7 +2,8 @@ package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static sk.scerbak.lambdainterpreter.LambdaAssert.assertNotFree;
+import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
+import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
 
 import java.util.List;
 
@@ -113,7 +114,6 @@ public class AbstractionTest {
 	 */
 	@Test
 	public final void normalFormHasBodyInNormalForm() {
-		final IExpression normalForm = fixture.normalForm();
-		assertEquals("(x|B.normal)", normalForm.toString());
+		assertNormalizes("(x|B.normal)", fixture);
 	}
 }
