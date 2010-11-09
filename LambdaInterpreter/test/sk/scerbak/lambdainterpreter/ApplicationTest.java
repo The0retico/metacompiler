@@ -2,7 +2,7 @@ package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static sk.scerbak.lambdainterpreter.LambdaAssert.assertFree;
 
 import java.util.List;
 
@@ -43,9 +43,9 @@ public class ApplicationTest {
 	 */
 	@Test
 	public final void variableNotBoundInApplicationIsFree() {
-		assertTrue("Variable should be free", fixture.free("x"));
+		assertFree("x", fixture);
 		assertEquals("(A.free B)", fixture.toString());
-		assertTrue("Variable should be free", fixture.free("y"));
+		assertFree("y", fixture);
 		assertEquals("(A.free.free B.free)", fixture.toString());
 	}
 

@@ -1,8 +1,8 @@
 package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static sk.scerbak.lambdainterpreter.LambdaAssert.assertNotFree;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class AbstractionTest {
 	 */
 	@Test
 	public final void boundVariableIsNotFree() {
-		assertFalse("Variable should be bound", fixture.free("x"));
+		assertNotFree("x", fixture);
 		assertEquals("(x|B)", fixture.toString());
 	}
 
@@ -57,8 +57,7 @@ public class AbstractionTest {
 	 */
 	@Test
 	public final void boundVariableElsewhereIsNotFree() {
-		assertFalse("Variable should be bound also by subterm",
-				fixture.free("x"));
+		assertNotFree("x", fixture);
 		assertEquals("(x|B)", fixture.toString());
 	}
 
