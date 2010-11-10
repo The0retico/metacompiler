@@ -13,8 +13,8 @@ import sk.scerbak.utility.StringUtilityTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses(value = { StringUtilityTest.class, VariableTest.class,
-		AbstractionTest.class, ApplicationTest.class,
-		ConstantTest.class, NaturalTest.class,
-		ParserTest.class, AcceptanceTests.class })
+		AbstractionTest.class, ApplicationTest.class, ConstantTest.class,
+		NaturalTest.class, ParserTest.class, AcceptanceTests.class,
+		ComplexTest.class })
 public class AllTests {
 };
