@@ -37,7 +37,6 @@ public class ComplexTest {
 		assertNormalizes("(f|(x|(f (f x))))", two);
 		final IExpression three = new Application(succ, two);
 		assertNormalizes("(f|(x|(f (f (f x)))))", three);
-
 	}
 
 	/**
@@ -64,4 +63,52 @@ public class ComplexTest {
 		assertNormalizes("(f|(x|(f (f (f (f x))))))", four);
 	}
 
+	/**
+	 * Predecessor on church numbers.
+	 */
+	@Test
+	public final void predecessorOnChurchNubmers() {
+		final IExpression pred = Parser
+				.fromString("(n|(f|(x|(((n (g|(h|(h (g f))))) (u|x)) (u|u)))))");
+		final IExpression three = Parser.fromString("(f|(x|(f (f (f x)))))");
+		final IExpression two = new Application(pred, three);
+		assertNormalizes("(f|(x|(f (f x))))", two);
+	}
+
+	/**
+	 * And function on booleans.
+	 */
+	@Test
+	public final void andOnBooleans() {
+		final IExpression ltrue = Parser.fromString("(x|(y|x))");
+		final IExpression lfalse = Parser.fromString("(x|(y|y))");
+		final IExpression and = Parser.fromString("(x|(y|((x y) (x|(y|y)))))");
+		final IExpression andTrueFalse = new Application(new Application(and,
+				ltrue), lfalse);
+		assertNormalizes("(x|(y|y))", andTrueFalse);
+	}
+
+	/**
+	 * Xor function on booleans.
+	 */
+	@Test
+	public final void xorOnBooleans() {
+		final String strue = "(x|(y|x))";
+		final String sfalse = "(x|(y|y))";
+		final IExpression ltrue = Parser.fromString(strue);
+		final IExpression lfalse = Parser.fromString(sfalse);
+		final String and = "(x|(y|((x y) " + sfalse + ")))";
+		final String or = "(x|(y|((x " + strue + ") y)))";
+		final String not = "(x|((x " + sfalse + ") " + strue + "))";
+		final IExpression xor = Parser.fromString("(x|(y|((" + and + " ((" + or
+				+ " x) y)) (" + not + " ((" + and + " x) y)))))");
+		assertNormalizes(sfalse, new Application(new Application(xor, ltrue),
+				ltrue));
+		assertNormalizes(strue, new Application(new Application(xor, ltrue),
+				lfalse));
+		assertNormalizes(strue, new Application(new Application(xor, lfalse),
+				ltrue));
+		assertNormalizes(sfalse, new Application(new Application(xor, lfalse),
+				lfalse));
+	}
 }
