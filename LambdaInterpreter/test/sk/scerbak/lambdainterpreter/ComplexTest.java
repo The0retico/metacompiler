@@ -20,7 +20,7 @@ public class ComplexTest {
 	public final void additionOnChurchNumbers() {
 		assertNormalizes(
 				"(f|(x|(f (f (f x)))))",
-				Parser.fromString("(((m|(n|(f|(x|((m f) ((n f) x)))))) (f|(x|(f x)))) (f|(x|(f (f x)))))"));
+				Parser.fromString("(((m|(n|(f|(x|(m f (n f x)))))) (f|(x|(f x)))) (f|(x|(f (f x)))))"));
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class ComplexTest {
 	@Test
 	public final void predecessorOnChurchNubmers() {
 		final IExpression pred = Parser
-				.fromString("(n|(f|(x|(((n (g|(h|(h (g f))))) (u|x)) (u|u)))))");
+				.fromString("(n|(f|(x|((n (g|(h|(h (g f))))) (u|x) (u|u)))))");
 		final IExpression three = Parser.fromString("(f|(x|(f (f (f x)))))");
 		final IExpression two = new Application(pred, three);
 		assertNormalizes("(f|(x|(f (f x))))", two);

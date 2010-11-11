@@ -5,6 +5,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Utility class containing unit test assertions for lambda expressions.
+ * 
+ * @author The0retico
+ * 
+ */
 final class Assertions {
 
 	/**
@@ -59,7 +65,8 @@ final class Assertions {
 	 *            variable.
 	 */
 	static void assertSubstitutes(final String expected,
-			final IExpression expression, String variable, String substituent) {
+			final IExpression expression, final String variable,
+			final String substituent) {
 		final IExpression substituted = expression.substitute(variable,
 				Parser.fromString(substituent));
 		assertNotNull(expression + " should be substituted", substituted);

@@ -78,7 +78,15 @@ class Application implements IExpression {
 
 	@Override
 	public String toString() {
-		return "(" + this.function + " " + this.argument + ")";
+		final StringBuilder arguments = new StringBuilder();
+		IExpression left = this.function;
+		while (left instanceof Application) {
+			final Application leftApplication = (Application) left;
+			arguments.insert(0, " " + leftApplication.argument);
+			left = leftApplication.function;
+		}
+		arguments.insert(0, left);
+		return "(" + arguments + " " + this.argument + ")";
 	}
 
 	@Override

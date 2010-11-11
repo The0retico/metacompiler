@@ -183,7 +183,7 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void exercise2B() {
-		assertNormalizes("((plus 1) 5)", fixtureE2B);
+		assertNormalizes("(plus 1 5)", fixtureE2B);
 	}
 
 	/**
@@ -197,7 +197,6 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void exercise3() {
-		assertNormalizes("((plus ((plus ((plus ((plus 0) 1)) 1)) 1)) 1)",
-				fixtureE3);
+		assertNormalizes("(plus (plus (plus (plus 0 1) 1) 1) 1)", fixtureE3);
 	}
 }

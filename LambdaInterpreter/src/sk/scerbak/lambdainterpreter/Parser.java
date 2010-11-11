@@ -8,7 +8,15 @@ import sk.scerbak.utility.StringUtility.StringCase;
  * 
  * @author The0retico lambda expression root interpreter with factory method
  */
-final class Parser {
+/**
+ * @author The0retico
+ *
+ */
+/**
+ * @author The0retico
+ * 
+ */
+public final class Parser {
 
 	/**
 	 * Terminal for right parenthesis for enclosed expressions.
@@ -60,7 +68,7 @@ final class Parser {
 	 */
 	private static IExpression parseCompoundExpression(final String input) {
 		IExpression result = null;
-		final int index = indexOfTopLevelDelimiter(input);
+		final int index = indexOfTopLevelDelimiter(input, 1);
 		final char delimiter = input.charAt(index);
 		if (delimiter == APPLICATION_CHAR) {
 			result = parseApplication(input, index);
@@ -75,22 +83,32 @@ final class Parser {
 	/**
 	 * @param input
 	 *            string containing lambda expression enclosed in parenthesis
+	 * @param fromIndex
+	 *            TODO
 	 * @return index of abstraction or application delimiter, which is on the
 	 *         top level in teh expression
 	 */
-	private static int indexOfTopLevelDelimiter(final String input) {
-		int index = 0;
+	private static int indexOfTopLevelDelimiter(final String input,
+			final int fromIndex) {
+		int index = fromIndex - 1;
 		int counter = 0;
 		char current;
-		boolean foundDelimiter;
 		do {
 			index++;
 			current = input.charAt(index);
 			counter = countLevelAt(counter, current);
-			foundDelimiter = current == APPLICATION_CHAR
-					|| current == ABSTRACTION_CHAR;
-		} while (!(counter == 0 && foundDelimiter));
-		return index;
+		} while (index < input.length() - 1
+				&& !(counter == 0 && isDelimiter(current)));
+		return isDelimiter(current) ? index : -1;
+	}
+
+	/**
+	 * @param character
+	 *            which should be tested if application or abstraction delimiter
+	 * @return true if character is either abstraction or application delimiter
+	 */
+	private static boolean isDelimiter(final char character) {
+		return character == APPLICATION_CHAR || character == ABSTRACTION_CHAR;
 	}
 
 	/**
@@ -119,12 +137,37 @@ final class Parser {
 	 */
 	private static IExpression parseApplication(final String input,
 			final int index) {
-		IExpression result;
-		final IExpression function = fromString(input.substring(1, index));
-		final IExpression argument = fromString(input.substring(index + 1,
+		IExpression function = fromString(input.substring(1, index));
+		int currentIndex = index;
+		int nextIndex = indexOfApplicationDelimiter(input, currentIndex);
+		IExpression argument = null;
+		while (nextIndex != -1 && nextIndex != currentIndex) {
+			final String nextInput = input.substring(currentIndex + 1,
+					nextIndex);
+			argument = fromString(nextInput);
+			function = new Application(function, argument);
+			currentIndex = nextIndex;
+			nextIndex = indexOfApplicationDelimiter(input, currentIndex);
+		}
+		argument = fromString(input.substring(currentIndex + 1,
 				input.length() - 1));
-		result = new Application(function, argument);
-		return result;
+		return new Application(function, argument);
+	}
+
+	/**
+	 * @param input
+	 *            where to search
+	 * @param fromIndex
+	 *            where search and level counting should start
+	 * @return index of top level application delimiter starting at fromIndex
+	 */
+	private static int indexOfApplicationDelimiter(final String input,
+			final int fromIndex) {
+		int index;
+		do {
+			index = indexOfTopLevelDelimiter(input, fromIndex + 1);
+		} while (index != -1 && input.charAt(index) != APPLICATION_CHAR);
+		return index;
 	}
 
 	/**

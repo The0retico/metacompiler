@@ -37,7 +37,7 @@ public class ParserTest {
 	public static Collection<Object[]> stringExpressions() {
 		final Object[][] expressions = new Object[][] { { "1" }, { "Y" },
 				{ "x" }, { "(x|1)" }, { "(x y)" }, { "((x|x) y)" },
-				{ "((x z) y)" } };
+				{ "(x z y)" }, { "(PLUS 1 3 5 7 11 13)" }, { "(a b (c d))" } };
 		return Arrays.asList(expressions);
 	}
 
@@ -55,7 +55,7 @@ public class ParserTest {
 	 * Test if expression has been parsed correctly to fixture.
 	 */
 	@Test
-	public final void parseInteger() {
+	public final void parseExpression() {
 		assertNotNull(expression + " should be parsed to an expression",
 				fixture);
 		assertEquals(expression, fixture.toString());
@@ -84,4 +84,5 @@ public class ParserTest {
 	public final void fromCamelCaseString() {
 		Parser.fromString("(camelCase x)");
 	}
+
 }
