@@ -1,6 +1,10 @@
 package sk.scerbak.lambdainterpreter;
 
 import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
+import static sk.scerbak.lambdainterpreter.Calcuclus.apply;
+import static sk.scerbak.lambdainterpreter.Calcuclus.def;
+import static sk.scerbak.lambdainterpreter.Calcuclus.var;
+import static sk.scerbak.lambdainterpreter.Calcuclus.vars;
 
 import org.junit.Test;
 
@@ -31,11 +35,11 @@ public class ComplexTest {
 		final IExpression zero = Parser.fromString("(f|(x|x))");
 		final IExpression succ = Parser.fromString("(n|(f|(x|(f ((n f) x)))))");
 
-		final IExpression one = new Application(succ, zero);
+		final IExpression one = apply(succ, zero);
 		assertNormalizes("(f|(x|(f x)))", one);
-		final IExpression two = new Application(succ, one);
+		final IExpression two = apply(succ, one);
 		assertNormalizes("(f|(x|(f (f x))))", two);
-		final IExpression three = new Application(succ, two);
+		final IExpression three = apply(succ, two);
 		assertNormalizes("(f|(x|(f (f (f x)))))", three);
 	}
 
@@ -46,9 +50,9 @@ public class ComplexTest {
 	public final void multiplicationOfChurchNumbers() {
 		final IExpression two = Parser.fromString("(f|(x|(f (f x))))");
 		final IExpression three = Parser.fromString("(f|(x|(f (f (f x)))))");
-		final IExpression mult = Parser.fromString("(m|(n|(f|(n (m f)))))");
-		final IExpression six = new Application(new Application(mult, two),
-				three);
+		final IExpression mult = def(vars("m", "n", "f"),
+				apply(var("n"), apply(var("m"), var("f"))));
+		final IExpression six = apply(mult, two, three);
 		assertNormalizes("(f|(x|(f (f (f (f (f (f x))))))))", six);
 	}
 
@@ -59,7 +63,7 @@ public class ComplexTest {
 	public final void exponentialOnChurchNumbers() {
 		final IExpression two = Parser.fromString("(f|(x|(f (f x))))");
 		final IExpression exp = Parser.fromString("(m|(n|(f|((n m) f))))");
-		final IExpression four = new Application(new Application(exp, two), two);
+		final IExpression four = apply(exp, two, two);
 		assertNormalizes("(f|(x|(f (f (f (f x))))))", four);
 	}
 
@@ -71,7 +75,7 @@ public class ComplexTest {
 		final IExpression pred = Parser
 				.fromString("(n|(f|(x|((n (g|(h|(h (g f))))) (u|x) (u|u)))))");
 		final IExpression three = Parser.fromString("(f|(x|(f (f (f x)))))");
-		final IExpression two = new Application(pred, three);
+		final IExpression two = apply(pred, three);
 		assertNormalizes("(f|(x|(f (f x))))", two);
 	}
 
@@ -83,8 +87,7 @@ public class ComplexTest {
 		final IExpression ltrue = Parser.fromString("(x|(y|x))");
 		final IExpression lfalse = Parser.fromString("(x|(y|y))");
 		final IExpression and = Parser.fromString("(x|(y|((x y) (x|(y|y)))))");
-		final IExpression andTrueFalse = new Application(new Application(and,
-				ltrue), lfalse);
+		final IExpression andTrueFalse = apply(and, ltrue, lfalse);
 		assertNormalizes("(x|(y|y))", andTrueFalse);
 	}
 
@@ -102,13 +105,9 @@ public class ComplexTest {
 		final String not = "(x|((x " + sfalse + ") " + strue + "))";
 		final IExpression xor = Parser.fromString("(x|(y|((" + and + " ((" + or
 				+ " x) y)) (" + not + " ((" + and + " x) y)))))");
-		assertNormalizes(sfalse, new Application(new Application(xor, ltrue),
-				ltrue));
-		assertNormalizes(strue, new Application(new Application(xor, ltrue),
-				lfalse));
-		assertNormalizes(strue, new Application(new Application(xor, lfalse),
-				ltrue));
-		assertNormalizes(sfalse, new Application(new Application(xor, lfalse),
-				lfalse));
+		assertNormalizes(sfalse, apply(xor, ltrue, ltrue));
+		assertNormalizes(strue, apply(xor, ltrue, lfalse));
+		assertNormalizes(strue, apply(xor, lfalse, ltrue));
+		assertNormalizes(sfalse, apply(xor, lfalse, lfalse));
 	}
 }

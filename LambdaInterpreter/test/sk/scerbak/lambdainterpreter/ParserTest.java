@@ -37,7 +37,7 @@ public class ParserTest {
 	public static Collection<Object[]> stringExpressions() {
 		final Object[][] expressions = new Object[][] { { "1" }, { "Y" },
 				{ "x" }, { "(x|1)" }, { "(x y)" }, { "((x|x) y)" },
-				{ "(x z y)" }, { "(PLUS 1 3 5 7 11 13)" }, { "(a b (c d))" } };
+				{ "(x z y)" }, { "(PLUS 1 3 5 7 11 13)" }, { "(a b (c d))" }, };
 		return Arrays.asList(expressions);
 	}
 
@@ -47,8 +47,8 @@ public class ParserTest {
 	 *            this test
 	 */
 	public ParserTest(final String stringExpression) {
-		this.expression = stringExpression;
-		this.fixture = Parser.fromString(expression);
+		expression = stringExpression;
+		fixture = Parser.fromString(expression);
 	}
 
 	/**
@@ -59,30 +59,6 @@ public class ParserTest {
 		assertNotNull(expression + " should be parsed to an expression",
 				fixture);
 		assertEquals(expression, fixture.toString());
-	}
-
-	/**
-	 * Variable label in an abstraction should be all lower-case.
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public final void fromMalformedAbstraction() {
-		Parser.fromString("(y|(X|X))");
-	}
-
-	/**
-	 * Empty string cannot be parsed to lambda expression.
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public final void fromEmptyString() {
-		Parser.fromString("");
-	}
-
-	/**
-	 * Camel case is not allowed.
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public final void fromCamelCaseString() {
-		Parser.fromString("(camelCase x)");
 	}
 
 }
