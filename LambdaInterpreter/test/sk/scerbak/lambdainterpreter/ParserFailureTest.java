@@ -27,6 +27,10 @@ public class ParserFailureTest {
 		return Arrays.asList(expressions);
 	}
 
+	/**
+	 * Parameter which contains an expression which should not succeed to be
+	 * parsed.
+	 */
 	private final String expression;
 
 	/**

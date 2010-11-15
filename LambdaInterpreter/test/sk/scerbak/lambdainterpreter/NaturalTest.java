@@ -47,7 +47,7 @@ public class NaturalTest {
 	 * Integers are constants as well, so they bind no variables.
 	 */
 	@Test
-	public final void integersHaveNoFreeVariables() {
+	public final void hasNoFreeVariables() {
 		assertNotFree("x", fixture);
 	}
 
@@ -55,7 +55,7 @@ public class NaturalTest {
 	 * Integers are not compound, so they have one subterm, itself.
 	 */
 	@Test
-	public final void integerIsItsOwnSubterm() {
+	public final void isItsOwnSubterm() {
 		final List<IExpression> subterms = fixture.subterm();
 		assertNotNull(fixture + " should contain subterms", subterms);
 		assertEquals(1, subterms.size());

@@ -145,4 +145,21 @@ class Abstraction implements IExpression {
 	public boolean isReducible() {
 		return this.body.isReducible();
 	}
+
+	@Override
+	public boolean equals(final Object other) {
+		if (other instanceof Abstraction) {
+			Abstraction otherAbstraction = (Abstraction) other;
+			final String otherVariable = otherAbstraction.variable;
+			final IExpression otherBody;
+			if (this.variable.equals(otherVariable)) {
+				otherBody = otherAbstraction.body;
+			} else {
+				otherBody = otherAbstraction.body.substitute(otherVariable,
+						new Variable(this.variable));
+			}
+			return this.body.equals(otherBody);
+		}
+		return false;
+	}
 }

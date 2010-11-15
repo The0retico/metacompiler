@@ -1,9 +1,13 @@
 package sk.scerbak.lambdainterpreter;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
+import static sk.scerbak.lambdainterpreter.Calculus.def;
 
 import java.util.List;
 
@@ -33,11 +37,11 @@ public class AbstractionTest {
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new Abstraction("x", new Mock("B", "y"));
+		fixture = def("x", new Mock("B", "y"));
 	}
 
 	/**
-	 * 
+	 * Testing printing.
 	 */
 	@Test
 	public final void toStringIsItsVariableAndBody() {
@@ -115,5 +119,17 @@ public class AbstractionTest {
 	@Test
 	public final void normalFormHasBodyInNormalForm() {
 		assertNormalizes("(x|B.normal)", fixture);
+	}
+
+	/**
+	 * Two lambda abstractions are equal if one is alpha convertible to another,
+	 * which means that they are exact the same w.r.t. variable name
+	 * substitution.
+	 */
+	@Test
+	public final void equalsIfAlphaConvertible() {
+		assertThat(def("x").var("x"), is(def("x").var("x")));
+		assertThat(def("x").var("x"), is(def("y").var("y")));
+		assertThat(def("x").var("x"), is(not(def("x").var("y"))));
 	}
 }

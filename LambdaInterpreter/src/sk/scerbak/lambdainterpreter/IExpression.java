@@ -47,4 +47,12 @@ interface IExpression {
 	 * @return true if this expression can be reduced using beta reduction
 	 */
 	boolean isReducible();
+
+	/**
+	 * @param other
+	 *            expression to be compared with this
+	 * @return true if both expressions are equal according to alpha equivalence
+	 */
+	@Override
+	boolean equals(Object other);
 }

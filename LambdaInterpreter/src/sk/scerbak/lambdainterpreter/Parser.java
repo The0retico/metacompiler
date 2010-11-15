@@ -1,5 +1,10 @@
 package sk.scerbak.lambdainterpreter;
 
+import static sk.scerbak.lambdainterpreter.Calculus.apply;
+import static sk.scerbak.lambdainterpreter.Calculus.con;
+import static sk.scerbak.lambdainterpreter.Calculus.def;
+import static sk.scerbak.lambdainterpreter.Calculus.nat;
+import static sk.scerbak.lambdainterpreter.Calculus.var;
 import sk.scerbak.utility.StringUtility;
 import sk.scerbak.utility.StringUtility.StringCase;
 
@@ -145,13 +150,13 @@ public final class Parser {
 			final String nextInput = input.substring(currentIndex + 1,
 					nextIndex);
 			argument = fromString(nextInput);
-			function = new Application(function, argument);
+			function = apply(function, argument);
 			currentIndex = nextIndex;
 			nextIndex = indexOfApplicationDelimiter(input, currentIndex);
 		}
 		argument = fromString(input.substring(currentIndex + 1,
 				input.length() - 1));
-		return new Application(function, argument);
+		return apply(function, argument);
 	}
 
 	/**
@@ -184,7 +189,7 @@ public final class Parser {
 		if (StringUtility.caseOf(variableLabel) == StringCase.LOWER) {
 			final IExpression bodyExpression = fromString(input.substring(
 					index + 1, input.length() - 1));
-			result = new Abstraction(variableLabel, bodyExpression);
+			result = def(variableLabel, bodyExpression);
 		} else {
 			throw new IllegalArgumentException(variableLabel);
 		}
@@ -200,12 +205,12 @@ public final class Parser {
 		IExpression result = null;
 		final StringCase inputCase = StringUtility.caseOf(input);
 		if (inputCase == StringCase.UPPER) {
-			result = new Constant(input);
+			result = con(input);
 		} else if (inputCase == StringCase.LOWER) {
-			result = new Variable(input);
+			result = var(input);
 		} else if (StringUtility.isInteger(input)) {
 			final Integer value = Integer.valueOf(input);
-			result = new Natural(value);
+			result = nat(value);
 		} else {
 			throw new IllegalArgumentException(input);
 		}

@@ -1,7 +1,14 @@
 package sk.scerbak.lambdainterpreter;
 
+import static sk.scerbak.lambdainterpreter.Calculus.apply;
+import static sk.scerbak.lambdainterpreter.Calculus.def;
+import static sk.scerbak.lambdainterpreter.Calculus.var;
+import static sk.scerbak.lambdainterpreter.Calculus.vars;
+
 /**
- * @author The0retico Lambda expression containing integer constant
+ * Lambda expression containing integer constant.
+ * 
+ * @author The0retico
  */
 class Natural extends Symbol implements IExpression {
 
@@ -9,6 +16,18 @@ class Natural extends Symbol implements IExpression {
 	 * May be invalid, checked during evaluate method call.
 	 */
 	private final int value;
+
+	/**
+	 * Equivalent church numbering expression to the value.
+	 */
+	private final IExpression expression;
+
+	/**
+	 * @return the expression
+	 */
+	public IExpression getExpression() {
+		return expression;
+	}
 
 	/**
 	 * @param integer
@@ -20,6 +39,11 @@ class Natural extends Symbol implements IExpression {
 		if (value < 0) {
 			throw new IllegalArgumentException();
 		}
+		IExpression result = var("x");
+		for (int index = 0; index < value; index++) {
+			result = apply(var("f"), result);
+		}
+		this.expression = def(vars("f", "x"), result);
 	}
 
 	@Override

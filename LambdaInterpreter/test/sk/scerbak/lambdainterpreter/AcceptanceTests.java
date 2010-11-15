@@ -1,12 +1,16 @@
 package sk.scerbak.lambdainterpreter;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static sk.scerbak.lambdainterpreter.Assertions.assertFree;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
 import static sk.scerbak.lambdainterpreter.Assertions.assertSubstitutes;
+import static sk.scerbak.lambdainterpreter.Calculus.apply;
+import static sk.scerbak.lambdainterpreter.Calculus.def;
+import static sk.scerbak.lambdainterpreter.Calculus.var;
 
 import java.util.List;
 
@@ -21,35 +25,23 @@ import org.junit.Test;
 public class AcceptanceTests {
 
 	/**
-	 * Fixture for example1.
-	 */
-	private final IExpression fixture1 = Parser.fromString("(x|(y|(x z)))");
-
-	/**
 	 * Example 1 for free and subterm.
 	 */
 	@Test
 	public final void example1() {
-		assertNotFree("x", fixture1);
-		assertFree("z", fixture1);
-		final IExpression variableY = Parser.fromString("y");
-		final List<IExpression> subterms = fixture1.subterm();
-		assertFalse(subterms + " should not contain y",
-				subterms.contains(variableY));
+		assertNotFree("x", def("x", "y").apply(var("x"), var("z")));
+		assertFree("z", def("x", "y").apply(var("x"), var("z")));
+		assertThat(def("x", "y").apply(var("x"), var("z")).subterm(),
+				not(hasItem(var("y"))));
 	}
-
-	/**
-	 * Fixture for example 2.
-	 */
-	private final IExpression fixture2 = Parser
-			.fromString("(x|((y|y) (x (y|y))))");
 
 	/**
 	 * Example 2 for free and subterm.
 	 */
 	@Test
 	public final void example2() {
-		final List<IExpression> subterms = fixture2.subterm();
+		final List<IExpression> subterms = def("x").apply(def("y").var("y"),
+				apply(var("x"), def("y").var("y"))).subterm();
 		int count = 0;
 		final String identityY = "(y|y)";
 		for (IExpression expression : subterms) {
@@ -57,62 +49,46 @@ public class AcceptanceTests {
 				count++;
 			}
 		}
-		assertEquals(fixture2 + " should occure twice in " + identityY, 2,
-				count);
+		assertEquals(
+				def("x").apply(def("y").var("y"),
+						apply(var("x"), def("y").var("y")))
+						+ " should occure twice in " + identityY, 2, count);
 	}
-
-	/**
-	 * Fixture for example 3.
-	 */
-	private final IExpression fixture3 = Parser.fromString("(w (x (y z)))");
 
 	/**
 	 * Example 3 of free and subterm.
 	 */
 	@Test
 	public final void example3() {
-		final List<IExpression> subterms = fixture3.subterm();
-		final String subExpression = "(x (y z))";
-		boolean contains = false;
-		for (IExpression expression : subterms) {
-			if (subExpression.equals(expression.toString())) {
-				contains = true;
-			}
-		}
-		assertTrue(fixture3 + " should contain " + subExpression, contains);
+		final List<IExpression> subterms = apply(var("w"),
+				apply(var("x"), apply(var("y"), var("z")))).subterm();
+		assertThat(subterms,
+				hasItem(apply(var("x"), apply(var("y"), var("z")))));
 	}
-
-	/**
-	 * Fixture for example 4.
-	 */
-	private final IExpression fixture4 = Parser.fromString("(x|(z x))");
 
 	/**
 	 * Example 4 for substitution.
 	 */
 	@Test
 	public final void example4() {
-		assertSubstitutes("(x|(y x))", fixture4, "z", "y");
+		assertSubstitutes("(x|(y x))", def("x").apply(var("z"), var("x")), "z",
+				"y");
 	}
-
-	/**
-	 * Fixture for example 5.
-	 */
-	private final IExpression fixture5 = Parser.fromString("(y|(z y))");
 
 	/**
 	 * Example 5 for substitution.
 	 */
 	@Test
 	public final void example5() {
-		assertSubstitutes("(v0|(y v0))", fixture5, "z", "y");
+		assertSubstitutes("(v0|(y v0))", def("y").apply(var("z"), var("y")),
+				"z", "y");
 	}
 
 	/**
 	 * First fixture for exercise 1.
 	 */
-	private final IExpression fixtureE1A = Parser
-			.fromString("((x|(x y)) (y|y))");
+	private final IExpression fixtureE1A = apply(
+			def("x").apply(var("x"), var("y")), def("y").var("y"));
 
 	/**
 	 * First test for exercise 1.
@@ -127,8 +103,8 @@ public class AcceptanceTests {
 	/**
 	 * Second fixture for exercise 1.
 	 */
-	private final IExpression fixtureE1B = Parser
-			.fromString("(x|(y|(z ((z|z) (x|y)))))");
+	private final IExpression fixtureE1B = def("x", "y").apply(var("z"),
+			apply(def("z").var("z"), def("x").var("y")));
 
 	/**
 	 * Second test for exercise 1.
@@ -144,8 +120,9 @@ public class AcceptanceTests {
 	/**
 	 * Third fixture for exercise 1.
 	 */
-	private final IExpression fixtureE1C = Parser
-			.fromString("((x|(y|((x z) (y z)))) (x|(y (y|y))))");
+	private final IExpression fixtureE1C = apply(
+			def("x", "y").apply(var("x"), var("z"), apply(var("y"), var("z"))),
+			def("x").apply(var("y"), def("y").var("y")));
 
 	/**
 	 * Third test for exercise 1.

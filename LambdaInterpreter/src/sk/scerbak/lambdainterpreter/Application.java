@@ -12,6 +12,41 @@ class Application implements IExpression {
 	 * Lambda expression representing function of this application.
 	 */
 	private final IExpression function;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Application)) {
+			return false;
+		}
+		Application other = (Application) obj;
+		if (argument == null) {
+			if (other.argument != null) {
+				return false;
+			}
+		} else if (!argument.equals(other.argument)) {
+			return false;
+		}
+		if (function == null) {
+			if (other.function != null) {
+				return false;
+			}
+		} else if (!function.equals(other.function)) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Lambda expression representing argument to this application.
 	 */
@@ -57,6 +92,16 @@ class Application implements IExpression {
 			final Abstraction abstraction = (Abstraction) this.function;
 			result = abstraction.getBody().substitute(
 					abstraction.getVariable(), this.argument);
+		} else if (this.function instanceof Natural) {
+			final Natural naturalNumber = (Natural) this.function;
+			if (naturalNumber.getExpression() instanceof Abstraction) {
+				Abstraction churchNumber = (Abstraction) naturalNumber
+						.getExpression();
+				result = churchNumber.getBody().substitute(
+						churchNumber.getVariable(), this.argument);
+			} else {
+				throw new IllegalArgumentException();
+			}
 		} else if (this.function.isReducible()) {
 			result = new Application(this.function.oneStepBetaReduce(),
 					this.argument);
@@ -92,6 +137,7 @@ class Application implements IExpression {
 	@Override
 	public boolean isReducible() {
 		return this.function instanceof Abstraction
+				|| this.function instanceof Natural
 				|| this.function.isReducible() || this.argument.isReducible();
 	}
 }

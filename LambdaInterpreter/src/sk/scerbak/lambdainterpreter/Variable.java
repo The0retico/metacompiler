@@ -52,4 +52,13 @@ class Variable extends Symbol implements IExpression {
 	public boolean isReducible() {
 		return false;
 	}
+
+	@Override
+	public boolean equals(final Object other) {
+		if (other instanceof Variable) {
+			final Variable otherVariable = (Variable) other;
+			return this.label.equals(otherVariable.label);
+		}
+		return false;
+	}
 }
