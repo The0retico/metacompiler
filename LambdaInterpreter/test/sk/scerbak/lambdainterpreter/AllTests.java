@@ -12,9 +12,8 @@ import sk.scerbak.utility.StringUtilityTest;
  * @author The0retico
  */
 @RunWith(Suite.class)
-@SuiteClasses(value = { StringUtilityTest.class, VariableTest.class,
-		AbstractionTest.class, ApplicationTest.class, ConstantTest.class,
-		NaturalTest.class, ParserTest.class, ParserFailureTest.class,
-		AcceptanceTests.class, ComplexTest.class })
+@SuiteClasses(value = { StringUtilityTest.class, UnitTests.class,
+		ParserTest.class, ParserFailureTest.class, AcceptanceTests.class,
+		ComplexTests.class })
 public class AllTests {
 };

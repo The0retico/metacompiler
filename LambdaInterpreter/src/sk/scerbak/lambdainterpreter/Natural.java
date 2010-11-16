@@ -17,6 +17,29 @@ class Natural extends Symbol implements IExpression {
 	 */
 	private final int value;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Natural)) {
+			return false;
+		}
+		Natural other = (Natural) obj;
+		if (value != other.value) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Equivalent church numbering expression to the value.
 	 */

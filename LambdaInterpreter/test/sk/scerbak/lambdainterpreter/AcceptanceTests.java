@@ -9,7 +9,9 @@ import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
 import static sk.scerbak.lambdainterpreter.Assertions.assertSubstitutes;
 import static sk.scerbak.lambdainterpreter.Calculus.apply;
+import static sk.scerbak.lambdainterpreter.Calculus.con;
 import static sk.scerbak.lambdainterpreter.Calculus.def;
+import static sk.scerbak.lambdainterpreter.Calculus.nat;
 import static sk.scerbak.lambdainterpreter.Calculus.var;
 
 import java.util.List;
@@ -43,16 +45,15 @@ public class AcceptanceTests {
 		final List<IExpression> subterms = def("x").apply(def("y").var("y"),
 				apply(var("x"), def("y").var("y"))).subterm();
 		int count = 0;
-		final String identityY = "(y|y)";
 		for (IExpression expression : subterms) {
-			if (identityY.equals(expression.toString())) {
+			if (identity.equals(expression)) {
 				count++;
 			}
 		}
 		assertEquals(
 				def("x").apply(def("y").var("y"),
 						apply(var("x"), def("y").var("y")))
-						+ " should occure twice in " + identityY, 2, count);
+						+ " should occure twice in " + identity, 2, count);
 	}
 
 	/**
@@ -146,34 +147,40 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void exercise2A() {
-		assertNormalizes("(y|y)", fixtureE2A);
+		assertNormalizes(def("y").var("y"), fixtureE2A);
 	}
 
 	/**
 	 * Second fixture for exercise 2.
 	 */
 	private final IExpression fixtureE2B = Parser
-			.fromString("((h|((x|(h (x x))) (x|(h (x x))))) ((a|(b|a)) ((plus 1) 5)))");
+			.fromString("((h|((x|(h (x x))) (x|(h (x x))))) ((a|(b|a)) (PLUS 1 5)))");
 
 	/**
 	 * Second test for second exercise.
 	 */
 	@Test
 	public final void exercise2B() {
-		assertNormalizes("(plus 1 5)", fixtureE2B);
+		assertNormalizes(apply(con("PLUS"), nat(1), nat(5)), fixtureE2B);
 	}
 
 	/**
 	 * Fixture for exercise 3.
 	 */
 	private final IExpression fixtureE3 = Parser
-			.fromString("((((t|(t t)) (f|(x|(f (f x))))) (x|((plus x) 1))) 0)");
+			.fromString("((((t|(t t)) (f|(x|(f (f x))))) (x|((PLUS x) 1))) 0)");
+	private final IExpression identity = def("y").var("y");
 
 	/**
 	 * Test for third exercise.
 	 */
 	@Test
 	public final void exercise3() {
-		assertNormalizes("(plus (plus (plus (plus 0 1) 1) 1) 1)", fixtureE3);
+		assertNormalizes(
+				apply(con("PLUS"),
+						apply(con("PLUS"),
+								apply(con("PLUS"),
+										apply(con("PLUS"), nat(0), nat(1)),
+										nat(1)), nat(1)), nat(1)), fixtureE3);
 	}
 }

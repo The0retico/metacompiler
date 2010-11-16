@@ -11,15 +11,7 @@ import sk.scerbak.utility.StringUtility.StringCase;
 /**
  * Parser and printer for lambda expressions.
  * 
- * @author The0retico lambda expression root interpreter with factory method
- */
-/**
  * @author The0retico
- *
- */
-/**
- * @author The0retico
- * 
  */
 public final class Parser {
 

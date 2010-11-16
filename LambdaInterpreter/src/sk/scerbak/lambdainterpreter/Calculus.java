@@ -17,6 +17,13 @@ package sk.scerbak.lambdainterpreter;
 public final class Calculus {
 
 	/**
+	 * Utility class should not be instantiable.
+	 */
+	private Calculus() {
+
+	}
+
+	/**
 	 * @param variable
 	 *            for this abstraction
 	 * @param body
@@ -42,7 +49,7 @@ public final class Calculus {
 		 * @param variableNames
 		 *            to be captured in nested abstractions.
 		 */
-		Definition(final String[] variableNames) {
+		private Definition(final String[] variableNames) {
 			this.variables = variableNames;
 		}
 
@@ -86,6 +93,10 @@ public final class Calculus {
 		public IExpression nat(final Integer naturalNumber) {
 			return def(vars(this.variables), Calculus.nat(naturalNumber));
 		}
+
+		static Definition define(String[] variableNames) {
+			return new Definition(variableNames);
+		}
 	}
 
 	/**
@@ -95,7 +106,7 @@ public final class Calculus {
 	 *         abstractions
 	 */
 	public static Definition def(final String... variableNames) {
-		return new Definition(variableNames);
+		return Definition.define(variableNames);
 	}
 
 	/**

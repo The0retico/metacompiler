@@ -121,9 +121,9 @@ class Abstraction implements IExpression {
 	 */
 	private boolean isFreshVariableFor(final String newVariableLabel,
 			final IExpression expression) {
-		final boolean notFreeInBody = !this.body.free(newVariableLabel);
-		final boolean notFreeInExpression = !expression.free(newVariableLabel);
-		return notFreeInBody && notFreeInExpression;
+		final boolean freeInBody = this.body.free(newVariableLabel);
+		final boolean freeInExpression = expression.free(newVariableLabel);
+		return !freeInBody && !freeInExpression;
 	}
 
 	@Override
@@ -148,6 +148,7 @@ class Abstraction implements IExpression {
 
 	@Override
 	public boolean equals(final Object other) {
+		boolean result = false;
 		if (other instanceof Abstraction) {
 			Abstraction otherAbstraction = (Abstraction) other;
 			final String otherVariable = otherAbstraction.variable;
@@ -158,8 +159,8 @@ class Abstraction implements IExpression {
 				otherBody = otherAbstraction.body.substitute(otherVariable,
 						new Variable(this.variable));
 			}
-			return this.body.equals(otherBody);
+			result = this.body.equals(otherBody);
 		}
-		return false;
+		return result;
 	}
 }

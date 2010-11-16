@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
+import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizesString;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
 import static sk.scerbak.lambdainterpreter.Calculus.def;
 
@@ -118,7 +118,7 @@ public class AbstractionTest {
 	 */
 	@Test
 	public final void normalFormHasBodyInNormalForm() {
-		assertNormalizes("(x|B.normal)", fixture);
+		assertNormalizesString("(x|B.normal)", fixture);
 	}
 
 	/**

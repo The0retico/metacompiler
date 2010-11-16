@@ -13,6 +13,33 @@ class Variable extends Symbol implements IExpression {
 	 */
 	private final String label;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Variable)) {
+			return false;
+		}
+		Variable other = (Variable) obj;
+		if (label == null) {
+			if (other.label != null) {
+				return false;
+			}
+		} else if (!label.equals(other.label)) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * @param variableLabel
 	 *            lowercase string name for this variable
@@ -53,12 +80,4 @@ class Variable extends Symbol implements IExpression {
 		return false;
 	}
 
-	@Override
-	public boolean equals(final Object other) {
-		if (other instanceof Variable) {
-			final Variable otherVariable = (Variable) other;
-			return this.label.equals(otherVariable.label);
-		}
-		return false;
-	}
 }

@@ -82,11 +82,23 @@ final class Assertions {
 	 *            which should be normalized
 	 * 
 	 */
-	static void assertNormalizes(final String expected,
+	static void assertNormalizesString(final String expected,
 			final IExpression expression) {
 		final IExpression normalForm = expression.normalForm();
 		assertNotNull(expression + "should have normal form", normalForm);
 		assertEquals(expected, normalForm.toString());
+	}
+
+	/**
+	 * @param expected
+	 * @param actual
+	 *            TODO
+	 */
+	static void assertNormalizes(final IExpression expected,
+			final IExpression actual) {
+		final IExpression normalForm = actual.normalForm();
+		assertNotNull(actual + "should have normal form", normalForm);
+		assertEquals(expected, normalForm);
 	}
 
 }
