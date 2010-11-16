@@ -10,6 +10,33 @@ class Constant extends Symbol implements IExpression {
 	 */
 	private final String label;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Constant)) {
+			return false;
+		}
+		Constant other = (Constant) obj;
+		if (label == null) {
+			if (other.label != null) {
+				return false;
+			}
+		} else if (!label.equals(other.label)) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * @param constantLabel
 	 *            uppercase string name of this lambda constant

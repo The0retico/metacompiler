@@ -20,13 +20,13 @@ class Natural extends Symbol implements IExpression {
 	/**
 	 * Equivalent church numbering expression to the value.
 	 */
-	private final IExpression expression;
+	private final IExpression churchNatural;
 
 	/**
 	 * @return the expression
 	 */
 	public IExpression getExpression() {
-		return expression;
+		return churchNatural;
 	}
 
 	/**
@@ -43,7 +43,7 @@ class Natural extends Symbol implements IExpression {
 		for (int index = 0; index < value; index++) {
 			result = apply(var("f"), result);
 		}
-		this.expression = def(vars("f", "x"), result);
+		this.churchNatural = def(vars("f", "x"), result);
 	}
 
 	@Override

@@ -178,4 +178,5 @@ public final class Calculus {
 	public static IExpression nat(final Integer naturalNumber) {
 		return new Natural(naturalNumber);
 	}
+
 }
