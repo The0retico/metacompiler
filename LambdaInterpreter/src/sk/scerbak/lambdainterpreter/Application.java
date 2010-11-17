@@ -92,6 +92,16 @@ class Application implements IExpression {
 			final Abstraction abstraction = (Abstraction) this.function;
 			result = abstraction.getBody().substitute(
 					abstraction.getVariable(), this.argument);
+		} else if (this.function instanceof Constant) {
+			final Constant constant = (Constant) this.function;
+			if (constant.getExpression() instanceof Abstraction) {
+				Abstraction abstraction = (Abstraction) constant
+						.getExpression();
+				result = abstraction.getBody().substitute(
+						abstraction.getVariable(), this.argument);
+			} else {
+				throw new IllegalArgumentException();
+			}
 		} else if (this.function instanceof Natural) {
 			final Natural naturalNumber = (Natural) this.function;
 			if (naturalNumber.getExpression() instanceof Abstraction) {

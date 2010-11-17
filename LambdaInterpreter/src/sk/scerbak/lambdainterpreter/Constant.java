@@ -1,5 +1,9 @@
 package sk.scerbak.lambdainterpreter;
 
+import static sk.scerbak.lambdainterpreter.Calculus.apply;
+import static sk.scerbak.lambdainterpreter.Calculus.def;
+import static sk.scerbak.lambdainterpreter.Calculus.var;
+
 /**
  * @author The0retico Predefined constant or internal function.
  */
@@ -9,6 +13,49 @@ class Constant extends Symbol implements IExpression {
 	 * Name of this constant.
 	 */
 	private final String label;
+
+	/**
+	 * Expression representing this constant.
+	 */
+	private final IExpression expression;
+
+	/**
+	 * @return the expression
+	 */
+	public IExpression getExpression() {
+		return expression;
+	}
+
+	private static final IExpression succ = def("n", "f", "x").apply(var("f"),
+			apply(var("n"), var("f"), var("x")));
+
+	private static final IExpression plus = def("m", "n", "f", "x").apply(
+			var("m"), var("f"), apply(var("n"), var("f"), var("x")));
+
+	private static final IExpression mult = def("m", "n", "f").apply(var("n"),
+			apply(var("m"), var("f")));
+
+	private static final IExpression ltrue = def("x", "y").var("x");
+	private static final IExpression lfalse = def("x", "y").var("y");
+	private static final IExpression and = def("x", "y").apply(var("x"),
+			var("y"), lfalse);
+	private static final IExpression or = def("x", "y").apply(var("x"), ltrue,
+			var("y"));
+	private static final IExpression not = def("x").apply(var("x"), lfalse,
+			ltrue);
+	private static final IExpression pair = def("x", "y", "c").apply(var("c"),
+			var("x"), var("y"));
+	private static final IExpression left = def("x").apply(var("x"), ltrue);
+	private static final IExpression right = def("x").apply(var("x"), lfalse);
+	private static final IExpression pred = Parser
+			.fromString("(n|(f|(x|((n (g|(h|(h (g f))))) (u|x) (u|u)))))");
+	private static final IExpression lif = def("c", "x", "y").apply(var("c"),
+			var("x"), var("y"));
+	private static final IExpression iszero = def("n").apply(var("n"),
+			def("x", lfalse), ltrue);
+	private static final IExpression combinatorY = def("f").apply(
+			def("x").apply(var("f"), apply(var("x"), var("x"))),
+			def("x").apply(var("f"), apply(var("x"), var("x"))));
 
 	/*
 	 * (non-Javadoc)
@@ -24,7 +71,7 @@ class Constant extends Symbol implements IExpression {
 			return false;
 		}
 		if (!(obj instanceof Constant)) {
-			return false;
+			return this.expression.equals(obj);
 		}
 		Constant other = (Constant) obj;
 		if (label == null) {
@@ -44,12 +91,51 @@ class Constant extends Symbol implements IExpression {
 	public Constant(final String constantLabel) {
 		super();
 		this.label = constantLabel;
+		if ("TRUE".equals(constantLabel)) {
+			this.expression = ltrue;
+		} else if ("FALSE".equals(constantLabel)) {
+			this.expression = lfalse;
+		} else if ("AND".equals(constantLabel)) {
+			this.expression = and;
+		} else if ("OR".equals(constantLabel)) {
+			this.expression = or;
+		} else if ("NOT".equals(constantLabel)) {
+			this.expression = not;
+		} else if ("PAIR".equals(constantLabel)) {
+			this.expression = pair;
+		} else if ("LEFT".equals(constantLabel)) {
+			this.expression = left;
+		} else if ("RIGHT".equals(constantLabel)) {
+			this.expression = right;
+		} else if ("Y".equals(constantLabel)) {
+			this.expression = combinatorY;
+		} else if ("IF".equals(constantLabel)) {
+			this.expression = lif;
+		} else if ("ZERO?".equals(constantLabel)) {
+			this.expression = iszero;
+		} else if ("MULT".equals(constantLabel)) {
+			this.expression = mult;
+		} else if ("PLUS".equals(constantLabel)) {
+			this.expression = plus;
+		} else if ("PRED".equals(constantLabel)) {
+			this.expression = pred;
+		} else if ("SUCC".equals(constantLabel)) {
+			this.expression = succ;
+		} else {
+			this.expression = null;
+		}
 	}
 
 	@Override
 	public IExpression substitute(final String variable,
 			final IExpression expression) {
-		return this;
+		final IExpression result;
+		if (this.expression == null) {
+			result = this;
+		} else {
+			result = this.expression.substitute(variable, expression);
+		}
+		return result;
 	}
 
 	@Override
@@ -74,6 +160,6 @@ class Constant extends Symbol implements IExpression {
 
 	@Override
 	public boolean isReducible() {
-		return false;
+		return this.expression != null;
 	}
 }

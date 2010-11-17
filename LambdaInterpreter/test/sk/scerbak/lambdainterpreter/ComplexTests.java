@@ -1,7 +1,6 @@
 package sk.scerbak.lambdainterpreter;
 
 import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
-import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizesString;
 import static sk.scerbak.lambdainterpreter.Calculus.apply;
 import static sk.scerbak.lambdainterpreter.Calculus.con;
 import static sk.scerbak.lambdainterpreter.Calculus.def;
@@ -19,36 +18,12 @@ import org.junit.Test;
  */
 public class ComplexTests {
 
-	private final IExpression ltrue = def("x", "y").var("x");
-	private final IExpression lfalse = def("x", "y").var("y");
-	private final IExpression and = def("x", "y").apply(var("x"), var("y"),
-			lfalse);
-	private final IExpression or = def("x", "y").apply(var("x"), ltrue,
-			var("y"));
-	private final IExpression not = def("x").apply(var("x"), lfalse, ltrue);
-	private final IExpression pair = def("x", "y", "c").apply(var("c"),
-			var("x"), var("y"));
-	private final IExpression left = def("x").apply(var("x"), ltrue);
-	private final IExpression right = def("x").apply(var("x"), lfalse);
-	private final IExpression pred = Parser
-			.fromString("(n|(f|(x|((n (g|(h|(h (g f))))) (u|x) (u|u)))))");
-	private final IExpression lif = def("c", "x", "y").apply(var("c"),
-			var("x"), var("y"));
-	private final IExpression iszero = def("n").apply(var("n"),
-			def("x", lfalse), ltrue);
-	private final IExpression combinatorY = def("f").apply(
-			def("x").apply(var("f"), apply(var("x"), var("x"))),
-			def("x").apply(var("f"), apply(var("x"), var("x"))));
-
 	/**
 	 * Addition of Church numbers.
 	 */
 	@Test
 	public final void additionOnChurchNumbers() {
-		assertNormalizesString(
-				"(f|(x|(f (f (f x)))))",
-				apply(def("m", "n", "f", "x").apply(var("m"), var("f"),
-						apply(var("n"), var("f"), var("x"))), nat(1), nat(2)));
+		assertNormalizes(nat(3), apply(con("PLUS"), nat(1), nat(2)));
 	}
 
 	/**
@@ -56,14 +31,12 @@ public class ComplexTests {
 	 */
 	@Test
 	public final void successorForChurchNumbers() {
-		final IExpression succ = def("n", "f", "x").apply(var("f"),
-				apply(var("n"), var("f"), var("x")));
-		final IExpression one = apply(succ, nat(0));
-		assertNormalizesString("(f|(x|(f x)))", one);
-		final IExpression two = apply(succ, one);
-		assertNormalizesString("(f|(x|(f (f x))))", two);
-		final IExpression three = apply(succ, two);
-		assertNormalizesString("(f|(x|(f (f (f x)))))", three);
+		final IExpression one = apply(con("SUCC"), nat(0));
+		assertNormalizes(nat(1), one);
+		final IExpression two = apply(con("SUCC"), one);
+		assertNormalizes(nat(2), two);
+		final IExpression three = apply(con("SUCC"), two);
+		assertNormalizes(nat(3), three);
 	}
 
 	/**
@@ -75,8 +48,7 @@ public class ComplexTests {
 				apply(var("m"), var("f")));
 		final IExpression two = nat(2);
 		final IExpression three = nat(3);
-		assertNormalizesString("(f|(x|(f (f (f (f (f (f x))))))))",
-				apply(mult, two, three));
+		assertNormalizes(nat(6), apply(mult, two, three));
 	}
 
 	/**
@@ -86,8 +58,7 @@ public class ComplexTests {
 	public final void exponentialOnChurchNumbers() {
 		final IExpression exp = def("m", "n", "f").apply(var("n"), var("m"),
 				var("f"));
-		assertNormalizesString("(f|(x|(f (f (f (f x))))))",
-				apply(exp, Calculus.nat(2), Calculus.nat(2)));
+		assertNormalizes(nat(4), apply(exp, nat(2), nat(2)));
 	}
 
 	/**
@@ -96,7 +67,7 @@ public class ComplexTests {
 	@Test
 	public final void predecessorOnChurchNubmers() {
 		final IExpression three = nat(3);
-		assertNormalizesString("(f|(x|(f (f x))))", apply(pred, three));
+		assertNormalizes(nat(2), apply(con("PRED"), three));
 	}
 
 	/**
@@ -104,7 +75,8 @@ public class ComplexTests {
 	 */
 	@Test
 	public final void andOnBooleans() {
-		assertNormalizes(def("x", "y").var("y"), apply(and, ltrue, lfalse));
+		assertNormalizes(con("FALSE"), // def("x", "y").var("y"),
+				apply(con("AND"), con("TRUE"), con("FALSE")));
 	}
 
 	/**
@@ -112,13 +84,13 @@ public class ComplexTests {
 	 */
 	@Test
 	public final void xorOnBooleans() {
-		final IExpression xor = def("x", "y").apply(and,
-				apply(or, var("x"), var("y")),
-				apply(not, apply(and, var("x"), var("y"))));
-		assertNormalizes(lfalse, apply(xor, ltrue, ltrue));
-		assertNormalizes(ltrue, apply(xor, ltrue, lfalse));
-		assertNormalizes(ltrue, apply(xor, lfalse, ltrue));
-		assertNormalizes(lfalse, apply(xor, lfalse, lfalse));
+		final IExpression xor = def("x", "y").apply(con("AND"),
+				apply(con("OR"), var("x"), var("y")),
+				apply(con("NOT"), apply(con("AND"), var("x"), var("y"))));
+		assertNormalizes(con("FALSE"), apply(xor, con("TRUE"), con("TRUE")));
+		assertNormalizes(con("TRUE"), apply(xor, con("TRUE"), con("FALSE")));
+		assertNormalizes(con("TRUE"), apply(xor, con("FALSE"), con("TRUE")));
+		assertNormalizes(con("FALSE"), apply(xor, con("FALSE"), con("FALSE")));
 	}
 
 	/**
@@ -126,8 +98,8 @@ public class ComplexTests {
 	 */
 	@Test
 	public final void leftOnPairs() {
-		final IExpression pairAB = apply(pair, con("A"), con("B"));
-		assertNormalizes(con("A"), apply(left, pairAB));
+		final IExpression pairAB = apply(con("PAIR"), con("A"), con("B"));
+		assertNormalizes(con("A"), apply(con("LEFT"), pairAB));
 	}
 
 	/**
@@ -135,8 +107,9 @@ public class ComplexTests {
 	 */
 	@Test
 	public final void union() {
-		final IExpression destroyA = def("z").apply(right, var("z"));
-		final IExpression constructA = def("x").apply(pair, ltrue, var("x"));
+		final IExpression destroyA = def("z").apply(con("RIGHT"), var("z"));
+		final IExpression constructA = def("x").apply(con("PAIR"), con("TRUE"),
+				var("x"));
 		assertNormalizes(con("A"), apply(destroyA, apply(constructA, con("A"))));
 	}
 
@@ -145,25 +118,15 @@ public class ComplexTests {
 	 */
 	@Test
 	public final void factorial() {
-		final IExpression mult = def("m", "n", "f").apply(var("n"),
-				apply(var("m"), var("f")));
-		final IExpression fac = def("fac", "n")
-				.apply(lif,
-						apply(iszero, var("n")),
-						Calculus.nat(1),
-						apply(mult, var("n"),
-								apply(var("fac"), apply(pred, var("n")))));
-		final StringBuilder factorial6Result = new StringBuilder("x");
+		final IExpression fac = def("fac", "n").apply(
+				con("IF"),
+				apply(con("ZERO?"), var("n")),
+				Calculus.nat(1),
+				apply(con("MULT"), var("n"),
+						apply(var("fac"), apply(con("PRED"), var("n")))));
 		final int factorialSix = 720;
-		for (int index = 0; index < factorialSix; index++) {
-			factorial6Result.insert(0, "(f ");
-			factorial6Result.append(')');
-		}
-		factorial6Result.insert(0, "(f|(x|");
-		factorial6Result.append("))");
 		final IExpression six = nat(6);
-		assertNormalizesString(factorial6Result.toString(),
-				apply(combinatorY, fac, six));
+		assertNormalizes(nat(factorialSix), apply(con("Y"), fac, six));
 	}
 
 	/**
@@ -173,23 +136,15 @@ public class ComplexTests {
 	public final void sum() {
 		final IExpression plus = def("m", "n", "f", "x").apply(var("m"),
 				var("f"), apply(var("n"), var("f"), var("x")));
-		final IExpression sum = def("sum", "n")
-				.apply(lif,
-						apply(iszero, var("n")),
-						nat(0),
-						apply(plus, var("n"),
-								apply(var("sum"), apply(pred, var("n")))));
-		final StringBuilder sumSixExpression = new StringBuilder("x");
+		final IExpression sum = def("sum", "n").apply(
+				con("IF"),
+				apply(con("ZERO?"), var("n")),
+				nat(0),
+				apply(plus, var("n"),
+						apply(var("sum"), apply(con("PRED"), var("n")))));
 		final int sumSix = 21;
-		for (int index = 0; index < sumSix; index++) {
-			sumSixExpression.insert(0, "(f ");
-			sumSixExpression.append(')');
-		}
-		sumSixExpression.insert(0, "(f|(x|");
-		sumSixExpression.append("))");
 		final IExpression six = nat(6);
-		assertNormalizesString(sumSixExpression.toString(),
-				apply(combinatorY, sum, six));
+		assertNormalizes(nat(sumSix), apply(con("Y"), sum, six));
 
 	}
 }

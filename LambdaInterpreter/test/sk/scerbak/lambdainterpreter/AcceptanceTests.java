@@ -9,7 +9,6 @@ import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
 import static sk.scerbak.lambdainterpreter.Assertions.assertSubstitutes;
 import static sk.scerbak.lambdainterpreter.Calculus.apply;
-import static sk.scerbak.lambdainterpreter.Calculus.con;
 import static sk.scerbak.lambdainterpreter.Calculus.def;
 import static sk.scerbak.lambdainterpreter.Calculus.nat;
 import static sk.scerbak.lambdainterpreter.Calculus.var;
@@ -161,7 +160,7 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void exercise2B() {
-		assertNormalizes(apply(con("PLUS"), nat(1), nat(5)), fixtureE2B);
+		assertNormalizes(nat(6), fixtureE2B);
 	}
 
 	/**
@@ -176,11 +175,6 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void exercise3() {
-		assertNormalizes(
-				apply(con("PLUS"),
-						apply(con("PLUS"),
-								apply(con("PLUS"),
-										apply(con("PLUS"), nat(0), nat(1)),
-										nat(1)), nat(1)), nat(1)), fixtureE3);
+		assertNormalizes(nat(4), fixtureE3);
 	}
 }

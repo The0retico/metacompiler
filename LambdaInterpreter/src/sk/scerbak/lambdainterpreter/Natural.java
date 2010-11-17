@@ -31,7 +31,11 @@ class Natural extends Symbol implements IExpression {
 			return false;
 		}
 		if (!(obj instanceof Natural)) {
-			return false;
+			if (!(obj instanceof Abstraction)) {
+				return false;
+			}
+			Abstraction other = (Abstraction) obj;
+			return this.churchNatural.equals(other);
 		}
 		Natural other = (Natural) obj;
 		if (value != other.value) {
