@@ -17,43 +17,43 @@ class Constant extends Symbol implements IExpression {
 	/**
 	 * Expression representing this constant.
 	 */
-	private final IExpression expression;
+	private final IExpression body;
 
 	/**
 	 * @return the expression
 	 */
 	public IExpression getExpression() {
-		return expression;
+		return body;
 	}
 
-	private static final IExpression succ = def("n", "f", "x").apply(var("f"),
+	private static final IExpression SUCC = def("n", "f", "x").apply(var("f"),
 			apply(var("n"), var("f"), var("x")));
 
-	private static final IExpression plus = def("m", "n", "f", "x").apply(
+	private static final IExpression PLUS = def("m", "n", "f", "x").apply(
 			var("m"), var("f"), apply(var("n"), var("f"), var("x")));
 
-	private static final IExpression mult = def("m", "n", "f").apply(var("n"),
+	private static final IExpression MULT = def("m", "n", "f").apply(var("n"),
 			apply(var("m"), var("f")));
 
-	private static final IExpression ltrue = def("x", "y").var("x");
-	private static final IExpression lfalse = def("x", "y").var("y");
-	private static final IExpression and = def("x", "y").apply(var("x"),
-			var("y"), lfalse);
-	private static final IExpression or = def("x", "y").apply(var("x"), ltrue,
+	private static final IExpression TRUE = def("x", "y").var("x");
+	private static final IExpression FALSE = def("x", "y").var("y");
+	private static final IExpression AND = def("x", "y").apply(var("x"),
+			var("y"), FALSE);
+	private static final IExpression OR = def("x", "y").apply(var("x"), TRUE,
 			var("y"));
-	private static final IExpression not = def("x").apply(var("x"), lfalse,
-			ltrue);
-	private static final IExpression pair = def("x", "y", "c").apply(var("c"),
+	private static final IExpression NOT = def("x").apply(var("x"), FALSE,
+			TRUE);
+	private static final IExpression PAIR = def("x", "y", "c").apply(var("c"),
 			var("x"), var("y"));
-	private static final IExpression left = def("x").apply(var("x"), ltrue);
-	private static final IExpression right = def("x").apply(var("x"), lfalse);
-	private static final IExpression pred = Parser
+	private static final IExpression LEFT = def("x").apply(var("x"), TRUE);
+	private static final IExpression RIGHT = def("x").apply(var("x"), FALSE);
+	private static final IExpression PRED = Parser
 			.fromString("(n|(f|(x|((n (g|(h|(h (g f))))) (u|x) (u|u)))))");
-	private static final IExpression lif = def("c", "x", "y").apply(var("c"),
+	private static final IExpression IF = def("c", "x", "y").apply(var("c"),
 			var("x"), var("y"));
-	private static final IExpression iszero = def("n").apply(var("n"),
-			def("x", lfalse), ltrue);
-	private static final IExpression combinatorY = def("f").apply(
+	private static final IExpression ISZERO = def("n").apply(var("n"),
+			def("x", FALSE), TRUE);
+	private static final IExpression COMBINATORY = def("f").apply(
 			def("x").apply(var("f"), apply(var("x"), var("x"))),
 			def("x").apply(var("f"), apply(var("x"), var("x"))));
 
@@ -71,7 +71,7 @@ class Constant extends Symbol implements IExpression {
 			return false;
 		}
 		if (!(obj instanceof Constant)) {
-			return this.expression.equals(obj);
+			return this.body.equals(obj);
 		}
 		Constant other = (Constant) obj;
 		if (label == null) {
@@ -92,37 +92,37 @@ class Constant extends Symbol implements IExpression {
 		super();
 		this.label = constantLabel;
 		if ("TRUE".equals(constantLabel)) {
-			this.expression = ltrue;
+			this.body = TRUE;
 		} else if ("FALSE".equals(constantLabel)) {
-			this.expression = lfalse;
+			this.body = FALSE;
 		} else if ("AND".equals(constantLabel)) {
-			this.expression = and;
+			this.body = AND;
 		} else if ("OR".equals(constantLabel)) {
-			this.expression = or;
+			this.body = OR;
 		} else if ("NOT".equals(constantLabel)) {
-			this.expression = not;
+			this.body = NOT;
 		} else if ("PAIR".equals(constantLabel)) {
-			this.expression = pair;
+			this.body = PAIR;
 		} else if ("LEFT".equals(constantLabel)) {
-			this.expression = left;
+			this.body = LEFT;
 		} else if ("RIGHT".equals(constantLabel)) {
-			this.expression = right;
+			this.body = RIGHT;
 		} else if ("Y".equals(constantLabel)) {
-			this.expression = combinatorY;
+			this.body = COMBINATORY;
 		} else if ("IF".equals(constantLabel)) {
-			this.expression = lif;
+			this.body = IF;
 		} else if ("ZERO?".equals(constantLabel)) {
-			this.expression = iszero;
+			this.body = ISZERO;
 		} else if ("MULT".equals(constantLabel)) {
-			this.expression = mult;
+			this.body = MULT;
 		} else if ("PLUS".equals(constantLabel)) {
-			this.expression = plus;
+			this.body = PLUS;
 		} else if ("PRED".equals(constantLabel)) {
-			this.expression = pred;
+			this.body = PRED;
 		} else if ("SUCC".equals(constantLabel)) {
-			this.expression = succ;
+			this.body = SUCC;
 		} else {
-			this.expression = null;
+			this.body = null;
 		}
 	}
 
@@ -130,10 +130,10 @@ class Constant extends Symbol implements IExpression {
 	public IExpression substitute(final String variable,
 			final IExpression expression) {
 		final IExpression result;
-		if (this.expression == null) {
+		if (this.body == null) {
 			result = this;
 		} else {
-			result = this.expression.substitute(variable, expression);
+			result = this.body.substitute(variable, expression);
 		}
 		return result;
 	}
@@ -160,6 +160,6 @@ class Constant extends Symbol implements IExpression {
 
 	@Override
 	public boolean isReducible() {
-		return this.expression != null;
+		return this.body != null;
 	}
 }

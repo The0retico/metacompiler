@@ -14,13 +14,6 @@ import static org.junit.Assert.assertTrue;
 final class Assertions {
 
 	/**
-	 * Utility class should not be instantiated.
-	 */
-	private Assertions() {
-
-	}
-
-	/**
 	 * Assertion for tests for free variables in lambda expressions.
 	 * 
 	 * @param label
@@ -33,6 +26,36 @@ final class Assertions {
 	static void assertFree(final String label, final IExpression expression) {
 		assertTrue(label + " should be free in " + expression,
 				expression.free(label));
+	}
+
+	/**
+	 * @param expected
+	 *            lambda expression in normal form
+	 * @param actuallambda
+	 *            expression of which normal form should be equal to expected
+	 * 
+	 */
+	static void assertNormalizes(final IExpression expected,
+			final IExpression actual) {
+		final IExpression normalForm = actual.normalForm();
+		assertNotNull(actual + "should have normal form", normalForm);
+		assertEquals("Normal form of " + actual, expected, normalForm);
+	}
+
+	/**
+	 * Assertion for testing normalization of lambda expressions.
+	 * 
+	 * @param expected
+	 *            string representation of the resulting normal form.
+	 * @param expression
+	 *            which should be normalized
+	 * 
+	 */
+	static void assertNormalizesString(final String expected,
+			final IExpression expression) {
+		final IExpression normalForm = expression.normalForm();
+		assertNotNull(expression + "should have normal form", normalForm);
+		assertEquals(expected, normalForm.toString());
 	}
 
 	/**
@@ -74,31 +97,10 @@ final class Assertions {
 	}
 
 	/**
-	 * Assertion for testing normalization of lambda expressions.
-	 * 
-	 * @param expected
-	 *            string representation of the resulting normal form.
-	 * @param expression
-	 *            which should be normalized
-	 * 
+	 * Utility class should not be instantiated.
 	 */
-	static void assertNormalizesString(final String expected,
-			final IExpression expression) {
-		final IExpression normalForm = expression.normalForm();
-		assertNotNull(expression + "should have normal form", normalForm);
-		assertEquals(expected, normalForm.toString());
-	}
+	private Assertions() {
 
-	/**
-	 * @param expected
-	 * @param actual
-	 *            TODO
-	 */
-	static void assertNormalizes(final IExpression expected,
-			final IExpression actual) {
-		final IExpression normalForm = actual.normalForm();
-		assertNotNull(actual + "should have normal form", normalForm);
-		assertEquals(expected, normalForm);
 	}
 
 }
