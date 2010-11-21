@@ -1,9 +1,10 @@
 #summary List of items to be done on this project
 
 Next to be implemented (add information here):
- * implement pattern-matching (Visitor pattern)
- * decouple parser and printing from tests and from implementation (add mocking support for Calculus facade)
- * refactor printing, beta-reduction and normalization to Visitor
+ * refactor the Visitor pattern to let Visitors choose traversal strategy
+ * finish decoupling of parser and printing from tests and from implementation (add mocking support for Calculus facade)
+ * finish Printer
+ * refactor beta-reduction and normalization to Visitor
  * implement printing to syntax with de Bruijn indexes using Visitor
  * finish alpha equivalence (add unit tests)
  * implement eta reduction for convenient use of recursion
