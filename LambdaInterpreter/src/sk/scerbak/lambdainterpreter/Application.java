@@ -13,13 +13,37 @@ class Application implements IExpression {
 	 */
 	private final IExpression function;
 
+	/**
+	 * Lambda expression representing argument to this application.
+	 */
+	private final IExpression argument;
+
+	/**
+	 * @param functionLambda
+	 *            expression
+	 * @param argumentLambda
+	 *            expression
+	 */
+	public Application(final IExpression functionLambda,
+			final IExpression argumentLambda) {
+		function = functionLambda;
+		argument = argumentLambda;
+	}
+
+	@Override
+	public void accept(final IVisitor visitor) {
+		visitor.visit(this);
+		function.accept(visitor);
+		argument.accept(visitor);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -29,7 +53,7 @@ class Application implements IExpression {
 		if (!(obj instanceof Application)) {
 			return false;
 		}
-		Application other = (Application) obj;
+		final Application other = (Application) obj;
 		if (argument == null) {
 			if (other.argument != null) {
 				return false;
@@ -47,79 +71,15 @@ class Application implements IExpression {
 		return true;
 	}
 
-	/**
-	 * Lambda expression representing argument to this application.
-	 */
-	private final IExpression argument;
-
-	/**
-	 * @param functionLambda
-	 *            expression
-	 * @param argumentLambda
-	 *            expression
-	 */
-	public Application(final IExpression functionLambda,
-			final IExpression argumentLambda) {
-		this.function = functionLambda;
-		this.argument = argumentLambda;
-	}
-
 	@Override
 	public boolean free(final String variable) {
 		return function.free(variable) || argument.free(variable);
 	}
 
 	@Override
-	public List<IExpression> subterm() {
-		final List<IExpression> result = new LinkedList<IExpression>();
-		result.add(this);
-		result.addAll(function.subterm());
-		result.addAll(argument.subterm());
-		return result;
-	}
-
-	@Override
-	public IExpression substitute(final String variable,
-			final IExpression expression) {
-		return new Application(function.substitute(variable, expression),
-				argument.substitute(variable, expression));
-	}
-
-	@Override
-	public IExpression oneStepBetaReduce() {
-		IExpression result;
-		if (this.function instanceof Abstraction) {
-			final Abstraction abstraction = (Abstraction) this.function;
-			result = abstraction.getBody().substitute(
-					abstraction.getVariable(), this.argument);
-		} else if (this.function instanceof Constant) {
-			final Constant constant = (Constant) this.function;
-			if (constant.getExpression() instanceof Abstraction) {
-				Abstraction abstraction = (Abstraction) constant
-						.getExpression();
-				result = abstraction.getBody().substitute(
-						abstraction.getVariable(), this.argument);
-			} else {
-				throw new IllegalArgumentException();
-			}
-		} else if (this.function instanceof Natural) {
-			final Natural naturalNumber = (Natural) this.function;
-			if (naturalNumber.getExpression() instanceof Abstraction) {
-				Abstraction churchNumber = (Abstraction) naturalNumber
-						.getExpression();
-				result = churchNumber.getBody().substitute(
-						churchNumber.getVariable(), this.argument);
-			} else {
-				throw new IllegalArgumentException();
-			}
-		} else if (this.function.isReducible()) {
-			result = new Application(this.function.oneStepBetaReduce(),
-					this.argument);
-		} else {
-			result = new Application(this.function,
-					this.argument.oneStepBetaReduce());
-		}
-		return result;
+	public boolean isReducible() {
+		return function instanceof Abstraction || function instanceof Natural
+				|| function.isReducible() || argument.isReducible();
 	}
 
 	@Override
@@ -132,22 +92,66 @@ class Application implements IExpression {
 	}
 
 	@Override
+	public IExpression oneStepBetaReduce() {
+		IExpression result;
+		if (function instanceof Abstraction) {
+			final Abstraction abstraction = (Abstraction) function;
+			result = abstraction.getBody().substitute(
+					abstraction.getVariable(), argument);
+		} else if (function instanceof Constant) {
+			final Constant constant = (Constant) function;
+			if (constant.getExpression() instanceof Abstraction) {
+				final Abstraction abstraction = (Abstraction) constant
+						.getExpression();
+				result = abstraction.getBody().substitute(
+						abstraction.getVariable(), argument);
+			} else {
+				throw new IllegalArgumentException();
+			}
+		} else if (function instanceof Natural) {
+			final Natural naturalNumber = (Natural) function;
+			if (naturalNumber.getExpression() instanceof Abstraction) {
+				final Abstraction churchNumber = (Abstraction) naturalNumber
+						.getExpression();
+				result = churchNumber.getBody().substitute(
+						churchNumber.getVariable(), argument);
+			} else {
+				throw new IllegalArgumentException();
+			}
+		} else if (function.isReducible()) {
+			result = new Application(function.oneStepBetaReduce(), argument);
+		} else {
+			result = new Application(function, argument.oneStepBetaReduce());
+		}
+		return result;
+	}
+
+	@Override
+	public IExpression substitute(final String variable,
+			final IExpression expression) {
+		return new Application(function.substitute(variable, expression),
+				argument.substitute(variable, expression));
+	}
+
+	@Override
+	public List<IExpression> subterm() {
+		final List<IExpression> result = new LinkedList<IExpression>();
+		result.add(this);
+		result.addAll(function.subterm());
+		result.addAll(argument.subterm());
+		return result;
+	}
+
+	@Override
 	public String toString() {
 		final StringBuilder arguments = new StringBuilder();
-		IExpression left = this.function;
+		IExpression left = function;
 		while (left instanceof Application) {
 			final Application leftApplication = (Application) left;
 			arguments.insert(0, " " + leftApplication.argument);
 			left = leftApplication.function;
 		}
 		arguments.insert(0, left);
-		return "(" + arguments + " " + this.argument + ")";
-	}
-
-	@Override
-	public boolean isReducible() {
-		return this.function instanceof Abstraction
-				|| this.function instanceof Natural
-				|| this.function.isReducible() || this.argument.isReducible();
+		return "(" + arguments + " " + argument + ")";
 	}
 }

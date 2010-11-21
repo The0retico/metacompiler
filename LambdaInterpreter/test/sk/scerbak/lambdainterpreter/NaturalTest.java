@@ -2,7 +2,9 @@ package sk.scerbak.lambdainterpreter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
+import static sk.scerbak.lambdainterpreter.Assertions.assertReduces;
 
 import java.util.List;
 
@@ -28,22 +30,6 @@ public class NaturalTest {
 	private final Integer value = 1;
 
 	/**
-	 * Prepare fixture for this tests.
-	 */
-	@Before
-	public final void setUp() {
-		fixture = new Natural(value);
-	}
-
-	/**
-	 * Integers are printed as numbers.
-	 */
-	@Test
-	public final void toStringIsValueToString() {
-		assertEquals(value.toString(), fixture.toString());
-	}
-
-	/**
 	 * Integers are constants as well, so they bind no variables.
 	 */
 	@Test
@@ -63,10 +49,27 @@ public class NaturalTest {
 	}
 
 	/**
+	 * Natural cannot be negative.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public final void naturalIsNotNegative() {
+		new Natural(-1);
+	}
+
+	/**
+	 * Integers cannot be reduced using beta reduction, so they are in normal
+	 * form.
+	 */
+	@Test
+	public final void naturalsAreInNormalForm() {
+		assertNormalizes(fixture, fixture);
+	}
+
+	/**
 	 * Integers are not substituted.
 	 */
 	@Test
-	public final void integersAreNotSubstituted() {
+	public final void naturalsAreNotSubstituted() {
 		final IExpression substituted = fixture.substitute(value.toString(),
 				new Mock("M"));
 		assertEquals(fixture.toString(), substituted.toString());
@@ -76,24 +79,23 @@ public class NaturalTest {
 	 * Integers cannot be reduced using beta reduction.
 	 */
 	@Test
-	public final void integersAreReducedToThemselves() {
-		assertEquals(value.toString(), fixture.oneStepBetaReduce().toString());
+	public final void naturalsAreReducedToThemselves() {
+		assertReduces(fixture, fixture);
 	}
 
 	/**
-	 * Integers cannot be reduced using beta reduction, so they are in normal
-	 * form.
+	 * Prepare fixture for this tests.
+	 */
+	@Before
+	public final void setUp() {
+		fixture = new Natural(value);
+	}
+
+	/**
+	 * Integers are printed as numbers.
 	 */
 	@Test
-	public final void integersAreInNormalForm() {
-		assertEquals(value.toString(), fixture.normalForm().toString());
-	}
-
-	/**
-	 * Natural cannot be negative.
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public final void naturalIsNotNegative() {
-		new Natural(-1);
+	public final void toStringIsValueToString() {
+		assertEquals(String.valueOf(value), Printer.toString(fixture));
 	}
 }

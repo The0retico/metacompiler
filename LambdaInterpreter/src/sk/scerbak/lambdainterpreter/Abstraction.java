@@ -16,23 +16,14 @@ class Abstraction implements IExpression {
 	private final IExpression body;
 
 	/**
-	 * @return the body
-	 */
-	public IExpression getBody() {
-		return body;
-	}
-
-	/**
-	 * @return the variable
-	 */
-	public String getVariable() {
-		return variable;
-	}
-
-	/**
 	 * Label for variable of this lambda abstraction.
 	 */
 	private final String variable;
+
+	/**
+	 * Counter for unique IDs for variable substitution in this expression.
+	 */
+	private int lastVariableId = -1;
 
 	/**
 	 * @param label
@@ -41,13 +32,14 @@ class Abstraction implements IExpression {
 	 *            abstraction body
 	 */
 	public Abstraction(final String label, final IExpression expression) {
-		this.variable = label;
-		this.body = expression;
+		variable = label;
+		body = expression;
 	}
 
 	@Override
-	public boolean free(final String variableLabel) {
-		return !bounds(variableLabel) && body.free(variableLabel);
+	public void accept(final IVisitor visitor) {
+		visitor.visit(this);
+		body.accept(visitor);
 	}
 
 	/**
@@ -56,33 +48,30 @@ class Abstraction implements IExpression {
 	 * @return true if the variableLabel represents variable of this
 	 */
 	private boolean bounds(final String variableLabel) {
-		return this.variable.equals(variableLabel);
+		return variable.equals(variableLabel);
 	}
 
 	@Override
-	public List<IExpression> subterm() {
-		final List<IExpression> result = new LinkedList<IExpression>();
-		result.add(this);
-		result.addAll(body.subterm());
-		return result;
-	}
-
-	@Override
-	public IExpression substitute(final String variableLabel,
-			final IExpression expression) {
-		Abstraction result = null;
-		if (this.variable.equals(variableLabel)) {
-			result = this;
-		} else if (this.body.free(variableLabel) && expression.free(variable)) {
-			final String newVariableLabel = freshVariableFor(expression);
-			result = new Abstraction(newVariableLabel, this.body.substitute(
-					this.variable, new Variable(newVariableLabel)).substitute(
-					variableLabel, expression));
-		} else {
-			result = new Abstraction(this.variable, this.body.substitute(
-					variableLabel, expression));
+	public boolean equals(final Object other) {
+		boolean result = false;
+		if (other instanceof Abstraction) {
+			final Abstraction otherAbstraction = (Abstraction) other;
+			final String otherVariable = otherAbstraction.variable;
+			final IExpression otherBody;
+			if (variable.equals(otherVariable)) {
+				otherBody = otherAbstraction.body;
+			} else {
+				otherBody = otherAbstraction.body.substitute(otherVariable,
+						new Variable(variable));
+			}
+			result = body.equals(otherBody);
 		}
 		return result;
+	}
+
+	@Override
+	public boolean free(final String variableLabel) {
+		return !bounds(variableLabel) && body.free(variableLabel);
 	}
 
 	/**
@@ -100,16 +89,17 @@ class Abstraction implements IExpression {
 	}
 
 	/**
-	 * Counter for unique IDs for variable substitution in this expression.
+	 * @return the body
 	 */
-	private int lastVariableId = -1;
+	public IExpression getBody() {
+		return body;
+	}
 
 	/**
-	 * @return unique name for a new variable
+	 * @return the variable
 	 */
-	private String nextVariableName() {
-		lastVariableId++;
-		return "v" + lastVariableId;
+	public String getVariable() {
+		return variable;
 	}
 
 	/**
@@ -121,46 +111,58 @@ class Abstraction implements IExpression {
 	 */
 	private boolean isFreshVariableFor(final String newVariableLabel,
 			final IExpression expression) {
-		final boolean freeInBody = this.body.free(newVariableLabel);
+		final boolean freeInBody = body.free(newVariableLabel);
 		final boolean freeInExpression = expression.free(newVariableLabel);
 		return !freeInBody && !freeInExpression;
 	}
 
 	@Override
-	public IExpression oneStepBetaReduce() {
-		return new Abstraction(this.variable, this.body.oneStepBetaReduce());
+	public boolean isReducible() {
+		return body.isReducible();
+	}
+
+	/**
+	 * @return unique name for a new variable
+	 */
+	private String nextVariableName() {
+		lastVariableId++;
+		return "v" + lastVariableId;
 	}
 
 	@Override
 	public IExpression normalForm() {
-		return new Abstraction(this.variable, this.body.normalForm());
+		return new Abstraction(variable, body.normalForm());
 	}
 
 	@Override
-	public String toString() {
-		return "(" + this.variable + "|" + this.body.toString() + ")";
+	public IExpression oneStepBetaReduce() {
+		return new Abstraction(variable, body.oneStepBetaReduce());
 	}
 
 	@Override
-	public boolean isReducible() {
-		return this.body.isReducible();
-	}
-
-	@Override
-	public boolean equals(final Object other) {
-		boolean result = false;
-		if (other instanceof Abstraction) {
-			Abstraction otherAbstraction = (Abstraction) other;
-			final String otherVariable = otherAbstraction.variable;
-			final IExpression otherBody;
-			if (this.variable.equals(otherVariable)) {
-				otherBody = otherAbstraction.body;
-			} else {
-				otherBody = otherAbstraction.body.substitute(otherVariable,
-						new Variable(this.variable));
-			}
-			result = this.body.equals(otherBody);
+	public IExpression substitute(final String variableLabel,
+			final IExpression expression) {
+		Abstraction result = null;
+		if (variable.equals(variableLabel)) {
+			result = this;
+		} else if (body.free(variableLabel) && expression.free(variable)) {
+			final String newVariableLabel = freshVariableFor(expression);
+			result = new Abstraction(newVariableLabel, body.substitute(
+					variable, new Variable(newVariableLabel)).substitute(
+					variableLabel, expression));
+		} else {
+			result = new Abstraction(variable, body.substitute(variableLabel,
+					expression));
 		}
 		return result;
 	}
+
+	@Override
+	public List<IExpression> subterm() {
+		final List<IExpression> result = new LinkedList<IExpression>();
+		result.add(this);
+		result.addAll(body.subterm());
+		return result;
+	}
+
 }

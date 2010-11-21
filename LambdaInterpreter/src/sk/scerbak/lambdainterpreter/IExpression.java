@@ -9,6 +9,23 @@ import java.util.List;
 interface IExpression {
 
 	/**
+	 * This method should traverse expression in leftmost-outermost first order
+	 * 
+	 * @param visitor
+	 *            should implement visit(IExpression) according to Visitor
+	 *            pattern
+	 */
+	public void accept(IVisitor visitor);
+
+	/**
+	 * @param other
+	 *            expression to be compared with this
+	 * @return true if both expressions are equal according to alpha equivalence
+	 */
+	@Override
+	boolean equals(Object other);
+
+	/**
 	 * Determines if variable is free in this lambda expression.
 	 * 
 	 * @param variable
@@ -19,9 +36,20 @@ interface IExpression {
 	boolean free(String variable);
 
 	/**
-	 * @return all subterm lambda expressions (including this one)
+	 * @return true if this expression can be reduced using beta reduction
 	 */
-	List<IExpression> subterm();
+	boolean isReducible();
+
+	/**
+	 * @return equivalent lambda expression in normal form
+	 */
+	IExpression normalForm();
+
+	/**
+	 * @return reduced lambda expression by one step or the same expression,
+	 *         when it cannot be reduced further
+	 */
+	IExpression oneStepBetaReduce();
 
 	/**
 	 * @param variable
@@ -33,26 +61,7 @@ interface IExpression {
 	IExpression substitute(String variable, IExpression expression);
 
 	/**
-	 * @return reduced lambda expression by one step or the same expression,
-	 *         when it cannot be reduced further
+	 * @return all subterm lambda expressions (including this one)
 	 */
-	IExpression oneStepBetaReduce();
-
-	/**
-	 * @return equivalent lambda expression in normal form
-	 */
-	IExpression normalForm();
-
-	/**
-	 * @return true if this expression can be reduced using beta reduction
-	 */
-	boolean isReducible();
-
-	/**
-	 * @param other
-	 *            expression to be compared with this
-	 * @return true if both expressions are equal according to alpha equivalence
-	 */
-	@Override
-	boolean equals(Object other);
+	List<IExpression> subterm();
 }

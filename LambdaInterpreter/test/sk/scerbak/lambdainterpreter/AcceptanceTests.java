@@ -26,6 +26,45 @@ import org.junit.Test;
 public class AcceptanceTests {
 
 	/**
+	 * First fixture for exercise 1.
+	 */
+	private final IExpression fixtureE1A = apply(
+			def("x").apply(var("x"), var("y")), def("y").var("y"));
+
+	/**
+	 * Second fixture for exercise 1.
+	 */
+	private final IExpression fixtureE1B = def("x", "y").apply(var("z"),
+			apply(def("z").var("z"), def("x").var("y")));
+
+	/**
+	 * Third fixture for exercise 1.
+	 */
+	private final IExpression fixtureE1C = apply(
+			def("x", "y").apply(var("x"), var("z"), apply(var("y"), var("z"))),
+			def("x").apply(var("y"), def("y").var("y")));
+
+	/**
+	 * First fixture for exercise 2.
+	 */
+	private final IExpression fixtureE2A = Parser
+			.fromString("((x|(y|(x ((z|y) z)))) (((x|(v|v)) 8) (x|((w|w) x))))");
+
+	/**
+	 * Second fixture for exercise 2.
+	 */
+	private final IExpression fixtureE2B = Parser
+			.fromString("((h|((x|(h (x x))) (x|(h (x x))))) ((a|(b|a)) (PLUS 1 5)))");
+
+	/**
+	 * Fixture for exercise 3.
+	 */
+	private final IExpression fixtureE3 = Parser
+			.fromString("((((t|(t t)) (f|(x|(f (f x))))) (x|((PLUS x) 1))) 0)");
+
+	private final IExpression identity = def("y").var("y");
+
+	/**
 	 * Example 1 for free and subterm.
 	 */
 	@Test
@@ -44,7 +83,7 @@ public class AcceptanceTests {
 		final List<IExpression> subterms = def("x").apply(def("y").var("y"),
 				apply(var("x"), def("y").var("y"))).subterm();
 		int count = 0;
-		for (IExpression expression : subterms) {
+		for (final IExpression expression : subterms) {
 			if (identity.equals(expression)) {
 				count++;
 			}
@@ -71,8 +110,8 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void example4() {
-		assertSubstitutes("(x|(y x))", def("x").apply(var("z"), var("x")), "z",
-				"y");
+		assertSubstitutes(def("x").apply(var("y"), var("x")),
+				def("x").apply(var("z"), var("x")), "z", var("y"));
 	}
 
 	/**
@@ -80,15 +119,9 @@ public class AcceptanceTests {
 	 */
 	@Test
 	public final void example5() {
-		assertSubstitutes("(v0|(y v0))", def("y").apply(var("z"), var("y")),
-				"z", "y");
+		assertSubstitutes(def("v0").apply(var("y"), var("v0")),
+				def("y").apply(var("z"), var("y")), "z", var("y"));
 	}
-
-	/**
-	 * First fixture for exercise 1.
-	 */
-	private final IExpression fixtureE1A = apply(
-			def("x").apply(var("x"), var("y")), def("y").var("y"));
 
 	/**
 	 * First test for exercise 1.
@@ -99,12 +132,6 @@ public class AcceptanceTests {
 		assertFree("y", fixtureE1A);
 		assertNotFree("z", fixtureE1A);
 	}
-
-	/**
-	 * Second fixture for exercise 1.
-	 */
-	private final IExpression fixtureE1B = def("x", "y").apply(var("z"),
-			apply(def("z").var("z"), def("x").var("y")));
 
 	/**
 	 * Second test for exercise 1.
@@ -118,13 +145,6 @@ public class AcceptanceTests {
 	}
 
 	/**
-	 * Third fixture for exercise 1.
-	 */
-	private final IExpression fixtureE1C = apply(
-			def("x", "y").apply(var("x"), var("z"), apply(var("y"), var("z"))),
-			def("x").apply(var("y"), def("y").var("y")));
-
-	/**
 	 * Third test for exercise 1.
 	 */
 	@Test
@@ -136,12 +156,6 @@ public class AcceptanceTests {
 	}
 
 	/**
-	 * First fixture for exercise 2.
-	 */
-	private final IExpression fixtureE2A = Parser
-			.fromString("((x|(y|(x ((z|y) z)))) (((x|(v|v)) 8) (x|((w|w) x))))");
-
-	/**
 	 * Exercise 2 contains test for beta reduction.
 	 */
 	@Test
@@ -150,25 +164,12 @@ public class AcceptanceTests {
 	}
 
 	/**
-	 * Second fixture for exercise 2.
-	 */
-	private final IExpression fixtureE2B = Parser
-			.fromString("((h|((x|(h (x x))) (x|(h (x x))))) ((a|(b|a)) (PLUS 1 5)))");
-
-	/**
 	 * Second test for second exercise.
 	 */
 	@Test
 	public final void exercise2B() {
 		assertNormalizes(nat(6), fixtureE2B);
 	}
-
-	/**
-	 * Fixture for exercise 3.
-	 */
-	private final IExpression fixtureE3 = Parser
-			.fromString("((((t|(t t)) (f|(x|(f (f x))))) (x|((PLUS x) 1))) 0)");
-	private final IExpression identity = def("y").var("y");
 
 	/**
 	 * Test for third exercise.

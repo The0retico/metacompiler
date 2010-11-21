@@ -17,13 +17,41 @@ class Natural extends Symbol implements IExpression {
 	 */
 	private final int value;
 
+	/**
+	 * Equivalent church numbering expression to the value.
+	 */
+	private final IExpression churchNatural;
+
+	/**
+	 * @param integer
+	 *            any Integer
+	 */
+	public Natural(final Integer integer) {
+		super();
+		value = integer;
+		if (value < 0) {
+			throw new IllegalArgumentException();
+		}
+		IExpression result = var("x");
+		for (int index = 0; index < value; index++) {
+			result = apply(var("f"), result);
+		}
+		churchNatural = def(vars("f", "x"), result);
+	}
+
+	@Override
+	public void accept(final IVisitor visitor) {
+		visitor.visit(this);
+		// churchNatural.accept(visitor);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -34,20 +62,20 @@ class Natural extends Symbol implements IExpression {
 			if (!(obj instanceof Abstraction)) {
 				return false;
 			}
-			Abstraction other = (Abstraction) obj;
-			return this.churchNatural.equals(other);
+			final Abstraction other = (Abstraction) obj;
+			return churchNatural.equals(other);
 		}
-		Natural other = (Natural) obj;
+		final Natural other = (Natural) obj;
 		if (value != other.value) {
 			return false;
 		}
 		return true;
 	}
 
-	/**
-	 * Equivalent church numbering expression to the value.
-	 */
-	private final IExpression churchNatural;
+	@Override
+	public boolean free(final String variable) {
+		return false;
+	}
 
 	/**
 	 * @return the expression
@@ -57,25 +85,19 @@ class Natural extends Symbol implements IExpression {
 	}
 
 	/**
-	 * @param integer
-	 *            any Integer
+	 * @return the value
 	 */
-	public Natural(final Integer integer) {
-		super();
-		this.value = integer;
-		if (value < 0) {
-			throw new IllegalArgumentException();
-		}
-		IExpression result = var("x");
-		for (int index = 0; index < value; index++) {
-			result = apply(var("f"), result);
-		}
-		this.churchNatural = def(vars("f", "x"), result);
+	public int getValue() {
+		return value;
 	}
 
 	@Override
-	public IExpression substitute(final String variable,
-			final IExpression expression) {
+	public boolean isReducible() {
+		return false;
+	}
+
+	@Override
+	public IExpression normalForm() {
 		return this;
 	}
 
@@ -85,23 +107,9 @@ class Natural extends Symbol implements IExpression {
 	}
 
 	@Override
-	public IExpression normalForm() {
+	public IExpression substitute(final String variable,
+			final IExpression expression) {
 		return this;
-	}
-
-	@Override
-	public String toString() {
-		return String.valueOf(value);
-	}
-
-	@Override
-	public boolean free(final String variable) {
-		return false;
-	}
-
-	@Override
-	public boolean isReducible() {
-		return false;
 	}
 
 }

@@ -21,16 +21,6 @@ import org.junit.runners.Parameterized.Parameters;
 public class ParserTest {
 
 	/**
-	 * Lambda expression fixture parameter for this test.
-	 */
-	private final IExpression fixture;
-
-	/**
-	 * String containing lambda expression as a parameter for this test.
-	 */
-	private final String expression;
-
-	/**
 	 * @return parameters for this test.
 	 */
 	@Parameters
@@ -40,6 +30,16 @@ public class ParserTest {
 				{ "(x z y)" }, { "(PLUS 1 3 5 7 11 13)" }, { "(a b (c d))" }, };
 		return Arrays.asList(expressions);
 	}
+
+	/**
+	 * Lambda expression fixture parameter for this test.
+	 */
+	private final IExpression fixture;
+
+	/**
+	 * String containing lambda expression as a parameter for this test.
+	 */
+	private final String expression;
 
 	/**
 	 * @param stringExpression
@@ -58,7 +58,7 @@ public class ParserTest {
 	public final void parseExpression() {
 		assertNotNull(expression + " should be parsed to an expression",
 				fixture);
-		assertEquals(expression, fixture.toString());
+		assertEquals(expression, Printer.toString(fixture));
 	}
 
 }

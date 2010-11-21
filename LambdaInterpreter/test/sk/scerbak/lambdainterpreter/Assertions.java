@@ -3,7 +3,9 @@ package sk.scerbak.lambdainterpreter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 
 /**
  * Utility class containing unit test assertions for lambda expressions.
@@ -12,6 +14,17 @@ import static org.junit.Assert.assertTrue;
  * 
  */
 final class Assertions {
+
+	/**
+	 * @param mock
+	 *            object on which methods in methodNames should have been called
+	 * @param methodNames
+	 *            list of methods that should be called on mock
+	 */
+	public static void assertCalled(final Mock mock,
+			final String... methodNames) {
+		assertThat(mock.getMethodCalls(), hasItems(methodNames));
+	}
 
 	/**
 	 * Assertion for tests for free variables in lambda expressions.
@@ -75,6 +88,22 @@ final class Assertions {
 	}
 
 	/**
+	 * @param expected
+	 *            one step beta reduced actual lambda expression
+	 * @param actual
+	 *            lambda expression of which one step beta reduction should be
+	 *            equal to expected
+	 * 
+	 */
+	static void assertReduces(final IExpression expected,
+			final IExpression actual) {
+		final IExpression oneStepBetaReeduced = actual.oneStepBetaReduce();
+		assertNotNull(actual + "should be beta reducible", oneStepBetaReeduced);
+		assertEquals("One step beta reduction of " + actual, expected,
+				oneStepBetaReeduced);
+	}
+
+	/**
 	 * Assertion for substitution.
 	 * 
 	 * @param expected
@@ -84,16 +113,15 @@ final class Assertions {
 	 * @param variable
 	 *            label which should be substituted.
 	 * @param substituent
-	 *            string representing expression, which will be substituted for
-	 *            variable.
+	 *            TODO
 	 */
-	static void assertSubstitutes(final String expected,
+	static void assertSubstitutes(final IExpression expected,
 			final IExpression expression, final String variable,
-			final String substituent) {
+			final IExpression substituent) {
 		final IExpression substituted = expression.substitute(variable,
-				Parser.fromString(substituent));
+				substituent);
 		assertNotNull(expression + " should be substituted", substituted);
-		assertEquals(expected, substituted.toString());
+		assertEquals(expected, substituted);
 	}
 
 	/**

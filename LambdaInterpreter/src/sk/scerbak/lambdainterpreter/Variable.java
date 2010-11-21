@@ -13,13 +13,27 @@ class Variable extends Symbol implements IExpression {
 	 */
 	private final String label;
 
+	/**
+	 * @param variableLabel
+	 *            lowercase string name for this variable
+	 */
+	public Variable(final String variableLabel) {
+		super();
+		label = variableLabel;
+	}
+
+	@Override
+	public void accept(final IVisitor visitor) {
+		visitor.visit(this);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -29,7 +43,7 @@ class Variable extends Symbol implements IExpression {
 		if (!(obj instanceof Variable)) {
 			return false;
 		}
-		Variable other = (Variable) obj;
+		final Variable other = (Variable) obj;
 		if (label == null) {
 			if (other.label != null) {
 				return false;
@@ -40,24 +54,21 @@ class Variable extends Symbol implements IExpression {
 		return true;
 	}
 
+	@Override
+	public boolean free(final String variable) {
+		return label.equals(variable);
+	}
+
 	/**
-	 * @param variableLabel
-	 *            lowercase string name for this variable
+	 * @return the label
 	 */
-	public Variable(final String variableLabel) {
-		super();
-		this.label = variableLabel;
+	public String getLabel() {
+		return label;
 	}
 
 	@Override
-	public IExpression substitute(final String variable,
-			final IExpression expression) {
-		return label.equals(variable) ? expression : this;
-	}
-
-	@Override
-	public IExpression oneStepBetaReduce() {
-		return this;
+	public boolean isReducible() {
+		return false;
 	}
 
 	@Override
@@ -66,18 +77,14 @@ class Variable extends Symbol implements IExpression {
 	}
 
 	@Override
-	public String toString() {
-		return this.label;
+	public IExpression oneStepBetaReduce() {
+		return this;
 	}
 
 	@Override
-	public boolean free(final String variable) {
-		return this.label.equals(variable);
-	}
-
-	@Override
-	public boolean isReducible() {
-		return false;
+	public IExpression substitute(final String variable,
+			final IExpression expression) {
+		return label.equals(variable) ? expression : this;
 	}
 
 }

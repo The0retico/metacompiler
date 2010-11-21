@@ -32,14 +32,6 @@ public class VariableTest {
 	private final String variableLabel = "x";
 
 	/**
-	 * Set up fixture for this test.
-	 */
-	@Before
-	public final void setUp() {
-		fixture = new Variable(variableLabel);
-	}
-
-	/**
 	 * Simplest example of a variable in a lambda expression.
 	 */
 	private final IExpression variableY = new Variable("y");
@@ -47,19 +39,27 @@ public class VariableTest {
 	private final IExpression variableX = new Variable("x");
 
 	/**
-	 * Lambda variable toString() is its label.
+	 * Variables cannot be reduced further, so they are in their normal form.
 	 */
 	@Test
-	public final void variableToStringIsItsLabel() {
-		assertEquals(variableLabel, fixture.toString());
+	public final void constantsAreInNormalForm() {
+		final IExpression normalForm = fixture.normalForm();
+		assertEquals("Should be its normal form", fixture.toString(),
+				normalForm.toString());
+	}
+
+	@Test
+	public final void equalsIfEqualLabel() {
+		assertThat(fixture, is(variableX));
+		assertThat(fixture, is(not(variableY)));
 	}
 
 	/**
-	 * Every lambda variable at its own is free.
+	 * Set up fixture for this test.
 	 */
-	@Test
-	public final void variableWithoutContextIsFree() {
-		assertFree(variableLabel, fixture);
+	@Before
+	public final void setUp() {
+		fixture = new Variable(variableLabel);
 	}
 
 	/**
@@ -71,6 +71,29 @@ public class VariableTest {
 		assertNotNull(fixture + " should have subterms", subterms);
 		assertEquals(1, subterms.size());
 		assertEquals(fixture, subterms.get(0));
+	}
+
+	/**
+	 * Variables should be reduced to themselves - they cannot be reduced
+	 * further.
+	 */
+	@Test
+	public final void variablesAreReducedToThemselves() {
+		final IExpression reduced = fixture.oneStepBetaReduce();
+		assertEquals("Should be reduced to itself", fixture.toString(),
+				reduced.toString());
+	}
+
+	/**
+	 * When substituting variable with variable with different label, no
+	 * substitution should happen.
+	 */
+	@Test
+	public final void variablesWithDifferentNamesAreNotSubstituted() {
+		final IExpression substituted = fixture.substitute("y", variableY);
+		assertNotNull(substituted);
+		assertTrue(substituted instanceof Variable);
+		assertEquals(fixture, substituted);
 	}
 
 	/**
@@ -88,41 +111,18 @@ public class VariableTest {
 	}
 
 	/**
-	 * When substituting variable with variable with different label, no
-	 * substitution should happen.
+	 * Lambda variable toString() is its label.
 	 */
 	@Test
-	public final void variablesWithDifferentNamesAreNotSubstituted() {
-		final IExpression substituted = fixture.substitute("y", variableY);
-		assertNotNull(substituted);
-		assertTrue(substituted instanceof Variable);
-		assertEquals(fixture, substituted);
+	public final void variableToStringIsItsLabel() {
+		assertEquals(variableLabel, Printer.toString(fixture));
 	}
 
 	/**
-	 * Variables should be reduced to themselves - they cannot be reduced
-	 * further.
+	 * Every lambda variable at its own is free.
 	 */
 	@Test
-	public final void variablesAreReducedToThemselves() {
-		final IExpression reduced = fixture.oneStepBetaReduce();
-		assertEquals("Should be reduced to itself", fixture.toString(),
-				reduced.toString());
-	}
-
-	/**
-	 * Variables cannot be reduced further, so they are in their normal form.
-	 */
-	@Test
-	public final void constantsAreInNormalForm() {
-		final IExpression normalForm = fixture.normalForm();
-		assertEquals("Should be its normal form", fixture.toString(),
-				normalForm.toString());
-	}
-
-	@Test
-	public final void equalsIfEqualLabel() {
-		assertThat(fixture, is(variableX));
-		assertThat(fixture, is(not(variableY)));
+	public final void variableWithoutContextIsFree() {
+		assertFree(variableLabel, fixture);
 	}
 }
