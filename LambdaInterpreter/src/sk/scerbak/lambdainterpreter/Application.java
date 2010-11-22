@@ -33,8 +33,6 @@ class Application implements IExpression {
 	@Override
 	public void accept(final IVisitor visitor) {
 		visitor.visit(this);
-		function.accept(visitor);
-		argument.accept(visitor);
 	}
 
 	/*
@@ -43,7 +41,7 @@ class Application implements IExpression {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean alphaEquals(final IExpression obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -58,14 +56,14 @@ class Application implements IExpression {
 			if (other.argument != null) {
 				return false;
 			}
-		} else if (!argument.equals(other.argument)) {
+		} else if (!argument.alphaEquals(other.argument)) {
 			return false;
 		}
 		if (function == null) {
 			if (other.function != null) {
 				return false;
 			}
-		} else if (!function.equals(other.function)) {
+		} else if (!function.alphaEquals(other.function)) {
 			return false;
 		}
 		return true;
@@ -76,10 +74,25 @@ class Application implements IExpression {
 		return function.free(variable) || argument.free(variable);
 	}
 
+	/**
+	 * @return the argument
+	 */
+	public IExpression getArgument() {
+		return argument;
+	}
+
+	/**
+	 * @return the function
+	 */
+	public IExpression getFunction() {
+		return function;
+	}
+
 	@Override
 	public boolean isReducible() {
 		return function instanceof Abstraction || function instanceof Natural
-				|| function.isReducible() || argument.isReducible();
+				|| function instanceof Constant || function.isReducible()
+				|| argument.isReducible();
 	}
 
 	@Override

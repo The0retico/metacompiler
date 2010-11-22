@@ -28,7 +28,7 @@ final class Mock implements IExpression {
 	private final String label;
 
 	/**
-	 * @param label
+	 * @param expressionLabel
 	 *            name for this expression to be printed
 	 * @param variables
 	 *            which will be reported as free in this mock for lambda
@@ -43,6 +43,11 @@ final class Mock implements IExpression {
 	@Override
 	public void accept(final IVisitor visitor) {
 		visitor.visit(this);
+	}
+
+	@Override
+	public boolean alphaEquals(final IExpression other) {
+		return equals(other);
 	}
 
 	@Override

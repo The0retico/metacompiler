@@ -3,6 +3,8 @@ package sk.scerbak.lambdainterpreter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
 
 import java.util.List;
@@ -24,44 +26,26 @@ public class ConstantTest {
 	private IExpression fixture;
 
 	/**
-	 * Constant value for name of fixture.
-	 */
-	private final String value = "X";
-
-	/**
-	 * Prepare fixture for tests.
-	 */
-	@Before
-	public final void setUp() {
-		fixture = new Constant(value);
-	}
-
-	/**
-	 * Constants should not bound variables.
-	 */
-	@Test
-	public final void constantsHaveNoFreeVariables() {
-		assertNotFree("x", fixture);
-	}
-
-	/**
 	 * Constants cannot be decomposed, so the only subterm is the constant.
 	 */
 	@Test
 	public final void constantIsItsOnlySubterm() {
 		final List<IExpression> subterms = fixture.subterm();
 		assertNotNull(fixture + " should have subterms", subterms);
-		assertEquals(1, subterms.size());
-		assertEquals(fixture.toString(), subterms.get(0).toString());
+		assertEquals("Constants should have only one subterm", 1,
+				subterms.size());
+		assertThat(subterms, hasItem(fixture));
 	}
 
 	/**
-	 * Constants cannot be substituted.
+	 * Constants cannot be reduced further, so they are in their normal form.
+	 * Consider subclassing a constant to create reducible constants.
 	 */
 	@Test
-	public final void constantsShouldNotBeSubstituted() {
-		final IExpression substituted = fixture.substitute("y", new Mock("M"));
-		assertEquals(fixture.toString(), substituted.toString());
+	public final void constantsAreInNormalForm() {
+		final IExpression normalForm = fixture.normalForm();
+		assertEquals("Should be its normal form", fixture.toString(),
+				normalForm.toString());
 	}
 
 	/**
@@ -84,13 +68,26 @@ public class ConstantTest {
 	}
 
 	/**
-	 * Constants cannot be reduced further, so they are in their normal form.
-	 * Consider subclassing a constant to create reducible constants.
+	 * Constants should not bound variables.
 	 */
 	@Test
-	public final void constantsAreInNormalForm() {
-		final IExpression normalForm = fixture.normalForm();
-		assertEquals("Should be its normal form", fixture.toString(),
-				normalForm.toString());
+	public final void constantsHaveNoFreeVariables() {
+		assertNotFree("x", fixture);
+	}
+
+	/**
+	 * Constants cannot be substituted.
+	 */
+	// @Test
+	// public final void constantsShouldNotBeSubstituted() {
+	// assertSubstitutes(fixture, fixture, "y", new Mock("M"));
+	// }
+
+	/**
+	 * Prepare fixture for tests.
+	 */
+	@Before
+	public final void setUp() {
+		fixture = Constant.valueOf("Y");
 	}
 }

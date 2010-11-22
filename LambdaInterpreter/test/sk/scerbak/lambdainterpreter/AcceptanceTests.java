@@ -3,6 +3,7 @@ package sk.scerbak.lambdainterpreter;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static sk.scerbak.lambdainterpreter.Assertions.assertFree;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
@@ -62,8 +63,6 @@ public class AcceptanceTests {
 	private final IExpression fixtureE3 = Parser
 			.fromString("((((t|(t t)) (f|(x|(f (f x))))) (x|((PLUS x) 1))) 0)");
 
-	private final IExpression identity = def("y").var("y");
-
 	/**
 	 * Example 1 for free and subterm.
 	 */
@@ -84,14 +83,15 @@ public class AcceptanceTests {
 				apply(var("x"), def("y").var("y"))).subterm();
 		int count = 0;
 		for (final IExpression expression : subterms) {
-			if (identity.equals(expression)) {
+			if (def("y").var("y").alphaEquals(expression)) {
 				count++;
 			}
 		}
 		assertEquals(
 				def("x").apply(def("y").var("y"),
 						apply(var("x"), def("y").var("y")))
-						+ " should occure twice in " + identity, 2, count);
+						+ " should occure twice in " + def("y").var("y"), 2,
+				count);
 	}
 
 	/**
@@ -101,8 +101,14 @@ public class AcceptanceTests {
 	public final void example3() {
 		final List<IExpression> subterms = apply(var("w"),
 				apply(var("x"), apply(var("y"), var("z")))).subterm();
-		assertThat(subterms,
-				hasItem(apply(var("x"), apply(var("y"), var("z")))));
+		final IExpression expected = apply(var("x"), apply(var("y"), var("z")));
+		boolean result = false;
+		for (final IExpression expression : subterms) {
+			if (expression.alphaEquals(expected)) {
+				result = true;
+			}
+		}
+		assertTrue(result);
 	}
 
 	/**

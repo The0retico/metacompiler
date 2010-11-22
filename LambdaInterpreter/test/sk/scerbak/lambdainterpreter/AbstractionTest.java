@@ -1,13 +1,14 @@
 package sk.scerbak.lambdainterpreter;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static sk.scerbak.lambdainterpreter.Assertions.assertCalled;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNormalizes;
+import static sk.scerbak.lambdainterpreter.Assertions.assertNotCalled;
 import static sk.scerbak.lambdainterpreter.Assertions.assertNotFree;
 import static sk.scerbak.lambdainterpreter.Assertions.assertSubstitutes;
 import static sk.scerbak.lambdainterpreter.Calculus.def;
@@ -31,10 +32,8 @@ public class AbstractionTest {
 
 	private IExpression fixture;
 	/**
-	 * 
+	 * Mock object for lambda expression which serves as a body of fixture.
 	 */
-	private final String abstraction = "(x|B)";
-
 	private Mock mock;
 
 	/**
@@ -43,7 +42,7 @@ public class AbstractionTest {
 	@Test
 	public final void boundVariableElsewhereIsNotFree() {
 		assertNotFree("x", fixture);
-		assertEquals("(x|B)", Printer.toString(fixture));
+		assertNotCalled(mock, "free");
 	}
 
 	/**
@@ -52,7 +51,7 @@ public class AbstractionTest {
 	@Test
 	public final void boundVariableIsNotFree() {
 		assertNotFree("x", fixture);
-		assertEquals("(x|B)", Printer.toString(fixture));
+		assertNotCalled(mock, "free");
 	}
 
 	/**
@@ -62,9 +61,9 @@ public class AbstractionTest {
 	 */
 	@Test
 	public final void equalsIfAlphaConvertible() {
-		assertThat(def("x").var("x"), is(def("x").var("x")));
-		assertThat(def("x").var("x"), is(def("y").var("y")));
-		assertThat(def("x").var("x"), is(not(def("x").var("y"))));
+		assertTrue(def("x").var("x").alphaEquals(def("x").var("x")));
+		assertTrue(def("x").var("x").alphaEquals(def("y").var("y")));
+		assertFalse(def("x").var("x").alphaEquals(def("x").var("y")));
 	}
 
 	/**
@@ -131,8 +130,6 @@ public class AbstractionTest {
 	 */
 	@Test
 	public final void toStringIsItsVariableAndBody() {
-		final Printer printer = new Printer();
-		fixture.accept(printer);
-		assertEquals(abstraction, printer.toString());
+		assertEquals("(x|B)", Printer.toString(fixture));
 	}
 }

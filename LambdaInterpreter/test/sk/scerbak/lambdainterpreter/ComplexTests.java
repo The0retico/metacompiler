@@ -27,16 +27,47 @@ public class ComplexTests {
 	}
 
 	/**
-	 * Zero and successor.
+	 * And function on booleans.
 	 */
 	@Test
-	public final void successorForChurchNumbers() {
-		final IExpression one = apply(con("SUCC"), nat(0));
-		assertNormalizes(nat(1), one);
-		final IExpression two = apply(con("SUCC"), one);
-		assertNormalizes(nat(2), two);
-		final IExpression three = apply(con("SUCC"), two);
-		assertNormalizes(nat(3), three);
+	public final void andOnBooleans() {
+		assertNormalizes(con("FALSE"), // def("x", "y").var("y"),
+				apply(con("AND"), con("TRUE"), con("FALSE")));
+	}
+
+	/**
+	 * Exponential function on church numbers.
+	 */
+	@Test
+	public final void exponentialOnChurchNumbers() {
+		final IExpression exp = def("m", "n", "f").apply(var("n"), var("m"),
+				var("f"));
+		assertNormalizes(nat(4), apply(exp, nat(2), nat(2)));
+	}
+
+	/**
+	 * Test recursion through Y combinator and eta reduced factorial.
+	 */
+	@Test
+	public final void factorial() {
+		final IExpression fac = def("fac", "n").apply(
+				con("IF"),
+				apply(con("ISZERO"), var("n")),
+				Calculus.nat(1),
+				apply(con("MULT"), var("n"),
+						apply(var("fac"), apply(con("PRED"), var("n")))));
+		final int factorialSix = 720;
+		final IExpression six = nat(6);
+		assertNormalizes(nat(factorialSix), apply(con("Y"), fac, six));
+	}
+
+	/**
+	 * Left function on pairs in lambda expressions.
+	 */
+	@Test
+	public final void leftOnPairs() {
+		final IExpression pairAB = apply(con("PAIR"), var("a"), var("b"));
+		assertNormalizes(var("a"), apply(con("LEFT"), pairAB));
 	}
 
 	/**
@@ -52,16 +83,6 @@ public class ComplexTests {
 	}
 
 	/**
-	 * Exponential function on church numbers.
-	 */
-	@Test
-	public final void exponentialOnChurchNumbers() {
-		final IExpression exp = def("m", "n", "f").apply(var("n"), var("m"),
-				var("f"));
-		assertNormalizes(nat(4), apply(exp, nat(2), nat(2)));
-	}
-
-	/**
 	 * Predecessor on church numbers.
 	 */
 	@Test
@@ -71,12 +92,46 @@ public class ComplexTests {
 	}
 
 	/**
-	 * And function on booleans.
+	 * Zero and successor.
 	 */
 	@Test
-	public final void andOnBooleans() {
-		assertNormalizes(con("FALSE"), // def("x", "y").var("y"),
-				apply(con("AND"), con("TRUE"), con("FALSE")));
+	public final void successorForChurchNumbers() {
+		final IExpression one = apply(con("SUCC"), nat(0));
+		assertNormalizes(nat(1), one);
+		final IExpression two = apply(con("SUCC"), one);
+		assertNormalizes(nat(2), two);
+		final IExpression three = apply(con("SUCC"), two);
+		assertNormalizes(nat(3), three);
+	}
+
+	/**
+	 * Test recursion using Y combinator on eta reduced sum.
+	 */
+	@Test
+	public final void sum() {
+		final IExpression plus = def("m", "n", "f", "x").apply(var("m"),
+				var("f"), apply(var("n"), var("f"), var("x")));
+		final IExpression sum = def("sum", "n").apply(
+				con("IF"),
+				apply(con("ISZERO"), var("n")),
+				nat(0),
+				apply(plus, var("n"),
+						apply(var("sum"), apply(con("PRED"), var("n")))));
+		final int sumSix = 21;
+		final IExpression six = nat(6);
+		assertNormalizes(nat(sumSix), apply(con("Y"), sum, six));
+
+	}
+
+	/**
+	 * Test type union data constructor and destructor in lambda calculus.
+	 */
+	@Test
+	public final void union() {
+		final IExpression destroyA = def("z").apply(con("RIGHT"), var("z"));
+		final IExpression constructA = def("x").apply(con("PAIR"), con("TRUE"),
+				var("x"));
+		assertNormalizes(var("a"), apply(destroyA, apply(constructA, var("a"))));
 	}
 
 	/**
@@ -91,60 +146,5 @@ public class ComplexTests {
 		assertNormalizes(con("TRUE"), apply(xor, con("TRUE"), con("FALSE")));
 		assertNormalizes(con("TRUE"), apply(xor, con("FALSE"), con("TRUE")));
 		assertNormalizes(con("FALSE"), apply(xor, con("FALSE"), con("FALSE")));
-	}
-
-	/**
-	 * Left function on pairs in lambda expressions.
-	 */
-	@Test
-	public final void leftOnPairs() {
-		final IExpression pairAB = apply(con("PAIR"), con("A"), con("B"));
-		assertNormalizes(con("A"), apply(con("LEFT"), pairAB));
-	}
-
-	/**
-	 * Test type union data constructor and destructor in lambda calculus.
-	 */
-	@Test
-	public final void union() {
-		final IExpression destroyA = def("z").apply(con("RIGHT"), var("z"));
-		final IExpression constructA = def("x").apply(con("PAIR"), con("TRUE"),
-				var("x"));
-		assertNormalizes(con("A"), apply(destroyA, apply(constructA, con("A"))));
-	}
-
-	/**
-	 * Test recursion through Y combinator and eta reduced factorial.
-	 */
-	@Test
-	public final void factorial() {
-		final IExpression fac = def("fac", "n").apply(
-				con("IF"),
-				apply(con("ZERO?"), var("n")),
-				Calculus.nat(1),
-				apply(con("MULT"), var("n"),
-						apply(var("fac"), apply(con("PRED"), var("n")))));
-		final int factorialSix = 720;
-		final IExpression six = nat(6);
-		assertNormalizes(nat(factorialSix), apply(con("Y"), fac, six));
-	}
-
-	/**
-	 * Test recursion using Y combinator on eta reduced sum.
-	 */
-	@Test
-	public final void sum() {
-		final IExpression plus = def("m", "n", "f", "x").apply(var("m"),
-				var("f"), apply(var("n"), var("f"), var("x")));
-		final IExpression sum = def("sum", "n").apply(
-				con("IF"),
-				apply(con("ZERO?"), var("n")),
-				nat(0),
-				apply(plus, var("n"),
-						apply(var("sum"), apply(con("PRED"), var("n")))));
-		final int sumSix = 21;
-		final IExpression six = nat(6);
-		assertNormalizes(nat(sumSix), apply(con("Y"), sum, six));
-
 	}
 }

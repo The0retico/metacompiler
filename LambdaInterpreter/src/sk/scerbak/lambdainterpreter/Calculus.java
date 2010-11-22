@@ -22,6 +22,12 @@ public final class Calculus {
 	 * @author The0retico
 	 */
 	public static final class Definition {
+		/**
+		 * @param variableNames
+		 *            variables for nested abstractions
+		 * @return definition object to capture body definition for an
+		 *         abstraction
+		 */
 		static Definition define(final String[] variableNames) {
 			return new Definition(variableNames);
 		}
@@ -105,7 +111,7 @@ public final class Calculus {
 	 * @return new lambda constant
 	 */
 	public static IExpression con(final String constantName) {
-		return new Constant(constantName);
+		return Constant.valueOf(constantName);
 	}
 
 	/**

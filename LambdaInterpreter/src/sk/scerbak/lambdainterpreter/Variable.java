@@ -1,12 +1,15 @@
 package sk.scerbak.lambdainterpreter;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Variable in the lambda expressions.
  * 
  * @author The0retico
  * 
  */
-class Variable extends Symbol implements IExpression {
+class Variable implements IExpression {
 
 	/**
 	 * String label for this variable.
@@ -33,7 +36,7 @@ class Variable extends Symbol implements IExpression {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean alphaEquals(final IExpression obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -85,6 +88,13 @@ class Variable extends Symbol implements IExpression {
 	public IExpression substitute(final String variable,
 			final IExpression expression) {
 		return label.equals(variable) ? expression : this;
+	}
+
+	@Override
+	public List<IExpression> subterm() {
+		final List<IExpression> result = new LinkedList<IExpression>();
+		result.add(this);
+		return result;
 	}
 
 }

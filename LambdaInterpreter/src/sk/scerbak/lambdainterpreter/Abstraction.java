@@ -39,7 +39,6 @@ class Abstraction implements IExpression {
 	@Override
 	public void accept(final IVisitor visitor) {
 		visitor.visit(this);
-		body.accept(visitor);
 	}
 
 	/**
@@ -52,7 +51,7 @@ class Abstraction implements IExpression {
 	}
 
 	@Override
-	public boolean equals(final Object other) {
+	public boolean alphaEquals(final IExpression other) {
 		boolean result = false;
 		if (other instanceof Abstraction) {
 			final Abstraction otherAbstraction = (Abstraction) other;
@@ -64,7 +63,7 @@ class Abstraction implements IExpression {
 				otherBody = otherAbstraction.body.substitute(otherVariable,
 						new Variable(variable));
 			}
-			result = body.equals(otherBody);
+			result = body.alphaEquals(otherBody);
 		}
 		return result;
 	}

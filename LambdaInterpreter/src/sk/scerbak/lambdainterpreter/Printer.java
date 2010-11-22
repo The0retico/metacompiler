@@ -23,33 +23,14 @@ public class Printer implements IVisitor {
 	}
 
 	/**
-	 * Output message to be printed after traversing a lambda expression
+	 * Output message to be printed after traversing a lambda expression.
 	 */
 	private final StringBuilder output;
-	/**
-	 * Count abstraction levels.
-	 */
-	private int abstractionLevel;
-
-	/**
-	 * Determines if we are in a lambda expression which represents a natural.
-	 */
-	private final boolean inNatural;
+	private int applicationLevel;
 
 	public Printer() {
 		output = new StringBuilder();
-		abstractionLevel = 0;
-		inNatural = false;
-	}
-
-	/**
-	 * 
-	 */
-	private void closeParenthesis() {
-		while (abstractionLevel > 0) {
-			output.append(')');
-			abstractionLevel--;
-		}
+		applicationLevel = 0;
 	}
 
 	/*
@@ -58,44 +39,50 @@ public class Printer implements IVisitor {
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		return output.toString();
 	}
 
 	@Override
-	public void visit(final Abstraction abstraction) {
+	public final void visit(final Abstraction abstraction) {
 		output.append("(" + abstraction.getVariable() + "|");
-		abstractionLevel++;
+		abstraction.getBody().accept(this);
+		output.append(")");
 	}
 
 	@Override
 	public void visit(final Application application) {
-		// TODO Auto-generated method stub
-
+		if (applicationLevel == 0) {
+			output.append("(");
+		}
+		applicationLevel++;
+		application.getFunction().accept(this);
+		applicationLevel--;
+		output.append(" ");
+		application.getArgument().accept(this);
+		if (applicationLevel == 0) {
+			output.append(")");
+		}
 	}
 
 	@Override
-	public void visit(final Constant constant) {
-		output.append(constant.getLabel());
-		closeParenthesis();
+	public final void visit(final Constant constant) {
+		output.append(constant.name());
 	}
 
 	@Override
-	public void visit(final IExpression expression) {
+	public final void visit(final IExpression expression) {
 		output.append(expression.toString());
-		closeParenthesis();
 	}
 
 	@Override
-	public void visit(final Natural number) {
+	public final void visit(final Natural number) {
 		output.append(number.getValue());
-		closeParenthesis();
 	}
 
 	@Override
-	public void visit(final Variable variable) {
+	public final void visit(final Variable variable) {
 		output.append(variable.getLabel());
-		closeParenthesis();
 	}
 
 }

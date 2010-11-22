@@ -5,12 +5,15 @@ import static sk.scerbak.lambdainterpreter.Calculus.def;
 import static sk.scerbak.lambdainterpreter.Calculus.var;
 import static sk.scerbak.lambdainterpreter.Calculus.vars;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Lambda expression containing integer constant.
  * 
  * @author The0retico
  */
-class Natural extends Symbol implements IExpression {
+class Natural implements IExpression {
 
 	/**
 	 * May be invalid, checked during evaluate method call.
@@ -42,7 +45,6 @@ class Natural extends Symbol implements IExpression {
 	@Override
 	public void accept(final IVisitor visitor) {
 		visitor.visit(this);
-		// churchNatural.accept(visitor);
 	}
 
 	/*
@@ -51,7 +53,7 @@ class Natural extends Symbol implements IExpression {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean alphaEquals(final IExpression obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -63,7 +65,7 @@ class Natural extends Symbol implements IExpression {
 				return false;
 			}
 			final Abstraction other = (Abstraction) obj;
-			return churchNatural.equals(other);
+			return churchNatural.alphaEquals(other);
 		}
 		final Natural other = (Natural) obj;
 		if (value != other.value) {
@@ -110,6 +112,23 @@ class Natural extends Symbol implements IExpression {
 	public IExpression substitute(final String variable,
 			final IExpression expression) {
 		return this;
+	}
+
+	@Override
+	public List<IExpression> subterm() {
+		final List<IExpression> result = new LinkedList<IExpression>();
+		result.add(this);
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.valueOf(value);
 	}
 
 }

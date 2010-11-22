@@ -9,7 +9,7 @@ import java.util.List;
 interface IExpression {
 
 	/**
-	 * This method should traverse expression in leftmost-outermost first order
+	 * This method should traverse expression in leftmost-outermost first order.
 	 * 
 	 * @param visitor
 	 *            should implement visit(IExpression) according to Visitor
@@ -22,8 +22,7 @@ interface IExpression {
 	 *            expression to be compared with this
 	 * @return true if both expressions are equal according to alpha equivalence
 	 */
-	@Override
-	boolean equals(Object other);
+	boolean alphaEquals(IExpression other);
 
 	/**
 	 * Determines if variable is free in this lambda expression.

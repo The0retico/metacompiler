@@ -1,10 +1,8 @@
 package sk.scerbak.lambdainterpreter;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static sk.scerbak.lambdainterpreter.Assertions.assertFree;
 
@@ -50,8 +48,8 @@ public class VariableTest {
 
 	@Test
 	public final void equalsIfEqualLabel() {
-		assertThat(fixture, is(variableX));
-		assertThat(fixture, is(not(variableY)));
+		assertTrue(variableX.alphaEquals(fixture));
+		assertFalse(variableY.alphaEquals(fixture));
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package sk.scerbak.lambdainterpreter;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -44,31 +45,25 @@ final class Assertions {
 	/**
 	 * @param expected
 	 *            lambda expression in normal form
-	 * @param actuallambda
-	 *            expression of which normal form should be equal to expected
+	 * @param expression
+	 *            lambda expression of which normal form should be equal to
+	 *            expected
 	 * 
 	 */
 	static void assertNormalizes(final IExpression expected,
-			final IExpression actual) {
-		final IExpression normalForm = actual.normalForm();
-		assertNotNull(actual + "should have normal form", normalForm);
-		assertEquals("Normal form of " + actual, expected, normalForm);
-	}
-
-	/**
-	 * Assertion for testing normalization of lambda expressions.
-	 * 
-	 * @param expected
-	 *            string representation of the resulting normal form.
-	 * @param expression
-	 *            which should be normalized
-	 * 
-	 */
-	static void assertNormalizesString(final String expected,
 			final IExpression expression) {
 		final IExpression normalForm = expression.normalForm();
-		assertNotNull(expression + "should have normal form", normalForm);
-		assertEquals(expected, normalForm.toString());
+		assertNotNull(Printer.toString(expression) + "should have normal form",
+				normalForm);
+		assertTrue("Normal form of " + Printer.toString(expression)
+				+ " expected: " + Printer.toString(expected) + " but was: "
+				+ Printer.toString(normalForm),
+				expected.alphaEquals(normalForm));
+	}
+
+	public static void assertNotCalled(final Mock mock,
+			final String... methodNames) {
+		assertThat(mock.getMethodCalls(), not(hasItems(methodNames)));
 	}
 
 	/**
@@ -121,7 +116,7 @@ final class Assertions {
 		final IExpression substituted = expression.substitute(variable,
 				substituent);
 		assertNotNull(expression + " should be substituted", substituted);
-		assertEquals(expected, substituted);
+		assertTrue(expected.alphaEquals(substituted));
 	}
 
 	/**
