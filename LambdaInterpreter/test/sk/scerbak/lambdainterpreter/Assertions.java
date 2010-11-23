@@ -58,7 +58,7 @@ final class Assertions {
 		assertTrue("Normal form of " + Printer.toString(expression)
 				+ " expected: " + Printer.toString(expected) + " but was: "
 				+ Printer.toString(normalForm),
-				expected.alphaEquals(normalForm));
+				expected.equals(normalForm));
 	}
 
 	public static void assertNotCalled(final Mock mock,
@@ -116,7 +116,7 @@ final class Assertions {
 		final IExpression substituted = expression.substitute(variable,
 				substituent);
 		assertNotNull(expression + " should be substituted", substituted);
-		assertTrue(expected.alphaEquals(substituted));
+		assertTrue(expected.equals(substituted));
 	}
 
 	/**

@@ -12,7 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses(value = { VariableTest.class, AbstractionTest.class,
-		ApplicationTest.class, ConstantTest.class, NaturalTest.class })
+		ApplicationTest.class, NaturalTest.class })
 public class UnitTests {
 
 }

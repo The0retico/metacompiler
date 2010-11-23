@@ -48,8 +48,8 @@ public class VariableTest {
 
 	@Test
 	public final void equalsIfEqualLabel() {
-		assertTrue(variableX.alphaEquals(fixture));
-		assertFalse(variableY.alphaEquals(fixture));
+		assertTrue(variableX.equals(fixture));
+		assertFalse(variableY.equals(fixture));
 	}
 
 	/**

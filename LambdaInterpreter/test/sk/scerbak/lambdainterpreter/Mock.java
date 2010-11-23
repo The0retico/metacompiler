@@ -46,8 +46,8 @@ final class Mock implements IExpression {
 	}
 
 	@Override
-	public boolean alphaEquals(final IExpression other) {
-		return equals(other);
+	public boolean equals(final IExpression other) {
+		return this == other;
 	}
 
 	@Override

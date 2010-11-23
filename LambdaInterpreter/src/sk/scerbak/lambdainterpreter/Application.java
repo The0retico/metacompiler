@@ -41,7 +41,7 @@ class Application implements IExpression {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean alphaEquals(final IExpression obj) {
+	public boolean equals(final IExpression obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -56,14 +56,14 @@ class Application implements IExpression {
 			if (other.argument != null) {
 				return false;
 			}
-		} else if (!argument.alphaEquals(other.argument)) {
+		} else if (!argument.equals(other.argument)) {
 			return false;
 		}
 		if (function == null) {
 			if (other.function != null) {
 				return false;
 			}
-		} else if (!function.alphaEquals(other.function)) {
+		} else if (!function.equals(other.function)) {
 			return false;
 		}
 		return true;
@@ -91,8 +91,7 @@ class Application implements IExpression {
 	@Override
 	public boolean isReducible() {
 		return function instanceof Abstraction || function instanceof Natural
-				|| function instanceof Constant || function.isReducible()
-				|| argument.isReducible();
+				|| function.isReducible() || argument.isReducible();
 	}
 
 	@Override
@@ -111,16 +110,6 @@ class Application implements IExpression {
 			final Abstraction abstraction = (Abstraction) function;
 			result = abstraction.getBody().substitute(
 					abstraction.getVariable(), argument);
-		} else if (function instanceof Constant) {
-			final Constant constant = (Constant) function;
-			if (constant.getExpression() instanceof Abstraction) {
-				final Abstraction abstraction = (Abstraction) constant
-						.getExpression();
-				result = abstraction.getBody().substitute(
-						abstraction.getVariable(), argument);
-			} else {
-				throw new IllegalArgumentException();
-			}
 		} else if (function instanceof Natural) {
 			final Natural naturalNumber = (Natural) function;
 			if (naturalNumber.getExpression() instanceof Abstraction) {

@@ -1,7 +1,6 @@
 package sk.scerbak.lambdainterpreter;
 
 import static sk.scerbak.lambdainterpreter.Calculus.apply;
-import static sk.scerbak.lambdainterpreter.Calculus.con;
 import static sk.scerbak.lambdainterpreter.Calculus.def;
 import static sk.scerbak.lambdainterpreter.Calculus.nat;
 import static sk.scerbak.lambdainterpreter.Calculus.var;
@@ -33,11 +32,20 @@ public final class Parser {
 	private static final char ABSTRACTION_CHAR = '|';
 
 	/**
-	 * This is a Utility/Library class, which offers static methods, but cannot
-	 * be instantiated.
+	 * @param counter
+	 *            determining current level
+	 * @param current
+	 *            character to be considered when counting levels
+	 * @return current level
 	 */
-	private Parser() {
-
+	private static int countLevelAt(final int counter, final char current) {
+		int level = counter;
+		if (current == LEFT_CHAR) {
+			level++;
+		} else if (current == RIGHT_CHAR) {
+			level--;
+		}
+		return level;
 	}
 
 	/**
@@ -60,21 +68,18 @@ public final class Parser {
 
 	/**
 	 * @param input
-	 *            string containing lambda expression enclosed in parenthesis
-	 * @return expression on the input
+	 *            where to search
+	 * @param fromIndex
+	 *            where search and level counting should start
+	 * @return index of top level application delimiter starting at fromIndex
 	 */
-	private static IExpression parseCompoundExpression(final String input) {
-		IExpression result = null;
-		final int index = indexOfTopLevelDelimiter(input, 1);
-		final char delimiter = input.charAt(index);
-		if (delimiter == APPLICATION_CHAR) {
-			result = parseApplication(input, index);
-		} else if (delimiter == ABSTRACTION_CHAR) {
-			result = parseAbstraction(input, index);
-		} else {
-			throw new IllegalArgumentException(input);
-		}
-		return result;
+	private static int indexOfApplicationDelimiter(final String input,
+			final int fromIndex) {
+		int index;
+		do {
+			index = indexOfTopLevelDelimiter(input, fromIndex + 1);
+		} while (index != -1 && input.charAt(index) != APPLICATION_CHAR);
+		return index;
 	}
 
 	/**
@@ -109,20 +114,24 @@ public final class Parser {
 	}
 
 	/**
-	 * @param counter
-	 *            determining current level
-	 * @param current
-	 *            character to be considered when counting levels
-	 * @return current level
+	 * @param input
+	 *            string containing lambda abstraction enclosed in parenthesis
+	 * @param index
+	 *            of the abstraction delimiter on the top level
+	 * @return abstraction representing the input
 	 */
-	private static int countLevelAt(final int counter, final char current) {
-		int level = counter;
-		if (current == LEFT_CHAR) {
-			level++;
-		} else if (current == RIGHT_CHAR) {
-			level--;
+	private static IExpression parseAbstraction(final String input,
+			final int index) {
+		IExpression result = null;
+		final String variableLabel = input.substring(1, index);
+		if (StringUtility.caseOf(variableLabel) == StringCase.LOWER) {
+			final IExpression bodyExpression = fromString(input.substring(
+					index + 1, input.length() - 1));
+			result = def(variableLabel, bodyExpression);
+		} else {
+			throw new IllegalArgumentException(variableLabel);
 		}
-		return level;
+		return result;
 	}
 
 	/**
@@ -153,37 +162,57 @@ public final class Parser {
 
 	/**
 	 * @param input
-	 *            where to search
-	 * @param fromIndex
-	 *            where search and level counting should start
-	 * @return index of top level application delimiter starting at fromIndex
+	 *            string containing lambda expression enclosed in parenthesis
+	 * @return expression on the input
 	 */
-	private static int indexOfApplicationDelimiter(final String input,
-			final int fromIndex) {
-		int index;
-		do {
-			index = indexOfTopLevelDelimiter(input, fromIndex + 1);
-		} while (index != -1 && input.charAt(index) != APPLICATION_CHAR);
-		return index;
+	private static IExpression parseCompoundExpression(final String input) {
+		IExpression result = null;
+		final int index = indexOfTopLevelDelimiter(input, 1);
+		final char delimiter = input.charAt(index);
+		if (delimiter == APPLICATION_CHAR) {
+			result = parseApplication(input, index);
+		} else if (delimiter == ABSTRACTION_CHAR) {
+			result = parseAbstraction(input, index);
+		} else {
+			throw new IllegalArgumentException(input);
+		}
+		return result;
 	}
 
-	/**
-	 * @param input
-	 *            string containing lambda abstraction enclosed in parenthesis
-	 * @param index
-	 *            of the abstraction delimiter on the top level
-	 * @return abstraction representing the input
-	 */
-	private static IExpression parseAbstraction(final String input,
-			final int index) {
-		IExpression result = null;
-		final String variableLabel = input.substring(1, index);
-		if (StringUtility.caseOf(variableLabel) == StringCase.LOWER) {
-			final IExpression bodyExpression = fromString(input.substring(
-					index + 1, input.length() - 1));
-			result = def(variableLabel, bodyExpression);
+	private static IExpression parseConstant(final String input) {
+		IExpression result;
+		if ("PRED".equals(input)) {
+			result = Calculus.PRED;
+		} else if ("SUCC".equals(input)) {
+			result = Calculus.SUCC;
+		} else if ("PLUS".equals(input)) {
+			result = Calculus.PLUS;
+		} else if ("MULT".equals(input)) {
+			result = Calculus.MULT;
+		} else if ("ISZERO".equals(input)) {
+			result = Calculus.ISZERO;
+		} else if ("IF".equals(input)) {
+			result = Calculus.IF;
+		} else if ("TRUE".equals(input)) {
+			result = Calculus.TRUE;
+		} else if ("FALSE".equals(input)) {
+			result = Calculus.FALSE;
+		} else if ("NOT".equals(input)) {
+			result = Calculus.NOT;
+		} else if ("AND".equals(input)) {
+			result = Calculus.AND;
+		} else if ("OR".equals(input)) {
+			result = Calculus.OR;
+		} else if ("PAIR".equals(input)) {
+			result = Calculus.PAIR;
+		} else if ("LEFT".equals(input)) {
+			result = Calculus.LEFT;
+		} else if ("RIGHT".equals(input)) {
+			result = Calculus.RIGHT;
+		} else if ("Y".equals(input)) {
+			result = Calculus.Y;
 		} else {
-			throw new IllegalArgumentException(variableLabel);
+			result = null;
 		}
 		return result;
 	}
@@ -197,7 +226,7 @@ public final class Parser {
 		IExpression result = null;
 		final StringCase inputCase = StringUtility.caseOf(input);
 		if (inputCase == StringCase.UPPER) {
-			result = con(input);
+			result = parseConstant(input);
 		} else if (inputCase == StringCase.LOWER) {
 			result = var(input);
 		} else if (StringUtility.isInteger(input)) {
@@ -207,5 +236,13 @@ public final class Parser {
 			throw new IllegalArgumentException(input);
 		}
 		return result;
+	}
+
+	/**
+	 * This is a Utility/Library class, which offers static methods, but cannot
+	 * be instantiated.
+	 */
+	private Parser() {
+
 	}
 }

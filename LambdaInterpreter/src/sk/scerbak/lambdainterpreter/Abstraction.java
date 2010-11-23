@@ -51,7 +51,7 @@ class Abstraction implements IExpression {
 	}
 
 	@Override
-	public boolean alphaEquals(final IExpression other) {
+	public boolean equals(final IExpression other) {
 		boolean result = false;
 		if (other instanceof Abstraction) {
 			final Abstraction otherAbstraction = (Abstraction) other;
@@ -63,7 +63,7 @@ class Abstraction implements IExpression {
 				otherBody = otherAbstraction.body.substitute(otherVariable,
 						new Variable(variable));
 			}
-			result = body.alphaEquals(otherBody);
+			result = body.equals(otherBody);
 		}
 		return result;
 	}

@@ -22,12 +22,6 @@ public interface IVisitor {
 	public void visit(Application application);
 
 	/**
-	 * @param constant
-	 *            to be visited
-	 */
-	public void visit(Constant constant);
-
-	/**
 	 * @param expression
 	 *            to be visited
 	 */

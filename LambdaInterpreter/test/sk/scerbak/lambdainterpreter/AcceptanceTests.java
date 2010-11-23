@@ -83,7 +83,7 @@ public class AcceptanceTests {
 				apply(var("x"), def("y").var("y"))).subterm();
 		int count = 0;
 		for (final IExpression expression : subterms) {
-			if (def("y").var("y").alphaEquals(expression)) {
+			if (def("y").var("y").equals(expression)) {
 				count++;
 			}
 		}
@@ -104,7 +104,7 @@ public class AcceptanceTests {
 		final IExpression expected = apply(var("x"), apply(var("y"), var("z")));
 		boolean result = false;
 		for (final IExpression expression : subterms) {
-			if (expression.alphaEquals(expected)) {
+			if (expression.equals(expected)) {
 				result = true;
 			}
 		}

@@ -22,7 +22,7 @@ interface IExpression {
 	 *            expression to be compared with this
 	 * @return true if both expressions are equal according to alpha equivalence
 	 */
-	boolean alphaEquals(IExpression other);
+	boolean equals(IExpression other);
 
 	/**
 	 * Determines if variable is free in this lambda expression.

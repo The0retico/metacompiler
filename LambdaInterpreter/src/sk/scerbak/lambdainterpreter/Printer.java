@@ -27,10 +27,12 @@ public class Printer implements IVisitor {
 	 */
 	private final StringBuilder output;
 	private int applicationLevel;
+	private int abstractionLevel;
 
 	public Printer() {
 		output = new StringBuilder();
 		applicationLevel = 0;
+		abstractionLevel = 0;
 	}
 
 	/*
@@ -45,9 +47,43 @@ public class Printer implements IVisitor {
 
 	@Override
 	public final void visit(final Abstraction abstraction) {
-		output.append("(" + abstraction.getVariable() + "|");
-		abstraction.getBody().accept(this);
-		output.append(")");
+		if (Calculus.PRED.equals(abstraction)) {
+			output.append("PRED");
+		} else if (Calculus.SUCC.equals(abstraction)) {
+			output.append("SUCC");
+		} else if (Calculus.PLUS.equals(abstraction)) {
+			output.append("PLUS");
+		} else if (Calculus.MULT.equals(abstraction)) {
+			output.append("MULT");
+		} else if (Calculus.ISZERO.equals(abstraction)) {
+			output.append("ISZERO");
+		} else if (Calculus.IF.equals(abstraction)) {
+			output.append("IF");
+		} else if (Calculus.TRUE.equals(abstraction)) {
+			output.append("TRUE");
+		} else if (Calculus.FALSE.equals(abstraction)) {
+			output.append("FALSE");
+		} else if (Calculus.NOT.equals(abstraction)) {
+			output.append("NOT");
+		} else if (Calculus.AND.equals(abstraction)) {
+			output.append("AND");
+		} else if (Calculus.OR.equals(abstraction)) {
+			output.append("OR");
+		} else if (Calculus.PAIR.equals(abstraction)) {
+			output.append("PAIR");
+		} else if (Calculus.LEFT.equals(abstraction)) {
+			output.append("LEFT");
+		} else if (Calculus.RIGHT.equals(abstraction)) {
+			output.append("RIGHT");
+		} else if (Calculus.Y.equals(abstraction)) {
+			output.append("Y");
+		} else {
+			output.append("(" + abstraction.getVariable() + "|");
+			abstractionLevel++;
+			abstraction.getBody().accept(this);
+			abstractionLevel = 0;
+			output.append(")");
+		}
 	}
 
 	@Override
@@ -63,11 +99,6 @@ public class Printer implements IVisitor {
 		if (applicationLevel == 0) {
 			output.append(")");
 		}
-	}
-
-	@Override
-	public final void visit(final Constant constant) {
-		output.append(constant.name());
 	}
 
 	@Override

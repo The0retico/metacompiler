@@ -61,9 +61,9 @@ public class AbstractionTest {
 	 */
 	@Test
 	public final void equalsIfAlphaConvertible() {
-		assertTrue(def("x").var("x").alphaEquals(def("x").var("x")));
-		assertTrue(def("x").var("x").alphaEquals(def("y").var("y")));
-		assertFalse(def("x").var("x").alphaEquals(def("x").var("y")));
+		assertTrue(def("x").var("x").equals(def("x").var("x")));
+		assertTrue(def("x").var("x").equals(def("y").var("y")));
+		assertFalse(def("x").var("x").equals(def("x").var("y")));
 	}
 
 	/**

@@ -36,7 +36,7 @@ class Variable implements IExpression {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean alphaEquals(final IExpression obj) {
+	public boolean equals(final IExpression obj) {
 		if (this == obj) {
 			return true;
 		}

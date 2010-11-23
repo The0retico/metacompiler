@@ -6,14 +6,6 @@ package sk.scerbak.lambdainterpreter;
  * @author The0retico
  * 
  */
-/**
- * @author The0retico
- *
- */
-/**
- * @author The0retico
- * 
- */
 public final class Calculus {
 
 	/**
@@ -59,15 +51,6 @@ public final class Calculus {
 		}
 
 		/**
-		 * @param constantName
-		 *            to be returned from abstraction
-		 * @return abstraction returning a constant
-		 */
-		public IExpression con(final String constantName) {
-			return def(vars(variables), Calculus.con(constantName));
-		}
-
-		/**
 		 * @param naturalNumber
 		 *            to be returned in abstraction
 		 * @return abstraction returning a natural number
@@ -86,6 +69,35 @@ public final class Calculus {
 		}
 	}
 
+	public static final IExpression SUCC = def("n", "f", "x").apply(var("f"),
+			apply(var("n"), var("f"), var("x")));
+	public static final IExpression PRED = def("n", "f", "x").apply(var("n"),
+			def("g", "h").apply(var("h"), apply(var("g"), var("f"))),
+			def("u").var("x"), def("u").var("u"));
+	public static final IExpression PLUS = def("m", "n", "f", "x").apply(
+			var("m"), var("f"), apply(var("n"), var("f"), var("x")));
+	public static final IExpression MULT = def("m", "n", "f").apply(var("n"),
+			apply(var("m"), var("f")));
+	public static final IExpression TRUE = def("x", "y").var("x");
+	public static final IExpression FALSE = def("x", "y").var("y");
+	public static final IExpression ISZERO = def("n").apply(var("n"),
+			def("x", FALSE), TRUE);
+	public static final IExpression IF = def("c", "x", "y").apply(var("c"),
+			var("x"), var("y"));
+	public static final IExpression NOT = def("x").apply(var("x"), FALSE, TRUE);
+	public static final IExpression AND = def("x", "y").apply(var("x"),
+			var("y"), FALSE);
+	public static final IExpression OR = def("x", "y").apply(var("x"), TRUE,
+			var("y"));
+	public static final IExpression PAIR = def("x", "y", "c").apply(var("c"),
+			var("x"), var("y"));
+	public static final IExpression LEFT = def("x").apply(var("x"), TRUE);
+	public static final IExpression RIGHT = def("x").apply(var("x"), FALSE);
+
+	public static final IExpression Y = def("f").apply(
+			def("x").apply(var("f"), apply(var("x"), var("x"))),
+			def("x").apply(var("f"), apply(var("x"), var("x"))));
+
 	/**
 	 * @param function
 	 *            inner-most left-most expression in nested applications
@@ -103,15 +115,6 @@ public final class Calculus {
 			result = new Application(result, arguments[index]);
 		}
 		return result;
-	}
-
-	/**
-	 * @param constantName
-	 *            name of the constant
-	 * @return new lambda constant
-	 */
-	public static IExpression con(final String constantName) {
-		return Constant.valueOf(constantName);
 	}
 
 	/**
@@ -161,7 +164,14 @@ public final class Calculus {
 	 * @return new lambda natural number
 	 */
 	public static IExpression nat(final Integer naturalNumber) {
-		return new Natural(naturalNumber);
+		if (naturalNumber < 0) {
+			throw new IllegalArgumentException();
+		}
+		IExpression result = var("x");
+		for (int index = 0; index < naturalNumber; index++) {
+			result = apply(var("f"), result);
+		}
+		return def(vars("f", "x"), result);
 	}
 
 	/**

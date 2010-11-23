@@ -30,7 +30,6 @@ class Natural implements IExpression {
 	 *            any Integer
 	 */
 	public Natural(final Integer integer) {
-		super();
 		value = integer;
 		if (value < 0) {
 			throw new IllegalArgumentException();
@@ -53,7 +52,7 @@ class Natural implements IExpression {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean alphaEquals(final IExpression obj) {
+	public boolean equals(final IExpression obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -65,7 +64,7 @@ class Natural implements IExpression {
 				return false;
 			}
 			final Abstraction other = (Abstraction) obj;
-			return churchNatural.alphaEquals(other);
+			return churchNatural.equals(other);
 		}
 		final Natural other = (Natural) obj;
 		if (value != other.value) {

@@ -35,14 +35,12 @@ public class ApplicationTest {
 	 * Lambda applications itself and subterms of function and argument are
 	 * their subterms.
 	 */
-	// @Test
+	// TODO @Test
 	// public final void itselfAndFunctionSubtermsAndArgumentSubterms() {
 	// final List<IExpression> subterms = fixture.subterm();
 	// assertNotNull("Application should be its own subterm", subterms);
-	// assertThat(
-	// subterms,
-	// hasItems(apply(mockFunction, mockArgument), mockFunction,
-	// mockArgument));
+	// assertThat(subterms, hasItems(apply(mockFunction, mockArgument),
+	// mockFunction, mockArgument));
 	// assertCalled(mockFunction, "subterm");
 	// assertCalled(mockArgument, "subterm");
 	// }
