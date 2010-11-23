@@ -90,8 +90,8 @@ class Application implements IExpression {
 
 	@Override
 	public boolean isReducible() {
-		return function instanceof Abstraction || function instanceof Natural
-				|| function.isReducible() || argument.isReducible();
+		return function instanceof Abstraction || function.isReducible()
+				|| argument.isReducible();
 	}
 
 	@Override
@@ -110,16 +110,6 @@ class Application implements IExpression {
 			final Abstraction abstraction = (Abstraction) function;
 			result = abstraction.getBody().substitute(
 					abstraction.getVariable(), argument);
-		} else if (function instanceof Natural) {
-			final Natural naturalNumber = (Natural) function;
-			if (naturalNumber.getExpression() instanceof Abstraction) {
-				final Abstraction churchNumber = (Abstraction) naturalNumber
-						.getExpression();
-				result = churchNumber.getBody().substitute(
-						churchNumber.getVariable(), argument);
-			} else {
-				throw new IllegalArgumentException();
-			}
 		} else if (function.isReducible()) {
 			result = new Application(function.oneStepBetaReduce(), argument);
 		} else {

@@ -28,12 +28,6 @@ public interface IVisitor {
 	public void visit(IExpression expression);
 
 	/**
-	 * @param number
-	 *            to be visited
-	 */
-	public void visit(Natural number);
-
-	/**
 	 * @param variable
 	 *            to be visited
 	 */

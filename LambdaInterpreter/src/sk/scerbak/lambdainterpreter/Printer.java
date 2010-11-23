@@ -27,12 +27,12 @@ public class Printer implements IVisitor {
 	 */
 	private final StringBuilder output;
 	private int applicationLevel;
-	private int abstractionLevel;
+	private final NaturalReductor naturalReductor;
 
 	public Printer() {
 		output = new StringBuilder();
 		applicationLevel = 0;
-		abstractionLevel = 0;
+		naturalReductor = new NaturalReductor();
 	}
 
 	/*
@@ -47,7 +47,9 @@ public class Printer implements IVisitor {
 
 	@Override
 	public final void visit(final Abstraction abstraction) {
-		if (Calculus.PRED.equals(abstraction)) {
+		if (naturalReductor.isNatural(abstraction)) {
+			output.append(naturalReductor.getValue());
+		} else if (Calculus.PRED.equals(abstraction)) {
 			output.append("PRED");
 		} else if (Calculus.SUCC.equals(abstraction)) {
 			output.append("SUCC");
@@ -79,9 +81,7 @@ public class Printer implements IVisitor {
 			output.append("Y");
 		} else {
 			output.append("(" + abstraction.getVariable() + "|");
-			abstractionLevel++;
 			abstraction.getBody().accept(this);
-			abstractionLevel = 0;
 			output.append(")");
 		}
 	}
@@ -107,13 +107,7 @@ public class Printer implements IVisitor {
 	}
 
 	@Override
-	public final void visit(final Natural number) {
-		output.append(number.getValue());
-	}
-
-	@Override
 	public final void visit(final Variable variable) {
 		output.append(variable.getLabel());
 	}
-
 }
