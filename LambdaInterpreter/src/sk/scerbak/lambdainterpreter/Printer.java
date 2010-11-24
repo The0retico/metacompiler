@@ -27,12 +27,12 @@ public class Printer implements IVisitor {
 	 */
 	private final StringBuilder output;
 	private int applicationLevel;
-	private final NaturalReductor naturalReductor;
+	private final NaturalPrinter naturalReductor;
 
 	public Printer() {
 		output = new StringBuilder();
 		applicationLevel = 0;
-		naturalReductor = new NaturalReductor();
+		naturalReductor = new NaturalPrinter();
 	}
 
 	/*

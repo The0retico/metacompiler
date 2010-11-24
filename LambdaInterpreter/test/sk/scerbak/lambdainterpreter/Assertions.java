@@ -57,10 +57,15 @@ final class Assertions {
 				normalForm);
 		assertTrue("Normal form of " + Printer.toString(expression)
 				+ " expected: " + Printer.toString(expected) + " but was: "
-				+ Printer.toString(normalForm),
-				expected.equals(normalForm));
+				+ Printer.toString(normalForm), expected.equals(normalForm));
 	}
 
+	/**
+	 * @param mock
+	 *            object
+	 * @param methodNames
+	 *            for methods which should have been called on the mock
+	 */
 	public static void assertNotCalled(final Mock mock,
 			final String... methodNames) {
 		assertThat(mock.getMethodCalls(), not(hasItems(methodNames)));
