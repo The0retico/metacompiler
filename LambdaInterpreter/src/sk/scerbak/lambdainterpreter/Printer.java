@@ -29,7 +29,7 @@ public class Printer implements IVisitor {
 	private int applicationLevel;
 	private final NaturalPrinter naturalReductor;
 
-	public Printer() {
+	private Printer() {
 		output = new StringBuilder();
 		applicationLevel = 0;
 		naturalReductor = new NaturalPrinter();
@@ -89,15 +89,15 @@ public class Printer implements IVisitor {
 	@Override
 	public void visit(final Application application) {
 		if (applicationLevel == 0) {
-			output.append("(");
+			output.append('(');
 		}
 		applicationLevel++;
 		application.getFunction().accept(this);
 		applicationLevel--;
-		output.append(" ");
+		output.append(' ');
 		application.getArgument().accept(this);
 		if (applicationLevel == 0) {
-			output.append(")");
+			output.append(')');
 		}
 	}
 

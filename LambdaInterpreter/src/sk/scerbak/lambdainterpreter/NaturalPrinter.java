@@ -11,6 +11,11 @@ public class NaturalPrinter implements IVisitor {
 		return successorLevel;
 	}
 
+	/**
+	 * @param abstraction
+	 *            which might represent a church natural
+	 * @return true if the abstraction represents a church natural
+	 */
 	public boolean isNatural(final Abstraction abstraction) {
 		successorLevel = 0;
 		firstBoundVariable = "";
@@ -21,7 +26,7 @@ public class NaturalPrinter implements IVisitor {
 	}
 
 	@Override
-	public void visit(final Abstraction abstraction) {
+	public final void visit(final Abstraction abstraction) {
 		if (secondBoundVariable.isEmpty()) {
 			if (firstBoundVariable.isEmpty()) {
 				firstBoundVariable = abstraction.getVariable();
@@ -33,7 +38,7 @@ public class NaturalPrinter implements IVisitor {
 	}
 
 	@Override
-	public void visit(final Application application) {
+	public final void visit(final Application application) {
 		if (!secondBoundVariable.isEmpty() && !firstBoundVariable.isEmpty()) {
 			final int before = successorLevel;
 			application.getFunction().accept(this);
@@ -50,7 +55,7 @@ public class NaturalPrinter implements IVisitor {
 	}
 
 	@Override
-	public void visit(final Variable variable) {
+	public final void visit(final Variable variable) {
 		final String variableName = variable.getLabel();
 		if (firstBoundVariable.equals(variableName)) {
 			successorLevel++;

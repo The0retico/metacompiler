@@ -14,6 +14,6 @@ import sk.scerbak.utility.StringUtilityTest;
 @RunWith(Suite.class)
 @SuiteClasses(value = { StringUtilityTest.class, UnitTests.class,
 		ParserTest.class, ParserFailureTest.class, AcceptanceTests.class,
-		ComplexTests.class })
+		ComplexTests.class, DeBruijnPrinterTest.class })
 public class AllTests {
 };
