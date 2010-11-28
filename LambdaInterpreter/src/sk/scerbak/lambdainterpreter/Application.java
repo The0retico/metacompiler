@@ -134,16 +134,4 @@ class Application implements IExpression {
 		return result;
 	}
 
-	@Override
-	public String toString() {
-		final StringBuilder arguments = new StringBuilder();
-		IExpression left = function;
-		while (left instanceof Application) {
-			final Application leftApplication = (Application) left;
-			arguments.insert(0, " " + leftApplication.argument);
-			left = leftApplication.function;
-		}
-		arguments.insert(0, left);
-		return "(" + arguments + " " + argument + ")";
-	}
 }

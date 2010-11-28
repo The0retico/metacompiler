@@ -98,6 +98,11 @@ public final class Calculus {
 			def("x").apply(var("f"), apply(var("x"), var("x"))),
 			def("x").apply(var("f"), apply(var("x"), var("x"))));
 
+	public static final IExpression S = def("x", "y", "z").apply(
+			apply(var("x"), var("z")), apply(var("y"), var("z")));
+	public static final IExpression K = def("x", "y").var("x");
+	public static final IExpression I = def("x").var("x");
+
 	/**
 	 * @param function
 	 *            inner-most left-most expression in nested applications

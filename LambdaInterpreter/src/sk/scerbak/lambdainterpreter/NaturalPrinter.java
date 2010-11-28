@@ -7,7 +7,7 @@ public class NaturalPrinter implements IVisitor {
 	private String secondBoundVariable;
 	private boolean isNatural;
 
-	public int getValue() {
+	public final int getValue() {
 		return successorLevel;
 	}
 
@@ -16,7 +16,7 @@ public class NaturalPrinter implements IVisitor {
 	 *            which might represent a church natural
 	 * @return true if the abstraction represents a church natural
 	 */
-	public boolean isNatural(final Abstraction abstraction) {
+	public final boolean isNatural(final Abstraction abstraction) {
 		successorLevel = 0;
 		firstBoundVariable = "";
 		secondBoundVariable = "";

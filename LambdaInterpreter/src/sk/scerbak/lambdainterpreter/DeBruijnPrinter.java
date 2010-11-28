@@ -44,11 +44,14 @@ public class DeBruijnPrinter implements IVisitor {
 	 */
 	private int applicationLevel;
 
+	private int numberOfFreeVariables;
+
 	private DeBruijnPrinter() {
 		output = new StringBuilder();
 		variableLevels = new HashMap<String, Integer>();
 		abstractionLevel = 0;
 		applicationLevel = 0;
+		numberOfFreeVariables = 0;
 	}
 
 	@Override
@@ -108,7 +111,8 @@ public class DeBruijnPrinter implements IVisitor {
 					- variableLevels.get(variableName) - 1;
 			output.append(deBruijnIndex);
 		} else {
-			output.append(abstractionLevel + 1);
+			numberOfFreeVariables++;
+			output.append(abstractionLevel + numberOfFreeVariables);
 		}
 	}
 

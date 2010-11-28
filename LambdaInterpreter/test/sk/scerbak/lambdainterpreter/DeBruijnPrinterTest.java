@@ -24,7 +24,7 @@ public class DeBruijnPrinterTest {
 				def("x", "y").apply(var("z"), var("x"),
 						def("u").apply(var("u"), var("x"))),
 				def("x").apply(var("w"), var("x")));
-		assertEquals("((|(|3 1 (|0 2))) (|(4 0)))",
+		assertEquals("((|(|3 1 (|0 2))) (|4 0))",
 				DeBruijnPrinter.toString(fixture));
 	}
 

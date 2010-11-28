@@ -47,7 +47,13 @@ public class Printer implements IVisitor {
 
 	@Override
 	public final void visit(final Abstraction abstraction) {
-		if (naturalReductor.isNatural(abstraction)) {
+		if (Calculus.S.equals(abstraction)) {
+			output.append("S");
+		} else if (Calculus.K.equals(abstraction)) {
+			output.append("K");
+		} else if (Calculus.I.equals(abstraction)) {
+			output.append("I");
+		} else if (naturalReductor.isNatural(abstraction)) {
 			output.append(naturalReductor.getValue());
 		} else if (Calculus.PRED.equals(abstraction)) {
 			output.append("PRED");
