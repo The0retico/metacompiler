@@ -1,36 +1,41 @@
 package lexer;
 
 public class Token {
-	public enum typeOfToken{DEFINITION, CONCATENATION, TERMINATION, ALTERNATION, EXCEPTION,IDENTIFIER };
-	private typeOfToken mytype; 
-	private String nameOfToken;
-	private final int stored;
+	public enum TokenType {
+		DEFINITION, CONCATENATION, TERMINATION, ALTERNATION, EXCEPTION, IDENTIFIER
+	};
 
-	public Token(final typeOfToken type) {
-		mytype = type;
-		stored = 0;
+	private TokenType type;
+	private String value;
+
+	public Token(final TokenType myType) {
+		type = myType;
 	}
 
-	public Token(final typeOfToken type, final String name) {
-		mytype = type;
-		nameOfToken = name;
-		stored = 0;
+	/**
+	 * @param myType
+	 *            is a type of EBNF token
+	 * @param myName
+	 */
+	public Token(final TokenType myType, final String myName) {
+		type = myType;
+		value = myName;
 	}
 
-	public typeOfToken getMytype() {
-		return mytype;
+	public TokenType getType() {
+		return type;
 	}
 
-	public void setMytype(typeOfToken mytype) {
-		this.mytype = mytype;
+	public String getValue() {
+		return value;
 	}
 
-	public String getNameOfToken() {
-		return nameOfToken;
+	public void setType(final TokenType myType) {
+		type = myType;
 	}
 
-	public void setNameOfToken(String nameOfToken) {
-		this.nameOfToken = nameOfToken;
+	public void setValue(final String nameOfToken) {
+		value = nameOfToken;
 	}
 
 }
