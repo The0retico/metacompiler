@@ -27,23 +27,23 @@ public class EBNFLexer implements Lexer {
 			if (inputText.charAt(i) != WHITE_SPACE) {
 				if (inputText.charAt(i) == '=') {
 					position = i + 1;
-					return new Token(Token.typeOfToken.DEFINITION);
+					return new Token(Token.TokenType.DEFINITION);
 				}
 				if (inputText.charAt(i) == ',') {
 					position = i + 1;
-					return new Token(Token.typeOfToken.CONCATENATION);
+					return new Token(Token.TokenType.CONCATENATION);
 				}
 				if (inputText.charAt(i) == ';') {
 					position = i + 1;
-					return new Token(Token.typeOfToken.TERMINATION);
+					return new Token(Token.TokenType.TERMINATION);
 				}
 				if (inputText.charAt(i) == '|') {
 					position = i + 1;
-					return new Token(Token.typeOfToken.ALTERNATION);
+					return new Token(Token.TokenType.ALTERNATION);
 				}
 				if (inputText.charAt(i) != '"') {
 					position = i + 1;
-					return new Token(Token.typeOfToken.IDENTIFIER, "f");
+					return new Token(Token.TokenType.IDENTIFIER, "f");
 				}
 			}
 
