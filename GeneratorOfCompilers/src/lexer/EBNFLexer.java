@@ -1,12 +1,13 @@
 package lexer;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import lexer.EBNFToken.UndefinedSymbolException;
 
 public class EBNFLexer {
 	private final String inputText;
-	private Map<Integer, EBNFToken> tableOfSymbols;
+	private final Map<Integer, EBNFToken> tableOfSymbols;
 
 	private int position;
 	private static final char WHITE_SPACE = ' ';
@@ -14,6 +15,7 @@ public class EBNFLexer {
 	public EBNFLexer(final String input) {
 		inputText = input;
 		position = 0;
+		tableOfSymbols = new HashMap<Integer, EBNFToken>();
 	}
 
 	private void findNextSymbol() {
@@ -21,13 +23,6 @@ public class EBNFLexer {
 				&& position < inputText.length()) {
 			position++;
 		}
-	}
-
-	/**
-	 * @return the inputText
-	 */
-	public final String getInputText() {
-		return inputText;
 	}
 
 	public final EBNFToken getNextToken() throws UndefinedSymbolException {

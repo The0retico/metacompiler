@@ -1,6 +1,7 @@
 package lexer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import lexer.EBNFToken.UndefinedSymbolException;
 
@@ -21,6 +22,8 @@ public class EBNFLexerTest {
 		assertTrue("Alternation symbol should be recognized as a token",
 				lexer.hasNextToken());
 		assertEquals(EBNFToken.ALTERNATION, lexer.getNextToken());
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
 	}
 
 	/**
@@ -37,6 +40,8 @@ public class EBNFLexerTest {
 				lexer.hasNextToken());
 		final EBNFToken token = lexer.getNextToken();
 		assertEquals(EBNFToken.CONCATENATION, token);
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
 	}
 
 	/**
@@ -52,6 +57,8 @@ public class EBNFLexerTest {
 				lexer.hasNextToken());
 		final EBNFToken token = lexer.getNextToken();
 		assertEquals(EBNFToken.DEFINITION, token);
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
 	}
 
 	/**
@@ -67,6 +74,8 @@ public class EBNFLexerTest {
 		assertTrue("Exception symbol should be recognized as a token",
 				lexer.hasNextToken());
 		assertEquals(EBNFToken.EXCEPTION, lexer.getNextToken());
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
 	}
 
 	/**
@@ -82,6 +91,8 @@ public class EBNFLexerTest {
 		assertTrue("Repetition symbol should be recognized as a token",
 				lexer.hasNextToken());
 		assertEquals(EBNFToken.REPETITION, lexer.getNextToken());
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
 	}
 
 	/**
@@ -97,5 +108,7 @@ public class EBNFLexerTest {
 		assertTrue("Termination symbol should be recognized as a token",
 				lexer.hasNextToken());
 		assertEquals(EBNFToken.TERMINATION, lexer.getNextToken());
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
 	}
 }
