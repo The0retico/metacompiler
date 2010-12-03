@@ -4,6 +4,6 @@ public interface Lexer {
 
 	boolean hasNextToken();
 
-	Token getNextToken();
+	Token getNextToken() throws UndefinedSymbolException;
 
 }
