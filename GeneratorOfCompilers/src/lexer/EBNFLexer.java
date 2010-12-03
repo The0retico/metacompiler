@@ -2,9 +2,11 @@ package lexer;
 
 import java.util.Map;
 
-public class EBNFLexer implements Lexer {
+import lexer.EBNFToken.UndefinedSymbolException;
+
+public class EBNFLexer {
 	private final String inputText;
-	public Map<Integer, Token> tableOfSymbols;
+	private Map<Integer, EBNFToken> tableOfSymbols;
 
 	private int position;
 	private static final char WHITE_SPACE = ' ';
@@ -24,19 +26,17 @@ public class EBNFLexer implements Lexer {
 	/**
 	 * @return the inputText
 	 */
-	public String getInputText() {
+	public final String getInputText() {
 		return inputText;
 	}
 
-	@Override
-	public final Token getNextToken() throws UndefinedSymbolException {
+	public final EBNFToken getNextToken() throws UndefinedSymbolException {
 		findNextSymbol();
 		final char nextSymbol = inputText.charAt(position);
-		return Token.create(nextSymbol);
+		return EBNFToken.create(nextSymbol);
 	}
 
-	@Override
-	public boolean hasNextToken() {
+	public final boolean hasNextToken() {
 		findNextSymbol();
 		return position < inputText.length();
 	}
