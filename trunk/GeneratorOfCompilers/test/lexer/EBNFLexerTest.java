@@ -2,13 +2,14 @@ package lexer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import lexer.EBNFToken.UndefinedSymbolException;
 
 import org.junit.Test;
 
-public class Test2 {
+public class EBNFLexerTest {
 
 	/**
-	 * Test of alternation symbol in EBNF "|"
+	 * Test of alternation symbol in EBNF "|".
 	 * 
 	 * @throws UndefinedSymbolException
 	 *             in case "|" is not recognized
@@ -16,15 +17,14 @@ public class Test2 {
 	 */
 	@Test
 	public final void altSymbol() throws UndefinedSymbolException {
-		final Lexer lexer = new EBNFLexer("|");
+		final EBNFLexer lexer = new EBNFLexer("|");
 		assertTrue("Alternation symbol should be recognized as a token",
 				lexer.hasNextToken());
-		final Token token = lexer.getNextToken();
-		assertEquals(Token.TokenType.ALTERNATION, token.getType());
+		assertEquals(EBNFToken.ALTERNATION, lexer.getNextToken());
 	}
 
 	/**
-	 * Test of concatenation symbol in EBNF ","
+	 * Test of concatenation symbol in EBNF ",".
 	 * 
 	 * @throws UndefinedSymbolException
 	 *             in case "," is not recognized
@@ -32,30 +32,30 @@ public class Test2 {
 	 */
 	@Test
 	public final void conSymbol() throws UndefinedSymbolException {
-		final Lexer lexer = new EBNFLexer(",");
+		final EBNFLexer lexer = new EBNFLexer(",");
 		assertTrue("Concatenation symbol should be recognized as a token",
 				lexer.hasNextToken());
-		final Token token = lexer.getNextToken();
-		assertEquals(Token.TokenType.CONCATENATION, token.getType());
+		final EBNFToken token = lexer.getNextToken();
+		assertEquals(EBNFToken.CONCATENATION, token);
 	}
 
 	/**
-	 * Test of definition symbol in EBNF "="
+	 * Test of definition symbol in EBNF "=".
 	 * 
 	 * @throws UndefinedSymbolException
 	 *             in case "=" is not recognized as a symbol
 	 */
 	@Test
 	public final void defSymbol() throws UndefinedSymbolException {
-		final Lexer lexer = new EBNFLexer("=");
+		final EBNFLexer lexer = new EBNFLexer("=");
 		assertTrue("Definition symbol should be recognized as a token",
 				lexer.hasNextToken());
-		final Token token = lexer.getNextToken();
-		assertEquals(Token.TokenType.DEFINITION, token.getType());
+		final EBNFToken token = lexer.getNextToken();
+		assertEquals(EBNFToken.DEFINITION, token);
 	}
 
 	/**
-	 * Test of exception symbol in EBNF "-"
+	 * Test of exception symbol in EBNF "-".
 	 * 
 	 * @throws UndefinedSymbolException
 	 *             in case "-" is not recognized as a symbol
@@ -63,14 +63,14 @@ public class Test2 {
 	 */
 	@Test
 	public final void excSymbol() throws UndefinedSymbolException {
-		final Lexer lexer = new EBNFLexer("-");
-		assertTrue(lexer.hasNextToken());
-		final Token token = lexer.getNextToken();
-		assertEquals(Token.TokenType.EXCEPTION, token.getType());
+		final EBNFLexer lexer = new EBNFLexer("-");
+		assertTrue("Exception symbol should be recognized as a token",
+				lexer.hasNextToken());
+		assertEquals(EBNFToken.EXCEPTION, lexer.getNextToken());
 	}
 
 	/**
-	 * Test of repetition symbol in EBNF "*"
+	 * Test of repetition symbol in EBNF "*".
 	 * 
 	 * @throws UndefinedSymbolException
 	 *             in case "*" is not recognized as a symbol
@@ -78,14 +78,14 @@ public class Test2 {
 	 */
 	@Test
 	public final void repSymbol() throws UndefinedSymbolException {
-		final Lexer lexer = new EBNFLexer("*");
-		assertTrue(lexer.hasNextToken());
-		final Token token = lexer.getNextToken();
-		assertEquals(Token.TokenType.REPETITION, token.getType());
+		final EBNFLexer lexer = new EBNFLexer("*");
+		assertTrue("Repetition symbol should be recognized as a token",
+				lexer.hasNextToken());
+		assertEquals(EBNFToken.REPETITION, lexer.getNextToken());
 	}
 
 	/**
-	 * Test of termination symbol in EBNF ";"
+	 * Test of termination symbol in EBNF ";".
 	 * 
 	 * @throws UndefinedSymbolException
 	 *             in case ";" is not recognized as a symbol
@@ -93,9 +93,9 @@ public class Test2 {
 	 */
 	@Test
 	public final void terSymbol() throws UndefinedSymbolException {
-		final Lexer lexer = new EBNFLexer(";");
-		assertTrue(lexer.hasNextToken());
-		final Token token = lexer.getNextToken();
-		assertEquals(Token.TokenType.TERMINATION, token.getType());
+		final EBNFLexer lexer = new EBNFLexer(";");
+		assertTrue("Termination symbol should be recognized as a token",
+				lexer.hasNextToken());
+		assertEquals(EBNFToken.TERMINATION, lexer.getNextToken());
 	}
 }
