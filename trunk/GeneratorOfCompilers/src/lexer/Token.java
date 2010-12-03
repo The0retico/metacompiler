@@ -38,4 +38,32 @@ public class Token {
 		value = nameOfToken;
 	}
 
+	static Token create(final char symbol)
+			throws UndefinedSymbolException {
+		Token result = null;
+		switch (symbol) {
+		case '=':
+			result = new Token(TokenType.DEFINITION);
+			break;
+		case ',':
+			result = new Token(TokenType.CONCATENATION);
+			break;
+		case ';':
+			result = new Token(TokenType.TERMINATION);
+			break;
+		case '|':
+			result = new Token(TokenType.ALTERNATION);
+			break;
+		case '-':
+			result = new Token(TokenType.EXCEPTION);
+			break;
+		case '*':
+			result = new Token(TokenType.REPETITION);
+			break;
+		default:
+			throw new UndefinedSymbolException(symbol);
+		}
+		return result;
+	}
+
 }
