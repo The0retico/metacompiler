@@ -19,8 +19,8 @@ public class EBNFLexer {
 	}
 
 	private void findNextSymbol() {
-		while (inputText.charAt(position) == WHITE_SPACE
-				&& position < inputText.length()) {
+		while (position < inputText.length() 
+				&& inputText.charAt(position) == WHITE_SPACE) {
 			position++;
 		}
 	}
@@ -28,6 +28,7 @@ public class EBNFLexer {
 	public final EBNFToken getNextToken() throws UndefinedSymbolException {
 		findNextSymbol();
 		final char nextSymbol = inputText.charAt(position);
+		position++;
 		return EBNFToken.create(nextSymbol);
 	}
 
