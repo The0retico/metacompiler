@@ -6,9 +6,11 @@ import java.util.Map;
 import lexer.EBNFToken.UndefinedSymbolException;
 
 public class EBNFLexer {
+	public enum LexerState {READSTRING, READNUMBER, READIDENTIFIER, READSYMBOL}
 	private final String inputText;
 	private final Map<Integer, EBNFToken> tableOfSymbols;
 
+	private LexerState state = LexerState.READSYMBOL;
 	private int position;
 	private static final char WHITE_SPACE = ' ';
 
