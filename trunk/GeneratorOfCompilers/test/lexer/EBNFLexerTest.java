@@ -31,7 +31,6 @@ public class EBNFLexerTest {
 	 * 
 	 * @throws UndefinedSymbolException
 	 *             in case "," is not recognized
-	 * 
 	 */
 	@Test
 	public final void conSymbol() throws UndefinedSymbolException {
@@ -79,6 +78,57 @@ public class EBNFLexerTest {
 	}
 
 	/**
+	 * Test of left grouping symbol in EBNF ";".
+	 * 
+	 * @throws UndefinedSymbolException
+	 *             in case "(" is not recognized as a symbol
+	 * 
+	 */
+	@Test
+	public final void lGroupSymbol() throws UndefinedSymbolException {
+		final EBNFLexer lexer = new EBNFLexer("(");
+		assertTrue("LTGROUP symbol should be recognized as a token",
+				lexer.hasNextToken());
+		assertEquals(EBNFToken.LTGROUP, lexer.getNextToken());
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
+	}
+
+	/**
+	 * Test of left option symbol in EBNF ";".
+	 * 
+	 * @throws UndefinedSymbolException
+	 *             in case "[" is not recognized as a symbol
+	 * 
+	 */
+	@Test
+	public final void lOptSymbol() throws UndefinedSymbolException {
+		final EBNFLexer lexer = new EBNFLexer("[");
+		assertTrue("LTOPTION symbol should be recognized as a token",
+				lexer.hasNextToken());
+		assertEquals(EBNFToken.LTOPTION, lexer.getNextToken());
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
+	}
+
+	/**
+	 * Test of left repetition symbol in EBNF ";".
+	 * 
+	 * @throws UndefinedSymbolException
+	 *             in case "{" is not recognized as a symbol
+	 * 
+	 */
+	@Test
+	public final void lRepSymbol() throws UndefinedSymbolException {
+		final EBNFLexer lexer = new EBNFLexer("{");
+		assertTrue("LTREP symbol should be recognized as a token",
+				lexer.hasNextToken());
+		assertEquals(EBNFToken.LTREP, lexer.getNextToken());
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
+	}
+
+	/**
 	 * Test of repetition symbol in EBNF "*".
 	 * 
 	 * @throws UndefinedSymbolException
@@ -91,6 +141,57 @@ public class EBNFLexerTest {
 		assertTrue("Repetition symbol should be recognized as a token",
 				lexer.hasNextToken());
 		assertEquals(EBNFToken.REPETITION, lexer.getNextToken());
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
+	}
+
+	/**
+	 * Test of right grouping symbol in EBNF ";".
+	 * 
+	 * @throws UndefinedSymbolException
+	 *             in case ")" is not recognized as a symbol
+	 * 
+	 */
+	@Test
+	public final void rGroupSymbol() throws UndefinedSymbolException {
+		final EBNFLexer lexer = new EBNFLexer(")");
+		assertTrue("RTGROUP symbol should be recognized as a token",
+				lexer.hasNextToken());
+		assertEquals(EBNFToken.RTGROUP, lexer.getNextToken());
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
+	}
+
+	/**
+	 * Test of right option symbol in EBNF ";".
+	 * 
+	 * @throws UndefinedSymbolException
+	 *             in case "]" is not recognized as a symbol
+	 * 
+	 */
+	@Test
+	public final void rOptSymbol() throws UndefinedSymbolException {
+		final EBNFLexer lexer = new EBNFLexer("]");
+		assertTrue("RTOPTION symbol should be recognized as a token",
+				lexer.hasNextToken());
+		assertEquals(EBNFToken.RTOPTION, lexer.getNextToken());
+		assertFalse("Lexer should not offer any more tokens",
+				lexer.hasNextToken());
+	}
+
+	/**
+	 * Test of right repetition symbol in EBNF ";".
+	 * 
+	 * @throws UndefinedSymbolException
+	 *             in case "}" is not recognized as a symbol
+	 * 
+	 */
+	@Test
+	public final void rRepSymbol() throws UndefinedSymbolException {
+		final EBNFLexer lexer = new EBNFLexer("}");
+		assertTrue("RTREP symbol should be recognized as a token",
+				lexer.hasNextToken());
+		assertEquals(EBNFToken.RTREP, lexer.getNextToken());
 		assertFalse("Lexer should not offer any more tokens",
 				lexer.hasNextToken());
 	}
@@ -111,108 +212,5 @@ public class EBNFLexerTest {
 		assertFalse("Lexer should not offer any more tokens",
 				lexer.hasNextToken());
 	}
-	
-	/**
-	 * Test of left option symbol in EBNF ";".
-	 * 
-	 * @throws UndefinedSymbolException
-	 *             in case "[" is not recognized as a symbol
-	 * 
-	 */
-	@Test
-	public final void lOptSymbol() throws UndefinedSymbolException {
-		final EBNFLexer lexer = new EBNFLexer("[");
-		assertTrue("LTOPTION symbol should be recognized as a token",
-				lexer.hasNextToken());
-		assertEquals(EBNFToken.LTOPTION, lexer.getNextToken());
-		assertFalse("Lexer should not offer any more tokens",
-				lexer.hasNextToken());
-	}
-	
-	/**
-	 * Test of right option symbol in EBNF ";".
-	 * 
-	 * @throws UndefinedSymbolException
-	 *             in case "]" is not recognized as a symbol
-	 * 
-	 */
-	@Test
-	public final void rOptSymbol() throws UndefinedSymbolException {
-		final EBNFLexer lexer = new EBNFLexer("]");
-		assertTrue("RTOPTION symbol should be recognized as a token",
-				lexer.hasNextToken());
-		assertEquals(EBNFToken.RTOPTION, lexer.getNextToken());
-		assertFalse("Lexer should not offer any more tokens",
-				lexer.hasNextToken());
-	}	
-	
-	/**
-	 * Test of left repetition symbol in EBNF ";".
-	 * 
-	 * @throws UndefinedSymbolException
-	 *             in case "{" is not recognized as a symbol
-	 * 
-	 */
-	@Test
-	public final void lRepSymbol() throws UndefinedSymbolException {
-		final EBNFLexer lexer = new EBNFLexer("{");
-		assertTrue("LTREP symbol should be recognized as a token",
-				lexer.hasNextToken());
-		assertEquals(EBNFToken.LTREP, lexer.getNextToken());
-		assertFalse("Lexer should not offer any more tokens",
-				lexer.hasNextToken());
-	}
-	
-	/**
-	 * Test of right repetition symbol in EBNF ";".
-	 * 
-	 * @throws UndefinedSymbolException
-	 *             in case "}" is not recognized as a symbol
-	 * 
-	 */
-	@Test
-	public final void rRepSymbol() throws UndefinedSymbolException {
-		final EBNFLexer lexer = new EBNFLexer("}");
-		assertTrue("RTREP symbol should be recognized as a token",
-				lexer.hasNextToken());
-		assertEquals(EBNFToken.RTREP, lexer.getNextToken());
-		assertFalse("Lexer should not offer any more tokens",
-				lexer.hasNextToken());
-	}
-	
-	/**
-	 * Test of left grouping symbol in EBNF ";".
-	 * 
-	 * @throws UndefinedSymbolException
-	 *             in case "(" is not recognized as a symbol
-	 * 
-	 */
-	@Test
-	public final void lGroupSymbol() throws UndefinedSymbolException {
-		final EBNFLexer lexer = new EBNFLexer("(");
-		assertTrue("LTGROUP symbol should be recognized as a token",
-				lexer.hasNextToken());
-		assertEquals(EBNFToken.LTGROUP, lexer.getNextToken());
-		assertFalse("Lexer should not offer any more tokens",
-				lexer.hasNextToken());
-	}
-	
-	/**
-	 * Test of right grouping symbol in EBNF ";".
-	 * 
-	 * @throws UndefinedSymbolException
-	 *             in case ")" is not recognized as a symbol
-	 * 
-	 */
-	@Test
-	public final void rGroupSymbol() throws UndefinedSymbolException {
-		final EBNFLexer lexer = new EBNFLexer(")");
-		assertTrue("RTGROUP symbol should be recognized as a token",
-				lexer.hasNextToken());
-		assertEquals(EBNFToken.RTGROUP, lexer.getNextToken());
-		assertFalse("Lexer should not offer any more tokens",
-				lexer.hasNextToken());
-	}
-	
-	
+
 }

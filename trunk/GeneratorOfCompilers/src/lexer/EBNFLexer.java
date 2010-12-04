@@ -18,22 +18,27 @@ public class EBNFLexer {
 		tableOfSymbols = new HashMap<Integer, EBNFToken>();
 	}
 
-	private void findNextSymbol() {
-		while (position < inputText.length() 
+	private char findNextSymbol() {
+		while (position < inputText.length()
 				&& inputText.charAt(position) == WHITE_SPACE) {
 			position++;
 		}
+		return inputText.charAt(position);
 	}
 
 	public final EBNFToken getNextToken() throws UndefinedSymbolException {
-		findNextSymbol();
-		final char nextSymbol = inputText.charAt(position);
+		final char nextSymbol = findNextSymbol();
 		position++;
 		return EBNFToken.create(nextSymbol);
 	}
 
 	public final boolean hasNextToken() {
-		findNextSymbol();
-		return position < inputText.length();
+		boolean result = true;
+		try {
+			findNextSymbol();
+		} catch (final StringIndexOutOfBoundsException e) {
+			result = false;
+		}
+		return result;
 	}
 }
