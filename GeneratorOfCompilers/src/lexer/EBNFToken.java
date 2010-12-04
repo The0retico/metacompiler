@@ -1,5 +1,7 @@
 package lexer;
 
+import lexer.EBNFLexer.LexerState;
+
 public enum EBNFToken {
 	DEFINITION, CONCATENATION, TERMINATION, ALTERNATION, EXCEPTION, IDENTIFIER, REPETITION,
 	NUMBER, LTOPTION, RTOPTION, LTREP, RTREP, LTGROUP, RTGROUP;
@@ -49,12 +51,7 @@ public enum EBNFToken {
 		case ')':
 			result = RTGROUP;
 			break;
-		/*case 'num':
-			result = REPETITION;
-			break;
-		case 'ident':
-			result = REPETITION;
-			break;*/
+		
 		case '*':
 			result = REPETITION;
 			break;
