@@ -50,7 +50,9 @@ public class Lexer {
 	 */
 	public final IToken getNextToken() throws Exception {
 		skipBlankSymbols();
-		if (isKeywordNextToken()) {
+		if (isCommentNextToken()) {
+			currentToken = scanComment();
+		}else if (isKeywordNextToken()) {
 			currentToken = scanKeyword();
 		} else if (isNumberNextToken()) {
 			currentToken = scanNumber();
@@ -58,6 +60,8 @@ public class Lexer {
 			currentToken = scanIdentifier();
 		} else if (isTerminalNextToken()){
 			currentToken = scanTerminal();
+		} else if (isSpecialNextToken()){
+			currentToken = scanSpecial();
 		}else {
 			throw new Exception(currentLine + ":" + currentRow + ":'"
 					+ input.charAt(position)
@@ -65,6 +69,7 @@ public class Lexer {
 		}
 		return currentToken;
 	}
+
 
 
 
@@ -118,6 +123,22 @@ public class Lexer {
 	private boolean isTerminalNextToken() {
 		final char nextSymbol = input.charAt(position);	
 		return nextSymbol == '\'' || nextSymbol == '"';
+	}
+	
+	/**
+	 * @return true if next token is a Special sequence string, false otherwise
+	 */
+	private boolean isSpecialNextToken() {
+		final char nextSymbol = input.charAt(position);	
+		return nextSymbol == '?';
+	}
+	
+	/**
+	 * @return true if next token is a Comment, false otherwise
+	 */
+	private boolean isCommentNextToken() {
+		final char nextFirstSymbol = input.charAt(position);
+		return nextFirstSymbol == '(' && input.length() > position +1 && input.charAt(position + 1) == '*';
 	}
 	
 	/**
@@ -218,6 +239,37 @@ public class Lexer {
 	}
 
 
+	/**
+	 * @return Special sequence string as the next token.
+	 */
+	private IToken scanSpecial() {
+		int end = position + 1;
+		while (end < input.length() && input.charAt(end)!= '?'){
+			end++;
+		}
+		final String nextToken = input.substring(position+1, end); 
+		final Special result = new Special(nextToken);
+		currentRow += result.getLength() + 2;
+		position += result.getLength() + 2;
+		return result;
+	}
+
+
+	/**
+	 * @return Comment string as the next token.
+	 */
+	private IToken scanComment() {
+		int end = position + 2;
+		while (end + 1 < input.length() && (input.charAt(end)!= '*' || input.charAt(end + 1)!= ')' )){
+			end++;
+		}
+		final String nextToken = input.substring(position+2, end); 
+		final Comment result = new Comment(nextToken);
+		currentRow += result.getLength() + 4;
+		position += result.getLength() + 4;
+		return result;
+	}
+	
 	/**
 	 * Moves to the position in input until non-whitespace character is found.
 	 */

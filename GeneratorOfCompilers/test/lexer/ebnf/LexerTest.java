@@ -45,7 +45,9 @@ public class LexerTest {
 				{"\"abc\"", new Terminal("abc")},{"'3a'", new Terminal("3a")},
 				{"'a34b!@#$%^&*()_+'", new Terminal("a34b!@#$%^&*()_+")},	
 				{"'\"'", new Terminal("\"")},{"\"'\"", new Terminal("'")},
-				{"'[]{}();=,|-'", new Terminal("[]{}();=,|-")},{"\"[]{}();=,|-\"", new Terminal("[]{}();=,|-")}
+				{"'[]{}();=,|-'", new Terminal("[]{}();=,|-")},{"\"[]{}();=,|-\"", new Terminal("[]{}();=,|-")},
+				{"(*ahoj*)", new Comment("ahoj")},{"(*)*)", new Comment(")")},
+				{"?d<=4;?", new Special("d<=4;")}
 				};
 		return Arrays.asList(parameters);
 	}
