@@ -40,7 +40,13 @@ public class LexerTest {
 				{ "\n=\n", Keyword.DEFINITION },
 				{ "\r=\r", Keyword.DEFINITION },
 				{ "\t123  ", new Number(123) },
-				{ "\rabc\n", new Identifier("abc") } };
+				{ "\rabc\n", new Identifier("abc") }, 
+				{"a4", new Identifier("a4")},
+				{"\"abc\"", new Terminal("abc")},{"'3a'", new Terminal("3a")},
+				{"'a34b!@#$%^&*()_+'", new Terminal("a34b!@#$%^&*()_+")},	
+				{"'\"'", new Terminal("\"")},{"\"'\"", new Terminal("'")},
+				{"'[]{}();=,|-'", new Terminal("[]{}();=,|-")},{"\"[]{}();=,|-\"", new Terminal("[]{}();=,|-")}
+				};
 		return Arrays.asList(parameters);
 	}
 
