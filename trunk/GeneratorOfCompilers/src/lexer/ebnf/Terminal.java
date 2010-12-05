@@ -1,5 +1,11 @@
 package lexer.ebnf;
 
+/**
+ * Token for terminal strings in EBNF.
+ * 
+ * @author martinsarvas
+ * 
+ */
 public class Terminal implements IToken {
 
 	/**
@@ -41,15 +47,14 @@ public class Terminal implements IToken {
 		}
 		return true;
 	}
-	
 
 	@Override
-	public int getLength() {
+	public final int getLength() {
 		return value.length();
 	}
 
 	@Override
-	public String getValue() {
+	public final String getValue() {
 		return value;
 	}
 
