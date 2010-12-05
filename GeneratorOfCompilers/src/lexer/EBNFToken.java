@@ -5,11 +5,9 @@ package lexer;
  * 
  * @author sarvasmartin
  */
-import lexer.EBNFLexer.LexerState;
 
 public enum EBNFToken {
-	DEFINITION, CONCATENATION, TERMINATION, ALTERNATION, EXCEPTION, IDENTIFIER, REPETITION,
-	NUMBER, LTOPTION, RTOPTION, LTREP, RTREP, LTGROUP, RTGROUP;
+	DEFINITION, CONCATENATION, TERMINATION, ALTERNATION, EXCEPTION, IDENTIFIER, REPETITION, NUMBER, LTOPTION, RTOPTION, LTREP, RTREP, LTGROUP, RTGROUP;
 
 	public static class UndefinedSymbolException extends Exception {
 		private static final long serialVersionUID = 1L;
@@ -63,7 +61,6 @@ public enum EBNFToken {
 		case ')':
 			result = RTGROUP;
 			break;
-		
 		case '*':
 			result = REPETITION;
 			break;

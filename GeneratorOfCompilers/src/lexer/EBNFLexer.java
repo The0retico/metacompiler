@@ -12,14 +12,15 @@ import lexer.EBNFToken.UndefinedSymbolException;
  * 
  */
 public class EBNFLexer {
-	/**
-	 * Text to be scanned for tokens.
-	 */
 	public enum LexerState {
 		READSTRING, READNUMBER, READIDENTIFIER, READSYMBOL
 	}
 
+	/**
+	 * Text to be scanned for tokens.
+	 */
 	private final String inputText;
+
 	private final Map<Integer, EBNFToken> tableOfSymbols;
 
 	/**
