@@ -1,6 +1,6 @@
 package lexer.ebnf;
 
-public class Comment implements IToken{
+public class Comment implements IToken {
 
 	/**
 	 * Value of this Comment.
@@ -15,11 +15,6 @@ public class Comment implements IToken{
 		value = string;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public final boolean equals(final Object obj) {
 		if (this == obj) {
@@ -41,7 +36,6 @@ public class Comment implements IToken{
 		}
 		return true;
 	}
-	
 
 	@Override
 	public int getLength() {
@@ -52,5 +46,5 @@ public class Comment implements IToken{
 	public String getValue() {
 		return value;
 	}
-	
+
 }

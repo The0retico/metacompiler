@@ -1,7 +1,12 @@
 package lexer.ebnf;
 
-public class Special implements IToken{
-
+/**
+ * Token with special content for extending EBNF.
+ * 
+ * @author martinsarvas
+ * 
+ */
+public class Special implements IToken {
 
 	/**
 	 * Value of this Special sequence string.
@@ -42,15 +47,14 @@ public class Special implements IToken{
 		}
 		return true;
 	}
-	
 
 	@Override
-	public int getLength() {
+	public final int getLength() {
 		return value.length();
 	}
 
 	@Override
-	public String getValue() {
+	public final String getValue() {
 		return value;
 	}
 }
