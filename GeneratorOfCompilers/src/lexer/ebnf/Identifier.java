@@ -21,11 +21,6 @@ public class Identifier implements IToken {
 		name = string;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public final boolean equals(final Object obj) {
 		if (this == obj) {
@@ -58,19 +53,4 @@ public class Identifier implements IToken {
 		return name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public final int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result;
-		if (name != null) {
-			result += name.hashCode();
-		}
-		return result;
-	}
 }

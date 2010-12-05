@@ -58,19 +58,17 @@ public class Lexer {
 			currentToken = scanNumber();
 		} else if (isIdentifierNextToken()) {
 			currentToken = scanIdentifier();
-		} else if (isTerminalNextToken()){
+		} else if (isTerminalNextToken()) {
 			currentToken = scanTerminal();
 		} else if (isSpecialNextToken()){
 			currentToken = scanSpecial();
-		}else {
+		} else {
 			throw new Exception(currentLine + ":" + currentRow + ":'"
 					+ input.charAt(position)
 					+ "' Error! Does not start a token.");
 		}
 		return currentToken;
 	}
-
-
 
 
 	/**
@@ -109,8 +107,6 @@ public class Lexer {
 			final int end = position - 1 + keyword.getLength();
 			if (end < input.length()) {
 				final String nextToken = input.substring(position, end + 1);
-				// System.out
-				// .println(keyword.getValue() + "\t'" + nextToken + "'");
 				found = nextToken.equals(keyword.getValue());
 			}
 		}
@@ -219,16 +215,14 @@ public class Lexer {
 		position += result.getLength();
 		return result;
 	}
-	
+
 	/**
 	 * @return Terminal string as the next token.
 	 */
 	private IToken scanTerminal() {
 		int end = position + 1;
-		char quote = 0;
-		if(input.charAt(position) == '\''){quote = '\'';}
-		if(input.charAt(position) == '"'){quote = '"';} 
-		while (end < input.length() && input.charAt(end)!= quote){
+		final char quote = input.charAt(position);
+		while (end < input.length() && input.charAt(end) != quote) {
 			end++;
 		}
 		final String nextToken = input.substring(position+1, end); 
@@ -237,7 +231,6 @@ public class Lexer {
 		position += result.getLength() + 2;
 		return result;
 	}
-
 
 	/**
 	 * @return Special sequence string as the next token.
