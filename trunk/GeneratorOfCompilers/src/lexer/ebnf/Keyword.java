@@ -5,7 +5,7 @@ package lexer.ebnf;
  * 
  * @author sarvasmartin
  */
-public enum Keyword {
+public enum Keyword implements IToken {
 
 	/**
 	 * Grammar rule definition token.
@@ -68,50 +68,6 @@ public enum Keyword {
 	RIGHT_GROUPING(")");
 
 	/**
-	 * Exception to be thrown when lexer input contains a non whitespace symbol,
-	 * which cannot be scanned as a token.
-	 * 
-	 * @author The0retico
-	 * 
-	 */
-	public static class UndefinedSymbolException extends Exception {
-
-		/**
-		 * Needed for serialization, because exception should be serializable.
-		 */
-		private static final long serialVersionUID = 1L;
-
-		/**
-		 * @param symbol
-		 *            which cannot be scanned
-		 */
-		public UndefinedSymbolException(final char symbol) {
-			super("Symbol '" + symbol + "' is undefined");
-		}
-	}
-
-	/**
-	 * @param symbol
-	 *            character from which a new token should be created
-	 * @return new token from the symbol
-	 * @throws UndefinedSymbolException
-	 *             if the symbol is not a valid token
-	 */
-	public static Keyword create(final char symbol)
-			throws UndefinedSymbolException {
-		Keyword result = null;
-		for (final Keyword keyword : Keyword.values()) {
-			if (keyword.getValue().equals(String.valueOf(symbol))) {
-				result = keyword;
-			}
-		}
-		if (result == null) {
-			throw new UndefinedSymbolException(symbol);
-		}
-		return result;
-	}
-
-	/**
 	 * String value of this token.
 	 */
 	private final String symbol;
@@ -124,9 +80,12 @@ public enum Keyword {
 		symbol = value;
 	}
 
-	/**
-	 * @return the symbol
-	 */
+	@Override
+	public int getLength() {
+		return symbol.length();
+	}
+
+	@Override
 	public String getValue() {
 		return symbol;
 	}

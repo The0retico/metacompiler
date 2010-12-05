@@ -7,8 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 
-import lexer.ebnf.Keyword.UndefinedSymbolException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,7 +33,14 @@ public class LexerTest {
 				{ "[", Keyword.LEFT_OPTION }, { "{", Keyword.LEFT_REPETITION },
 				{ "*", Keyword.REPETITION }, { ")", Keyword.RIGHT_GROUPING },
 				{ "]", Keyword.RIGHT_OPTION },
-				{ "}", Keyword.RIGHT_REPETITION } };
+				{ "}", Keyword.RIGHT_REPETITION },
+				{ "x", new Identifier("x") }, { "abc", new Identifier("abc") },
+				{ "1", new Number(1) }, { "123", new Number(123) },
+				{ " = ", Keyword.DEFINITION }, { "\t=\t", Keyword.DEFINITION },
+				{ "\n=\n", Keyword.DEFINITION },
+				{ "\r=\r", Keyword.DEFINITION },
+				{ "\t123  ", new Number(123) },
+				{ "\rabc\n", new Identifier("abc") } };
 		return Arrays.asList(parameters);
 	}
 
@@ -47,7 +52,7 @@ public class LexerTest {
 	/**
 	 * Type of the token for the symbol in the input of lexer.
 	 */
-	private final Keyword token;
+	private final IToken token;
 
 	/**
 	 * @param input
@@ -55,7 +60,7 @@ public class LexerTest {
 	 * @param tokenType
 	 *            for the symbol in the input
 	 */
-	public LexerTest(final String input, final Keyword tokenType) {
+	public LexerTest(final String input, final IToken tokenType) {
 		lexer = new Lexer(input);
 		token = tokenType;
 	}
@@ -63,12 +68,13 @@ public class LexerTest {
 	/**
 	 * Test one symbol in the input being scanned properly.
 	 * 
-	 * @throws UndefinedSymbolException
+	 * @throws Exception
 	 *             if symbol could not be recognized
 	 */
 	@Test
-	public final void symbolToToken() throws UndefinedSymbolException {
-		assertTrue(token.name() + " symbol should be recognized as a token",
+	public final void symbolToToken() throws Exception {
+		assertTrue(
+				token.getValue() + " symbol should be recognized as a token",
 				lexer.hasNextToken());
 		assertEquals(token, lexer.getNextToken());
 		assertFalse("Lexer should not offer any more tokens",
