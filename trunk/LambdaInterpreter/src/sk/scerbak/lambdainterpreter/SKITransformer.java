@@ -12,7 +12,7 @@ import static sk.scerbak.lambdainterpreter.Calculus.def;
  * @author The0retico
  * 
  */
-public class SKITransformer implements IVisitor {
+public final class SKITransformer implements IVisitor {
 
 	private class SKIValidator implements IVisitor {
 

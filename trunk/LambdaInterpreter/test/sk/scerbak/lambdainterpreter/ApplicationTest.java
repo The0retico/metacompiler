@@ -1,6 +1,5 @@
 package sk.scerbak.lambdainterpreter;
 
-import static org.junit.Assert.assertEquals;
 import static sk.scerbak.lambdainterpreter.Assertions.assertCalled;
 import static sk.scerbak.lambdainterpreter.Assertions.assertFree;
 import static sk.scerbak.lambdainterpreter.Assertions.assertSubstitutes;
@@ -64,14 +63,6 @@ public class ApplicationTest {
 		assertSubstitutes(fixture, fixture, "x", new Mock("M"));
 		assertCalled(mockFunction, "[x:M]");
 		assertCalled(mockArgument, "[x:M]");
-	}
-
-	/**
-	 * 
-	 */
-	@Test
-	public final void toStringIsFunctionAndArgument() {
-		assertEquals("(A B)", fixture.toString());
 	}
 
 	/**
