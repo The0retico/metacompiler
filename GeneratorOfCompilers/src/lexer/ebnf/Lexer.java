@@ -56,13 +56,17 @@ public class Lexer {
 			currentToken = scanNumber();
 		} else if (isIdentifierNextToken()) {
 			currentToken = scanIdentifier();
-		} else {
+		} else if (isTerminalNextToken()){
+			currentToken = scanTerminal();
+		}else {
 			throw new Exception(currentLine + ":" + currentRow + ":'"
 					+ input.charAt(position)
 					+ "' Error! Does not start a token.");
 		}
 		return currentToken;
 	}
+
+
 
 	/**
 	 * @return true if the inputText contains another Token, false otherwise
@@ -107,7 +111,15 @@ public class Lexer {
 		}
 		return found;
 	}
-
+	
+	/**
+	 * @return true if next token is a Terminal string, false otherwise
+	 */
+	private boolean isTerminalNextToken() {
+		final char nextSymbol = input.charAt(position);	
+		return nextSymbol == '\'' || nextSymbol == '"';
+	}
+	
 	/**
 	 * @param symbol
 	 *            to be checked if it is a new line character
@@ -186,6 +198,25 @@ public class Lexer {
 		position += result.getLength();
 		return result;
 	}
+	
+	/**
+	 * @return Terminal string as the next token.
+	 */
+	private IToken scanTerminal() {
+		int end = position + 1;
+		char quote = 0;
+		if(input.charAt(position) == '\''){quote = '\'';}
+		if(input.charAt(position) == '"'){quote = '"';} 
+		while (end < input.length() && input.charAt(end)!= quote){
+			end++;
+		}
+		final String nextToken = input.substring(position+1, end); 
+		final Terminal result = new Terminal(nextToken);
+		currentRow += result.getLength() + 2;
+		position += result.getLength() + 2;
+		return result;
+	}
+
 
 	/**
 	 * Moves to the position in input until non-whitespace character is found.
