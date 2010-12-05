@@ -52,7 +52,7 @@ public class Lexer {
 		skipBlankSymbols();
 		if (isCommentNextToken()) {
 			currentToken = scanComment();
-		}else if (isKeywordNextToken()) {
+		} else if (isKeywordNextToken()) {
 			currentToken = scanKeyword();
 		} else if (isNumberNextToken()) {
 			currentToken = scanNumber();
@@ -60,7 +60,7 @@ public class Lexer {
 			currentToken = scanIdentifier();
 		} else if (isTerminalNextToken()) {
 			currentToken = scanTerminal();
-		} else if (isSpecialNextToken()){
+		} else if (isSpecialNextToken()) {
 			currentToken = scanSpecial();
 		} else {
 			throw new Exception(currentLine + ":" + currentRow + ":'"
@@ -69,7 +69,6 @@ public class Lexer {
 		}
 		return currentToken;
 	}
-
 
 	/**
 	 * @return true if the inputText contains another Token, false otherwise
@@ -86,6 +85,15 @@ public class Lexer {
 	 */
 	private boolean isBlank(final char symbol) {
 		return isWhiteSpace(symbol) || isNewLine(symbol);
+	}
+
+	/**
+	 * @return true if next token is a Comment, false otherwise
+	 */
+	private boolean isCommentNextToken() {
+		final char nextFirstSymbol = input.charAt(position);
+		return nextFirstSymbol == '(' && input.length() > position + 1
+				&& input.charAt(position + 1) == '*';
 	}
 
 	/**
@@ -112,31 +120,7 @@ public class Lexer {
 		}
 		return found;
 	}
-	
-	/**
-	 * @return true if next token is a Terminal string, false otherwise
-	 */
-	private boolean isTerminalNextToken() {
-		final char nextSymbol = input.charAt(position);	
-		return nextSymbol == '\'' || nextSymbol == '"';
-	}
-	
-	/**
-	 * @return true if next token is a Special sequence string, false otherwise
-	 */
-	private boolean isSpecialNextToken() {
-		final char nextSymbol = input.charAt(position);	
-		return nextSymbol == '?';
-	}
-	
-	/**
-	 * @return true if next token is a Comment, false otherwise
-	 */
-	private boolean isCommentNextToken() {
-		final char nextFirstSymbol = input.charAt(position);
-		return nextFirstSymbol == '(' && input.length() > position +1 && input.charAt(position + 1) == '*';
-	}
-	
+
 	/**
 	 * @param symbol
 	 *            to be checked if it is a new line character
@@ -155,12 +139,44 @@ public class Lexer {
 	}
 
 	/**
+	 * @return true if next token is a Special sequence string, false otherwise
+	 */
+	private boolean isSpecialNextToken() {
+		final char nextSymbol = input.charAt(position);
+		return nextSymbol == '?';
+	}
+
+	/**
+	 * @return true if next token is a Terminal string, false otherwise
+	 */
+	private boolean isTerminalNextToken() {
+		final char nextSymbol = input.charAt(position);
+		return nextSymbol == '\'' || nextSymbol == '"';
+	}
+
+	/**
 	 * @param symbol
 	 *            to be checked if it is a whitespace
 	 * @return true if symbol is whitespace, false otherwise
 	 */
 	private boolean isWhiteSpace(final char symbol) {
 		return symbol == ' ' || symbol == '\t';
+	}
+
+	/**
+	 * @return Comment string as the next token.
+	 */
+	private IToken scanComment() {
+		int end = position + 2;
+		while (end + 1 < input.length()
+				&& (input.charAt(end) != '*' || input.charAt(end + 1) != ')')) {
+			end++;
+		}
+		final String nextToken = input.substring(position + 2, end);
+		final Comment result = new Comment(nextToken);
+		currentRow += result.getLength() + 4;
+		position += result.getLength() + 4;
+		return result;
 	}
 
 	/**
@@ -217,6 +233,21 @@ public class Lexer {
 	}
 
 	/**
+	 * @return Special sequence string as the next token.
+	 */
+	private IToken scanSpecial() {
+		int end = position + 1;
+		while (end < input.length() && input.charAt(end) != '?') {
+			end++;
+		}
+		final String nextToken = input.substring(position + 1, end);
+		final Special result = new Special(nextToken);
+		currentRow += result.getLength() + 2;
+		position += result.getLength() + 2;
+		return result;
+	}
+
+	/**
 	 * @return Terminal string as the next token.
 	 */
 	private IToken scanTerminal() {
@@ -225,44 +256,13 @@ public class Lexer {
 		while (end < input.length() && input.charAt(end) != quote) {
 			end++;
 		}
-		final String nextToken = input.substring(position+1, end); 
+		final String nextToken = input.substring(position + 1, end);
 		final Terminal result = new Terminal(nextToken);
 		currentRow += result.getLength() + 2;
 		position += result.getLength() + 2;
 		return result;
 	}
 
-	/**
-	 * @return Special sequence string as the next token.
-	 */
-	private IToken scanSpecial() {
-		int end = position + 1;
-		while (end < input.length() && input.charAt(end)!= '?'){
-			end++;
-		}
-		final String nextToken = input.substring(position+1, end); 
-		final Special result = new Special(nextToken);
-		currentRow += result.getLength() + 2;
-		position += result.getLength() + 2;
-		return result;
-	}
-
-
-	/**
-	 * @return Comment string as the next token.
-	 */
-	private IToken scanComment() {
-		int end = position + 2;
-		while (end + 1 < input.length() && (input.charAt(end)!= '*' || input.charAt(end + 1)!= ')' )){
-			end++;
-		}
-		final String nextToken = input.substring(position+2, end); 
-		final Comment result = new Comment(nextToken);
-		currentRow += result.getLength() + 4;
-		position += result.getLength() + 4;
-		return result;
-	}
-	
 	/**
 	 * Moves to the position in input until non-whitespace character is found.
 	 */
