@@ -7,7 +7,7 @@ package sk.scerbak.lambdainterpreter;
  * @author The0retico
  * 
  */
-public class Printer implements IVisitor {
+public final class Printer implements IVisitor {
 
 	/**
 	 * Convenience method for printing lambda expressions.

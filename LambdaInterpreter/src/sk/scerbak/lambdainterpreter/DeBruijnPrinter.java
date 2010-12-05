@@ -10,7 +10,7 @@ import java.util.Map;
  * @author The0retico
  * 
  */
-public class DeBruijnPrinter implements IVisitor {
+public final class DeBruijnPrinter implements IVisitor {
 
 	/**
 	 * @param expression
