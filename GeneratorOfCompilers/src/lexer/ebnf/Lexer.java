@@ -1,9 +1,6 @@
-package lexer;
+package lexer.ebnf;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import lexer.EBNFToken.UndefinedSymbolException;
+import lexer.ebnf.Keyword.UndefinedSymbolException;
 
 /**
  * Lexer/scanner for the metagrammar language (EBNF).
@@ -11,7 +8,7 @@ import lexer.EBNFToken.UndefinedSymbolException;
  * @author sarvasmartin
  * 
  */
-public class EBNFLexer {
+public class Lexer {
 	public enum LexerState {
 		READSTRING, READNUMBER, READIDENTIFIER, READSYMBOL
 	}
@@ -21,12 +18,11 @@ public class EBNFLexer {
 	 */
 	private final String inputText;
 
-	private final Map<Integer, EBNFToken> tableOfSymbols;
+	private final LexerState state = LexerState.READSYMBOL;
 
 	/**
 	 * Current position of the scanner in the inputText.
 	 */
-	private final LexerState state = LexerState.READSYMBOL;
 	private int position;
 
 	/**
@@ -38,10 +34,9 @@ public class EBNFLexer {
 	 * @param input
 	 *            text to be scanned
 	 */
-	public EBNFLexer(final String input) {
+	public Lexer(final String input) {
 		inputText = input;
 		position = 0;
-		tableOfSymbols = new HashMap<Integer, EBNFToken>();
 	}
 
 	/**
@@ -62,10 +57,10 @@ public class EBNFLexer {
 	 * @throws UndefinedSymbolException
 	 *             if there is not a valid token
 	 */
-	public final EBNFToken getNextToken() throws UndefinedSymbolException {
+	public final Keyword getNextToken() throws UndefinedSymbolException {
 		final char nextSymbol = findNextSymbol();
 		position++;
-		return EBNFToken.create(nextSymbol);
+		return Keyword.create(nextSymbol);
 	}
 
 	/**
