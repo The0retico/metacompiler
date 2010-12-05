@@ -1,5 +1,10 @@
 package lexer;
 
+/**
+ * Enumerated type of EBNF tokens.
+ * 
+ * @author sarvasmartin
+ */
 import lexer.EBNFLexer.LexerState;
 
 public enum EBNFToken {
@@ -14,6 +19,13 @@ public enum EBNFToken {
 		}
 	}
 
+	/**
+	 * @param symbol
+	 *            character from which a new token should be created
+	 * @return new token from the symbol
+	 * @throws UndefinedSymbolException
+	 *             if the symbol is not a valid token
+	 */
 	public static EBNFToken create(final char symbol)
 			throws UndefinedSymbolException {
 		EBNFToken result = null;
