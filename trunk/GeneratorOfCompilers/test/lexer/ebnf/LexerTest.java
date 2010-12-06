@@ -60,8 +60,8 @@ public class LexerTest {
 				{ "'[]{}();=,|-'", new IToken[] { new Terminal("[]{}();=,|-") } },
 				{ "\"[]{}();=,|-\"",
 						new IToken[] { new Terminal("[]{}();=,|-") } },
-				{ "(*ahoj*)", new IToken[] { new Comment("ahoj") } },
-				{ "(*)*)", new IToken[] { new Comment(")") } },
+				{ "(*ahoj*)a", new IToken[] { new Identifier("a") } },
+				{ "a(*)*)", new IToken[] { new Identifier("a") } },
 				{ "?d<=4;?", new IToken[] { new Special("d<=4;") } },
 				{
 						"list = 'head', list | 'tail';",
