@@ -1,5 +1,8 @@
 package lexer.ebnf;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Lexer/scanner for the metagrammar language (EBNF).
  * 
@@ -33,6 +36,11 @@ public class Lexer {
 	private int currentLine;
 
 	/**
+	 * Table of symbols, identifiers.
+	 */
+	private Set<Identifier> identifiersTable;
+
+	/**
 	 * @param inputText
 	 *            text to be scanned
 	 */
@@ -41,6 +49,7 @@ public class Lexer {
 		currentLine = 1;
 		currentRow = 1;
 		position = 0;
+		identifiersTable = new HashSet<Identifier>();
 	}
 
 	/**
@@ -50,9 +59,7 @@ public class Lexer {
 	 */
 	public final IToken getNextToken() throws Exception {
 		skipBlankSymbols();
-		if (isCommentNextToken()) {
-			currentToken = scanComment();
-		} else if (isKeywordNextToken()) {
+		if (isKeywordNextToken()) {
 			currentToken = scanKeyword();
 		} else if (isNumberNextToken()) {
 			currentToken = scanNumber();
@@ -80,20 +87,12 @@ public class Lexer {
 
 	/**
 	 * @param symbol
-	 *            to be checked if it is whitespace or newline
-	 * @return true if symbol is blank - whitespace or newline, false otherwise
+	 *            to be checked if it is whitespace or newline or comment
+	 * @return true if symbol is blank - whitespace or newline or comment, false
+	 *         otherwise
 	 */
 	private boolean isBlank(final char symbol) {
-		return isWhiteSpace(symbol) || isNewLine(symbol);
-	}
-
-	/**
-	 * @return true if next token is a Comment, false otherwise
-	 */
-	private boolean isCommentNextToken() {
-		final char nextFirstSymbol = input.charAt(position);
-		return nextFirstSymbol == '(' && input.length() > position + 1
-				&& input.charAt(position + 1) == '*';
+		return isWhiteSpace(symbol) || isNewLine(symbol) || isComment();
 	}
 
 	/**
@@ -115,10 +114,37 @@ public class Lexer {
 			final int end = position - 1 + keyword.getLength();
 			if (end < input.length()) {
 				final String nextToken = input.substring(position, end + 1);
+				// System.out
+				// .println(keyword.getValue() + "\t'" + nextToken + "'");
 				found = nextToken.equals(keyword.getValue());
 			}
 		}
 		return found;
+	}
+
+	/**
+	 * @return true if next token is a Terminal string, false otherwise
+	 */
+	private boolean isTerminalNextToken() {
+		final char nextSymbol = input.charAt(position);
+		return nextSymbol == '\'' || nextSymbol == '"';
+	}
+
+	/**
+	 * @return true if next token is a Special sequence string, false otherwise
+	 */
+	private boolean isSpecialNextToken() {
+		final char nextSymbol = input.charAt(position);
+		return nextSymbol == '?';
+	}
+
+	/**
+	 * @return true if next is a Comment, false otherwise
+	 */
+	private boolean isComment() {
+		final char nextFirstSymbol = input.charAt(position);
+		return nextFirstSymbol == '(' && input.length() > position + 1
+				&& input.charAt(position + 1) == '*';
 	}
 
 	/**
@@ -139,44 +165,12 @@ public class Lexer {
 	}
 
 	/**
-	 * @return true if next token is a Special sequence string, false otherwise
-	 */
-	private boolean isSpecialNextToken() {
-		final char nextSymbol = input.charAt(position);
-		return nextSymbol == '?';
-	}
-
-	/**
-	 * @return true if next token is a Terminal string, false otherwise
-	 */
-	private boolean isTerminalNextToken() {
-		final char nextSymbol = input.charAt(position);
-		return nextSymbol == '\'' || nextSymbol == '"';
-	}
-
-	/**
 	 * @param symbol
 	 *            to be checked if it is a whitespace
 	 * @return true if symbol is whitespace, false otherwise
 	 */
 	private boolean isWhiteSpace(final char symbol) {
 		return symbol == ' ' || symbol == '\t';
-	}
-
-	/**
-	 * @return Comment string as the next token.
-	 */
-	private IToken scanComment() {
-		int end = position + 2;
-		while (end + 1 < input.length()
-				&& (input.charAt(end) != '*' || input.charAt(end + 1) != ')')) {
-			end++;
-		}
-		final String nextToken = input.substring(position + 2, end);
-		final Comment result = new Comment(nextToken);
-		currentRow += result.getLength() + 4;
-		position += result.getLength() + 4;
-		return result;
 	}
 
 	/**
@@ -189,7 +183,11 @@ public class Lexer {
 			end++;
 		}
 		final String name = input.substring(position, end);
+
 		final Identifier result = new Identifier(name);
+		if (!identifiersTable.contains(result)) {
+			identifiersTable.add(result);
+		}
 		currentRow += result.getLength();
 		position += result.getLength();
 		return result;
@@ -233,27 +231,16 @@ public class Lexer {
 	}
 
 	/**
-	 * @return Special sequence string as the next token.
-	 */
-	private IToken scanSpecial() {
-		int end = position + 1;
-		while (end < input.length() && input.charAt(end) != '?') {
-			end++;
-		}
-		final String nextToken = input.substring(position + 1, end);
-		final Special result = new Special(nextToken);
-		currentRow += result.getLength() + 2;
-		position += result.getLength() + 2;
-		return result;
-	}
-
-	/**
 	 * @return Terminal string as the next token.
 	 */
 	private IToken scanTerminal() {
 		int end = position + 1;
-		final char quote = input.charAt(position);
+		char quote = input.charAt(position);
 		while (end < input.length() && input.charAt(end) != quote) {
+			if (isNewLine(input.charAt(end))) {
+				currentLine++;
+				currentRow = 1;
+			}
 			end++;
 		}
 		final String nextToken = input.substring(position + 1, end);
@@ -264,6 +251,42 @@ public class Lexer {
 	}
 
 	/**
+	 * @return Special sequence string as the next token.
+	 */
+	private IToken scanSpecial() {
+		int end = position + 1;
+		while (end < input.length() && input.charAt(end) != '?') {
+			if (isNewLine(input.charAt(end))) {
+				currentLine++;
+				currentRow = 1;
+			}
+			end++;
+		}
+		final String nextToken = input.substring(position + 1, end);
+		final Special result = new Special(nextToken);
+		currentRow += result.getLength() + 2;
+		position += result.getLength() + 2;
+		return result;
+	}
+
+	/**
+	 * Moves to the position in input to the end of comment.
+	 */
+	private void skipComment() {
+		int end = position + 2;
+		while (end + 1 < input.length()
+				&& (input.charAt(end) != '*' || input.charAt(end + 1) != ')')) {
+			if (isNewLine(input.charAt(end))) {
+				currentLine++;
+				currentRow = 1;
+			}
+			end++;
+		}
+		currentRow += end - position + 2;
+		position += end - position + 1;
+	}
+
+	/**
 	 * Moves to the position in input until non-whitespace character is found.
 	 */
 	private void skipBlankSymbols() {
@@ -271,6 +294,8 @@ public class Lexer {
 			if (isNewLine(input.charAt(position))) {
 				currentLine++;
 				currentRow = 1;
+			} else if (isComment()) {
+				skipComment();
 			} else {
 				currentRow++;
 			}
