@@ -4,10 +4,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import lexer.ebnf.LexerTest;
-import lexer.ebnf.LexerTest2;
-
+/**
+ * All tests.
+ * 
+ * @author sarvasmartin
+ * 
+ */
 @RunWith(Suite.class)
-@SuiteClasses(value = { LexerTest.class, LexerTest2.class })
-public class AllTests {
+@SuiteClasses(value = { NumberTest.class, IdentifierTest.class,
+		SpecialTest.class, TerminalTest.class, LexerTest.class,
+		LexerFailureTest.class })
+public final class AllTests {
 };
