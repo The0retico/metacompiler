@@ -28,11 +28,7 @@ public class LexerTest {
 	@Parameters
 	public static final Collection<Object[]> symbols() {
 		final Object[][] parameters = new Object[][] {
-			//	{ "|", new IToken[] { Keyword.ALTERNATION } },
-			//	{ ",", new IToken[] { Keyword.CONCATENATION } },
-			//	{ "=", new IToken[] { Keyword.DEFINITION } },
 				{ "-", new IToken[] { Keyword.EXCEPTION } },
-				//{ ";", new IToken[] { Keyword.TERMINATION } },
 				{ "(", new IToken[] { Keyword.LEFT_GROUPING } },
 				{ "[", new IToken[] { Keyword.LEFT_OPTION } },
 				{ "{", new IToken[] { Keyword.LEFT_REPETITION } },
@@ -40,15 +36,12 @@ public class LexerTest {
 				{ ")", new IToken[] { Keyword.RIGHT_GROUPING } },
 				{ "]", new IToken[] { Keyword.RIGHT_OPTION } },
 				{ "}", new IToken[] { Keyword.RIGHT_REPETITION } },
-			//	{ "abc", new IToken[] { new Identifier("abc") } },
-				//{ "123", new IToken[] { new Number(123) } },
 				{ " = ", new IToken[] { Keyword.DEFINITION } },
 				{ "\t,\t", new IToken[] { Keyword.CONCATENATION } },
 				{ "\n|\n", new IToken[] { Keyword.ALTERNATION } },
 				{ "\r;\r", new IToken[] { Keyword.TERMINATION } },
 				{ "\t123  ", new IToken[] { new Number(123) } },
 				{ "\rabc4\n", new IToken[] { new Identifier("abc4") } },
-			//	{ "a4", new IToken[] { new Identifier("a4") } },
 				{ "\"abc\"", new IToken[] { new Terminal("abc") } },
 				{ "'3a \n '", new IToken[] { new Terminal("3a \n ") } },
 				{ "(*ahoj*)a", new IToken[] { new Identifier("a") } },
@@ -71,9 +64,7 @@ public class LexerTest {
 								new Identifier("number"), Keyword.ALTERNATION,
 								new Identifier("identifier"),
 								Keyword.ALTERNATION, new Identifier("string"),
-								Keyword.RIGHT_GROUPING, Keyword.TERMINATION }
-
-				} };
+								Keyword.RIGHT_GROUPING, Keyword.TERMINATION } } };
 		return Arrays.asList(parameters);
 	}
 
@@ -106,9 +97,8 @@ public class LexerTest {
 	 */
 	@Test
 	public final void symbolToToken() throws Exception {
-		
+
 		for (final IToken token : tokens) {
-			//lexer.getNextToken().equals(token);
 			assertTrue(token.getValue()
 					+ " symbol should be recognized as a token",
 					lexer.hasNextToken());
@@ -118,5 +108,4 @@ public class LexerTest {
 				lexer.hasNextToken());
 	}
 
-	
 }
