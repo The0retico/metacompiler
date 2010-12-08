@@ -2,6 +2,7 @@ package lexer.ebnf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -97,15 +98,15 @@ public class LexerTest {
 	 */
 	@Test
 	public final void symbolToToken() throws Exception {
-
-		for (final IToken token : tokens) {
-			assertTrue(token.getValue()
+		for (final IToken expectedToken : tokens) {
+			assertTrue(expectedToken.getValue()
 					+ " symbol should be recognized as a token",
-					lexer.hasNextToken());
-			assertEquals(token, lexer.getNextToken());
+					lexer.hasNext());
+			final IToken actualToken = lexer.next();
+			assertNotNull(actualToken);
+			assertEquals(expectedToken, actualToken);
 		}
-		assertFalse("Lexer should not offer any more tokens",
-				lexer.hasNextToken());
+		assertFalse("Lexer should not offer any more tokens", lexer.hasNext());
 	}
 
 }

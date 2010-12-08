@@ -1,0 +1,45 @@
+package lexer.ebnf;
+
+import static org.junit.Assert.assertFalse;
+
+import java.util.NoSuchElementException;
+
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * Unit tests for the lexer in failure states.
+ * 
+ * @author The0retico
+ * 
+ */
+public class LexerFailureTest {
+	/**
+	 * Lexer with parameterized input.
+	 */
+	private Lexer lexer;
+
+	/**
+	 * Test that there are no more tokens in the input.
+	 */
+	@Test(expected = NoSuchElementException.class)
+	public final void noNextToken() {
+		lexer.next();
+	}
+
+	/**
+	 * The lexer should have no more tokens.
+	 */
+	@Test
+	public final void hasNoNextToken() {
+		assertFalse(lexer.hasNext());
+	}
+
+	/**
+	 * Set up the lexer before every test, so tests do not influence each other.
+	 */
+	@Before
+	public final void setUp() {
+		lexer = new Lexer("#");
+	}
+}
