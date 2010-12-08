@@ -114,8 +114,6 @@ public class Lexer {
 			final int end = position - 1 + keyword.getLength();
 			if (end < input.length()) {
 				final String nextToken = input.substring(position, end + 1);
-				// System.out
-				// .println(keyword.getValue() + "\t'" + nextToken + "'");
 				found = nextToken.equals(keyword.getValue());
 			}
 		}
