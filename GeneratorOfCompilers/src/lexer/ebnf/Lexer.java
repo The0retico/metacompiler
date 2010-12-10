@@ -54,29 +54,36 @@ public class Lexer implements Iterator<IToken> {
 		identifiersTable = new HashSet<Identifier>();
 	}
 
+	/**
+	 * @return true if the lexer position is at the end of input, false
+	 *         otherwise
+	 */
+	private boolean atEnd() {
+		return position >= input.length();
+	}
+
 	@Override
 	public final boolean hasNext() {
-		skipBlankSymbols();
-		return position < input.length();
+		final boolean result;
+		if (position >= input.length()) {
+			result = false;
+		} else {
+			try {
+				currentToken = next();
+			} catch (final NoSuchElementException e) {
+				currentToken = null;
+			}
+			result = currentToken != null;
+		}
+		return result;
 	}
 
 	/**
-	 * @param symbol
-	 *            to be checked if it is whitespace or newline or comment
 	 * @return true if symbol is blank - whitespace or newline or comment, false
 	 *         otherwise
 	 */
-	private boolean isBlank(final char symbol) {
-		return isWhiteSpace(symbol) || isNewLine(symbol);
-	}
-
-	/**
-	 * @return true if next is a Comment, false otherwise
-	 */
-	private boolean isComment() {
-		final char nextFirstSymbol = input.charAt(position);
-		return nextFirstSymbol == '(' && input.length() > position + 1
-				&& input.charAt(position + 1) == '*';
+	private boolean isBlank() {
+		return isWhiteSpace() || isNewLine();
 	}
 
 	/**
@@ -105,12 +112,11 @@ public class Lexer implements Iterator<IToken> {
 	}
 
 	/**
-	 * @param symbol
-	 *            to be checked if it is a new line character
 	 * @return true if the symbol si a newline character, false otherwise
 	 */
-	private boolean isNewLine(final char symbol) {
-		return symbol == '\r' || symbol == '\n';
+	private boolean isNewLine() {
+		final char currentSymbol = input.charAt(position);
+		return currentSymbol == '\r' || currentSymbol == '\n';
 	}
 
 	/**
@@ -133,38 +139,42 @@ public class Lexer implements Iterator<IToken> {
 	 * @return true if next token is a Terminal string, false otherwise
 	 */
 	private boolean isTerminalNextToken() {
-		final char nextSymbol = input.charAt(position);
-		return nextSymbol == '\'' || nextSymbol == '"';
+		final char currentSymbol = input.charAt(position);
+		return currentSymbol == '\'' || currentSymbol == '"';
 	}
 
 	/**
-	 * @param symbol
-	 *            to be checked if it is a whitespace
 	 * @return true if symbol is whitespace, false otherwise
 	 */
-	private boolean isWhiteSpace(final char symbol) {
-		return symbol == ' ' || symbol == '\t';
+	private boolean isWhiteSpace() {
+		final char currentSymbol = input.charAt(position);
+		return currentSymbol == ' ' || currentSymbol == '\t';
 	}
 
 	@Override
 	public final IToken next() {
+		final IToken result;
 		skipBlankSymbols();
-		if (isKeywordNextToken()) {
-			currentToken = scanKeyword();
+		if (currentToken != null) {
+			result = currentToken;
+			currentToken = null;
+		} else if (isKeywordNextToken()) {
+			result = scanKeyword();
 		} else if (isNumberNextToken()) {
-			currentToken = scanNumber();
+			result = scanNumber();
 		} else if (isIdentifierNextToken()) {
-			currentToken = scanIdentifier();
+			result = scanIdentifier();
 		} else if (isTerminalNextToken()) {
-			currentToken = scanTerminal();
+			result = scanTerminal();
 		} else if (isSpecialNextToken()) {
-			currentToken = scanSpecial();
+			result = scanSpecial();
 		} else {
+			result = null;
 			throw new NoSuchElementException(currentLine + ":" + currentRow
 					+ ":'" + input.charAt(position)
 					+ "' Error! Does not start a token.");
 		}
-		return currentToken;
+		return result;
 	}
 
 	@Override
@@ -236,7 +246,7 @@ public class Lexer implements Iterator<IToken> {
 	private IToken scanSpecial() {
 		int end = position + 1;
 		while (end < input.length() && input.charAt(end) != '?') {
-			if (isNewLine(input.charAt(end))) {
+			if (isNewLine()) {
 				currentLine++;
 				currentRow = 1;
 			}
@@ -256,7 +266,7 @@ public class Lexer implements Iterator<IToken> {
 		int end = position + 1;
 		final char quote = input.charAt(position);
 		while (end < input.length() && input.charAt(end) != quote) {
-			if (isNewLine(input.charAt(end))) {
+			if (isNewLine()) {
 				currentLine++;
 				currentRow = 1;
 			}
@@ -273,12 +283,12 @@ public class Lexer implements Iterator<IToken> {
 	 * Moves to the position in input until non-whitespace character is found.
 	 */
 	private void skipBlankSymbols() {
-		while (position < input.length() && isBlank(input.charAt(position))) {
-			if (isNewLine(input.charAt(position))) {
+		while (!atEnd() && (isBlank() || startsComment())) {
+			if (startsComment()) {
+				skipComment();
+			} else if (isNewLine()) {
 				currentLine++;
 				currentRow = 1;
-			} else if (isComment()) {
-				skipComment();
 			} else {
 				currentRow++;
 			}
@@ -293,7 +303,7 @@ public class Lexer implements Iterator<IToken> {
 		int end = position + 2;
 		while (end + 1 < input.length()
 				&& (input.charAt(end) != '*' || input.charAt(end + 1) != ')')) {
-			if (isNewLine(input.charAt(end))) {
+			if (isNewLine()) {
 				currentLine++;
 				currentRow = 1;
 			}
@@ -302,4 +312,18 @@ public class Lexer implements Iterator<IToken> {
 		currentRow += end - position + 2;
 		position += end - position + 1;
 	}
+
+	/**
+	 * @return true if next is a Comment, false otherwise
+	 */
+	private boolean startsComment() {
+		boolean result = false;
+		if (position + 4 <= input.length()) {
+			final char currentSymbol = input.charAt(position);
+			final char nextSymbol = input.charAt(position + 1);
+			result = currentSymbol == '(' && nextSymbol == '*';
+		}
+		return result;
+	}
+
 }

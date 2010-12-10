@@ -21,11 +21,6 @@ public class Special implements IToken {
 		value = string;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public final boolean equals(final Object obj) {
 		if (this == obj) {
@@ -56,5 +51,13 @@ public class Special implements IToken {
 	@Override
 	public final String getValue() {
 		return value;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (value == null ? 0 : value.hashCode());
+		return result;
 	}
 }
