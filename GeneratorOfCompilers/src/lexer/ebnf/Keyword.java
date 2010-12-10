@@ -5,7 +5,7 @@ package lexer.ebnf;
  * 
  * @author sarvasmartin
  */
-public enum Keyword implements IToken {
+enum Keyword implements IToken {
 
 	/**
 	 * Grammar rule definition token.
@@ -76,7 +76,7 @@ public enum Keyword implements IToken {
 	 * @param value
 	 *            for this token
 	 */
-	Keyword(final String value) {
+	private Keyword(final String value) {
 		symbol = value;
 	}
 

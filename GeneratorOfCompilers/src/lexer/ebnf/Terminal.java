@@ -6,7 +6,7 @@ package lexer.ebnf;
  * @author martinsarvas
  * 
  */
-public class Terminal implements IToken {
+class Terminal implements IToken {
 
 	/**
 	 * Value of this Terminal string.

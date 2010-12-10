@@ -6,19 +6,19 @@ package lexer.ebnf;
  * @author The0retico
  * 
  */
-public class Number implements IToken {
+class Number implements IToken {
 
 	/**
 	 * Number value of this token.
 	 */
-	private final int number;
+	private final int value;
 
 	/**
-	 * @param value
+	 * @param number
 	 *            for this number
 	 */
-	Number(final int value) {
-		number = value;
+	Number(final int number) {
+		value = number;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class Number implements IToken {
 			return false;
 		}
 		final Number other = (Number) obj;
-		if (number != other.number) {
+		if (value != other.value) {
 			return false;
 		}
 		return true;
@@ -41,19 +41,19 @@ public class Number implements IToken {
 
 	@Override
 	public final int getLength() {
-		return String.valueOf(number).length();
+		return String.valueOf(value).length();
 	}
 
 	@Override
 	public final String getValue() {
-		return String.valueOf(number);
+		return String.valueOf(value);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + number;
+		result = prime * result + value;
 		return result;
 	}
 

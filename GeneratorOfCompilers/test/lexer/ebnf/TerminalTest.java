@@ -31,7 +31,6 @@ public class TerminalTest {
 	public final void equals() {
 		assertEquals(fixture, fixture);
 		assertEquals(fixture, new Terminal(VALUE));
-		assertFalse(fixture.equals(null));
 		assertFalse(fixture.equals(VALUE));
 		assertFalse(fixture.equals(new Terminal("s1234")));
 		assertEquals("s", fixture.getValue());

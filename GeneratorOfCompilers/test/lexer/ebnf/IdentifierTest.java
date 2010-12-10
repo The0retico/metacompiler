@@ -33,7 +33,6 @@ public class IdentifierTest {
 	public final void equals() {
 		assertEquals(fixture, fixture);
 		assertEquals(fixture, new Identifier("s"));
-		assertFalse(fixture.equals(null));
 		assertFalse(fixture.equals(new Terminal("sa")));
 		assertFalse(fixture.equals(new Identifier(null)));
 		assertFalse(fixture.equals(new Identifier("s1234")));

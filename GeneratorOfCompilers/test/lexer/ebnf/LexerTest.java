@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,7 +79,7 @@ public class LexerTest {
 	/**
 	 * Type of the token for the symbol in the input of lexer.
 	 */
-	private final IToken[] tokens;
+	private final List<IToken> tokens;
 
 	/**
 	 * @param input
@@ -87,7 +89,7 @@ public class LexerTest {
 	 */
 	public LexerTest(final String input, final IToken[] tokenTypes) {
 		lexer = new Lexer(input);
-		tokens = tokenTypes;
+		tokens = new LinkedList<IToken>(Arrays.asList(tokenTypes));
 	}
 
 	/**
@@ -97,7 +99,7 @@ public class LexerTest {
 	 *             if symbol could not be recognized
 	 */
 	@Test
-	public final void symbolToToken() throws Exception {
+	public final void symbolToToken() {
 		for (final IToken expectedToken : tokens) {
 			assertTrue(expectedToken.getValue()
 					+ " symbol should be recognized as a token",
@@ -108,5 +110,4 @@ public class LexerTest {
 		}
 		assertFalse("Lexer should not offer any more tokens", lexer.hasNext());
 	}
-
 }

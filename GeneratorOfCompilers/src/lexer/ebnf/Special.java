@@ -6,7 +6,7 @@ package lexer.ebnf;
  * @author martinsarvas
  * 
  */
-public class Special implements IToken {
+class Special implements IToken {
 
 	/**
 	 * Value of this Special sequence string.

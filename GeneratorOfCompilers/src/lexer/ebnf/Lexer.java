@@ -318,7 +318,8 @@ public class Lexer implements Iterator<IToken> {
 	 */
 	private boolean startsComment() {
 		boolean result = false;
-		if (position + 4 <= input.length()) {
+		final int commentTagsLength = 4;
+		if (position + commentTagsLength <= input.length()) {
 			final char currentSymbol = input.charAt(position);
 			final char nextSymbol = input.charAt(position + 1);
 			result = currentSymbol == '(' && nextSymbol == '*';
