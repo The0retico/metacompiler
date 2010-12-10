@@ -25,7 +25,6 @@ public class SpecialTest {
 	@Test
 	public final void equals() {
 		assertEquals(fixture, fixture);
-		assertFalse(fixture.equals(null));
 		assertFalse(fixture.equals(new Identifier("sa")));
 		assertFalse(fixture.equals(new Special("t")));
 	}

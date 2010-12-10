@@ -32,7 +32,6 @@ public class NumberTest {
 	public final void equals() {
 		assertEquals(fixture, fixture);
 		assertEquals(fixture, new Number(VALUE));
-		assertFalse(fixture.equals(null));
 		assertFalse(fixture.equals(VALUE));
 		assertFalse(fixture.equals(new Number(VALUE + 1)));
 	}

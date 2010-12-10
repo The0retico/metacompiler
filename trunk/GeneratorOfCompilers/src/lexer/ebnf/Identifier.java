@@ -6,7 +6,7 @@ package lexer.ebnf;
  * @author The0retico
  * 
  */
-public class Identifier implements IToken {
+class Identifier implements IToken {
 
 	/**
 	 * Name of this identifier.
