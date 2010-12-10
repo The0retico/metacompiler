@@ -20,19 +20,19 @@ public class LexerFailureTest {
 	private Lexer lexer;
 
 	/**
+	 * The lexer should have no more tokens.
+	 */
+	@Test
+	public final void hasNoNextToken() {
+		assertFalse("Should have no next token", lexer.hasNext());
+	}
+
+	/**
 	 * Test that there are no more tokens in the input.
 	 */
 	@Test(expected = NoSuchElementException.class)
 	public final void noNextToken() {
 		lexer.next();
-	}
-
-	/**
-	 * The lexer should have no more tokens.
-	 */
-	@Test
-	public final void hasNoNextToken() {
-		assertFalse(lexer.hasNext());
 	}
 
 	/**

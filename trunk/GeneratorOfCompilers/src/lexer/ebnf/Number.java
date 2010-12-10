@@ -49,4 +49,12 @@ public class Number implements IToken {
 		return String.valueOf(number);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + number;
+		return result;
+	}
+
 }
