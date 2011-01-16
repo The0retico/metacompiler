@@ -25,8 +25,8 @@ public class SpecialTest {
 	@Test
 	public final void equals() {
 		assertEquals(fixture, fixture);
-		assertFalse(fixture.equals(new Identifier("sa")));
-		assertFalse(fixture.equals(new Special("t")));
+		assertFalse(fixture.equals(new Identifier("sa", 1, 0)));
+		assertFalse(fixture.equals(new Special("t", 1, 0)));
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class SpecialTest {
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new Special("s");
+		fixture = new Special("s", 1, 0);
 	}
 
 	/**

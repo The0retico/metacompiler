@@ -6,7 +6,7 @@ package lexer.ebnf;
  * @author martinsarvas
  * 
  */
-class Terminal implements IToken {
+class Terminal extends Token implements IToken {
 
 	/**
 	 * Value of this Terminal string.
@@ -17,7 +17,8 @@ class Terminal implements IToken {
 	 * @param string
 	 *            value for this Terminal string
 	 */
-	Terminal(final String string) {
+	Terminal(final String string, final int line, final int column) {
+		super(line, column);
 		value = string;
 	}
 

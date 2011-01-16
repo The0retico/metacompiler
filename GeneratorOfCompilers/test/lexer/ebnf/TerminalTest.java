@@ -30,9 +30,9 @@ public class TerminalTest {
 	@Test
 	public final void equals() {
 		assertEquals(fixture, fixture);
-		assertEquals(fixture, new Terminal(VALUE));
+		assertEquals(fixture, new Terminal(VALUE, 1, 0));
 		assertFalse(fixture.equals(VALUE));
-		assertFalse(fixture.equals(new Terminal("s1234")));
+		assertFalse(fixture.equals(new Terminal("s1234", 1, 0)));
 		assertEquals("s", fixture.getValue());
 	}
 
@@ -49,7 +49,7 @@ public class TerminalTest {
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new Terminal(VALUE);
+		fixture = new Terminal(VALUE, 1, 0);
 	}
 
 }

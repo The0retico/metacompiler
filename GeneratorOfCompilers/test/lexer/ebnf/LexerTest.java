@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import lexer.ebnf.Keyword.Type;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -31,45 +33,57 @@ public class LexerTest {
 	@Parameters
 	public static final Collection<Object[]> symbols() {
 		final Object[][] parameters = new Object[][] {
-				{ "-", new IToken[] { Keyword.EXCEPTION } },
-				{ "(", new IToken[] { Keyword.LEFT_GROUPING } },
-				{ "[", new IToken[] { Keyword.LEFT_OPTION } },
-				{ "{", new IToken[] { Keyword.LEFT_REPETITION } },
-				{ "*", new IToken[] { Keyword.REPETITION } },
-				{ ")", new IToken[] { Keyword.RIGHT_GROUPING } },
-				{ "]", new IToken[] { Keyword.RIGHT_OPTION } },
-				{ "}", new IToken[] { Keyword.RIGHT_REPETITION } },
-				{ "=", new IToken[] { Keyword.DEFINITION } },
-				{ "= ", new IToken[] { Keyword.DEFINITION } },
-				{ " = ", new IToken[] { Keyword.DEFINITION } },
-				{ "\t,\t", new IToken[] { Keyword.CONCATENATION } },
-				{ "\n|\n", new IToken[] { Keyword.ALTERNATION } },
-				{ "\r;\r", new IToken[] { Keyword.TERMINATION } },
-				{ "\t123  ", new IToken[] { new Number(123) } },
-				{ "\rabc4\n", new IToken[] { new Identifier("abc4") } },
-				{ "\"abc\"", new IToken[] { new Terminal("abc") } },
-				{ "'3a \n '", new IToken[] { new Terminal("3a \n ") } },
-				{ "(*ahoj*)a", new IToken[] { new Identifier("a") } },
-				{ "?d<=4; \n ?", new IToken[] { new Special("d<=4; \n ") } },
-				{ "(*a \n s*)1", new IToken[] { new Number(1) } },
+				{ "-", new IToken[] { new Keyword(Type.EXCEPTION, 1, 0) } },
+				{ "(", new IToken[] { new Keyword(Type.LEFT_GROUPING, 1, 0) } },
+				{ "[", new IToken[] { new Keyword(Type.LEFT_OPTION, 1, 0) } },
+				{ "{", new IToken[] { new Keyword(Type.LEFT_REPETITION, 1, 0) } },
+				{ "*", new IToken[] { new Keyword(Type.REPETITION, 1, 0) } },
+				{ ")", new IToken[] { new Keyword(Type.RIGHT_GROUPING, 1, 0) } },
+				{ "]", new IToken[] { new Keyword(Type.RIGHT_OPTION, 1, 0) } },
+				{
+						"}",
+						new IToken[] { new Keyword(Type.RIGHT_REPETITION, 1, 0) } },
+				{ "=", new IToken[] { new Keyword(Type.DEFINITION, 1, 0) } },
+				{ "= ", new IToken[] { new Keyword(Type.DEFINITION, 1, 0) } },
+				{ " = ", new IToken[] { new Keyword(Type.DEFINITION, 1, 1) } },
+				{ "\t,\t",
+						new IToken[] { new Keyword(Type.CONCATENATION, 1, 1) } },
+				{ "\n|\n", new IToken[] { new Keyword(Type.ALTERNATION, 2, 0) } },
+				{ "\r;\r", new IToken[] { new Keyword(Type.TERMINATION, 2, 0) } },
+				{ "\t123  ", new IToken[] { new Number(123, 1, 1) } },
+				{ "\rabc4\n", new IToken[] { new Identifier("abc4", 2, 0) } },
+				{ "\"abc\"", new IToken[] { new Terminal("abc", 1, 0) } },
+				{ "'3a \n '", new IToken[] { new Terminal("3a \n ", 1, 0) } },
+				{ "(*ahoj*)a", new IToken[] { new Identifier("a", 1, 8) } },
+				{ "?d<=4; \n ?",
+						new IToken[] { new Special("d<=4; \n ", 1, 0) } },
+				{ "(*a \n s*)1", new IToken[] { new Number(1, 2, 4) } },
 				{
 						"list = 'head', list | 'tail';",
-						new IToken[] { new Identifier("list"),
-								Keyword.DEFINITION, new Terminal("head"),
-								Keyword.CONCATENATION, new Identifier("list"),
-								Keyword.ALTERNATION, new Terminal("tail"),
-								Keyword.TERMINATION } },
+						new IToken[] { new Identifier("list", 1, 0),
+								new Keyword(Type.DEFINITION, 1, 5),
+								new Terminal("head", 1, 7),
+								new Keyword(Type.CONCATENATION, 1, 13),
+								new Identifier("list", 1, 15),
+								new Keyword(Type.ALTERNATION, 1, 20),
+								new Terminal("tail", 1, 22),
+								new Keyword(Type.TERMINATION, 1, 28) } },
 				{
 						"assignment = identifier , ':=' ,(*g*sd'g*) ( number | identifier | string ) ;",
-						new IToken[] { new Identifier("assignment"),
-								Keyword.DEFINITION,
-								new Identifier("identifier"),
-								Keyword.CONCATENATION, new Terminal(":="),
-								Keyword.CONCATENATION, Keyword.LEFT_GROUPING,
-								new Identifier("number"), Keyword.ALTERNATION,
-								new Identifier("identifier"),
-								Keyword.ALTERNATION, new Identifier("string"),
-								Keyword.RIGHT_GROUPING, Keyword.TERMINATION } } };
+						new IToken[] { new Identifier("assignment", 1, 0),
+								new Keyword(Type.DEFINITION, 1, 10),
+								new Identifier("identifier", 1, 13),
+								new Keyword(Type.CONCATENATION, 1, 24),
+								new Terminal(":=", 1, 26),
+								new Keyword(Type.CONCATENATION, 1, 31),
+								new Keyword(Type.LEFT_GROUPING, 1, 43),
+								new Identifier("number", 1, 45),
+								new Keyword(Type.ALTERNATION, 1, 52),
+								new Identifier("identifier", 1, 54),
+								new Keyword(Type.ALTERNATION, 1, 65),
+								new Identifier("string", 1, 67),
+								new Keyword(Type.RIGHT_GROUPING, 1, 74),
+								new Keyword(Type.TERMINATION, 1, 76) } } };
 		return Arrays.asList(parameters);
 	}
 
@@ -96,9 +110,6 @@ public class LexerTest {
 
 	/**
 	 * Test symbols in the input being scanned properly.
-	 * 
-	 * @throws Exception
-	 *             if symbol could not be recognized
 	 */
 	@Test
 	public final void symbolToToken() {

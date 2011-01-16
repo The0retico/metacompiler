@@ -25,17 +25,15 @@ public class IdentifierTest {
 	private static final String VALUE = "s";
 
 	/**
-	 * Test of Identifier function equals and getValue.
-	 * 
-	 * @throws Exception
+	 * Test of Identifier function equals.
 	 */
 	@Test
 	public final void equals() {
 		assertEquals(fixture, fixture);
-		assertEquals(fixture, new Identifier("s"));
-		assertFalse(fixture.equals(new Terminal("sa")));
-		assertFalse(fixture.equals(new Identifier(null)));
-		assertFalse(fixture.equals(new Identifier("s1234")));
+		assertEquals(fixture, new Identifier("s", 1, 0));
+		assertFalse(fixture.equals(new Terminal("sa", 1, 0)));
+		assertFalse(fixture.equals(new Identifier(null, 1, 0)));
+		assertFalse(fixture.equals(new Identifier("s1234", 1, 0)));
 	}
 
 	/**
@@ -43,7 +41,7 @@ public class IdentifierTest {
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new Identifier(VALUE);
+		fixture = new Identifier(VALUE, 1, 0);
 	}
 
 	/**
