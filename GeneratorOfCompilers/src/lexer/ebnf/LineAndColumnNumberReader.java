@@ -16,18 +16,6 @@ public class LineAndColumnNumberReader extends LineNumberReader {
 		setColumnNumber(0);
 	}
 
-	/**
-	 * @param previousLine
-	 */
-	private void countColumnNumber(final int previousLine) {
-		final int currentLine = getLineNumber();
-		if (currentLine - previousLine == 1) {
-			columnNumber = 0;
-		} else {
-			columnNumber++;
-		}
-	}
-
 	public final int getColumnNumber() {
 		return columnNumber;
 	}

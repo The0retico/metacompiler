@@ -1,5 +1,7 @@
 package lexer.ebnf;
 
+import java.io.IOException;
+
 /**
  * Identifier token for grammar rules in EBNF.
  * 
@@ -69,6 +71,38 @@ class Identifier extends Token implements IToken {
 	@Override
 	public String toString() {
 		return "Identifier [name=" + name + "]";
+	}
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return next scanned identifier token
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static Identifier scanFrom(
+			final LineAndColumnNumberReader reader) throws IOException {
+		int nextChar = (char) reader.read();
+		final StringBuilder value = new StringBuilder();
+		while (nextChar != -1 && Character.isJavaIdentifierPart(nextChar)) {
+			value.append((char) nextChar);
+			nextChar = reader.read();
+		}
+		return new Identifier(value.toString(), reader.getLineNumber(),
+				reader.getColumnNumber());
+	}
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return true if next token is an identifier, false otherwise.
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static boolean isNextIn(
+			final LineAndColumnNumberReader reader) throws IOException {
+		final char nextSymbol = (char) Lexer.peek(reader);
+		return Character.isJavaIdentifierStart(nextSymbol);
 	}
 
 }

@@ -1,5 +1,9 @@
 package lexer.ebnf;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * Enumerated type of EBNF tokens.
  * 
@@ -87,6 +91,67 @@ class Keyword extends Token implements IToken {
 		public String getValue() {
 			return symbol;
 		}
+	}
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return true if next token is a keyword, false otherwise
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static boolean isNextIn(final LineAndColumnNumberReader reader)
+			throws IOException {
+		final Type[] keywordTypes = values();
+		Arrays.sort(keywordTypes, new Comparator<Type>() {
+
+			@Override
+			public int compare(final Type first, final Type second) {
+				return second.getLength() - first.getLength();
+			}
+		});
+		boolean found = false;
+		for (int index = 0; index < keywordTypes.length && !found; index++) {
+			final Type keywordType = keywordTypes[index];
+			final int keywordLength = keywordType.getLength();
+			reader.mark(keywordLength);
+			final char[] nextToken = new char[keywordLength];
+			if (reader.read(nextToken, 0, keywordLength) == keywordLength) {
+				found = keywordType.getValue()
+						.equals(String.valueOf(nextToken));
+			}
+			reader.reset();
+		}
+		return found;
+	}
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return a keyword as a next token
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static Keyword scanFrom(final LineAndColumnNumberReader reader)
+			throws IOException {
+		final Type[] keywordTypes = values();
+		Type result = null;
+		int index = 0;
+		for (; index < keywordTypes.length && result == null; index++) {
+			final Type keywordType = keywordTypes[index];
+			final int keywordLength = keywordType.getLength();
+			reader.mark(keywordLength);
+			final char[] nextToken = new char[keywordLength];
+			if (reader.read(nextToken, 0, keywordLength) == keywordLength) {
+				if (keywordType.getValue().equals(String.valueOf(nextToken))) {
+					result = keywordType;
+				} else {
+					reader.reset();
+				}
+			}
+		}
+		return new Keyword(result, reader.getLineNumber(),
+				reader.getColumnNumber());
 	}
 
 	public static Type[] values() {

@@ -1,5 +1,7 @@
 package lexer.ebnf;
 
+import java.io.IOException;
+
 /**
  * Token for terminal strings in EBNF.
  * 
@@ -7,6 +9,40 @@ package lexer.ebnf;
  * 
  */
 class Terminal extends Token implements IToken {
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return true if next token is a Terminal string, false otherwise
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static boolean isNextIn(final LineAndColumnNumberReader reader)
+			throws IOException {
+		final char currentSymbol = (char) Lexer.peek(reader);
+		return currentSymbol == '\'' || currentSymbol == '"';
+	}
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return Terminal string as the next token.
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static Terminal scanFrom(final LineAndColumnNumberReader reader)
+			throws IOException {
+		final char quote = (char) reader.read();
+		int nextChar = reader.read();
+		final StringBuilder nextToken = new StringBuilder();
+		while (nextChar != -1 && nextChar != quote) {
+			nextToken.append((char) nextChar);
+			nextChar = reader.read();
+		}
+		final Terminal result = new Terminal(nextToken.toString(),
+				reader.getLineNumber(), reader.getColumnNumber());
+		return result;
+	}
 
 	/**
 	 * Value of this Terminal string.

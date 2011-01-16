@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * All tests.
+ * All tests.;
  * 
  * @author sarvasmartin
  * 
