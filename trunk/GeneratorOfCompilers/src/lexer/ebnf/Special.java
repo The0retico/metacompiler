@@ -6,7 +6,7 @@ package lexer.ebnf;
  * @author martinsarvas
  * 
  */
-class Special implements IToken {
+class Special extends Token implements IToken {
 
 	/**
 	 * Value of this Special sequence string.
@@ -17,7 +17,8 @@ class Special implements IToken {
 	 * @param string
 	 *            value for this Special sequence string
 	 */
-	Special(final String string) {
+	Special(final String string, final int line, final int column) {
+		super(line, column);
 		value = string;
 	}
 

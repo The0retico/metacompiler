@@ -33,9 +33,8 @@ public class LexerFileTest {
 	@Parameters
 	public static final Collection<Object[]> symbols() {
 		final Object[][] parameters = new Object[][] {
-				{ "grammars/EBNF.ebnf", new IToken[] { Keyword.EXCEPTION } },
-				{ "grammars/LambdaCalculus.ebnf",
-						new IToken[] { Keyword.LEFT_GROUPING } } };
+				{ "grammars/EBNF.ebnf", new IToken[] {} },
+				{ "grammars/LambdaCalculus.ebnf", new IToken[] {} } };
 		return Arrays.asList(parameters);
 	}
 

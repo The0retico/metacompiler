@@ -6,7 +6,7 @@ package lexer.ebnf;
  * @author The0retico
  * 
  */
-class Number implements IToken {
+class Number extends Token implements IToken {
 
 	/**
 	 * Number value of this token.
@@ -17,7 +17,8 @@ class Number implements IToken {
 	 * @param number
 	 *            for this number
 	 */
-	Number(final int number) {
+	Number(final int number, final int line, final int column) {
+		super(line, column);
 		value = number;
 	}
 

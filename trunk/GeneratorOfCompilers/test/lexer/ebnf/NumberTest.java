@@ -31,9 +31,9 @@ public class NumberTest {
 	@Test
 	public final void equals() {
 		assertEquals(fixture, fixture);
-		assertEquals(fixture, new Number(VALUE));
+		assertEquals(fixture, new Number(VALUE, 1, 0));
 		assertFalse(fixture.equals(VALUE));
-		assertFalse(fixture.equals(new Number(VALUE + 1)));
+		assertFalse(fixture.equals(new Number(VALUE + 1, 1, 0)));
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class NumberTest {
 	 */
 	@Before
 	public final void setUp() {
-		fixture = new Number(VALUE);
+		fixture = new Number(VALUE, 1, 0);
 	}
 
 	/**

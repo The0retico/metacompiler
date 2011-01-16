@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import lexer.ebnf.Keyword.Type;
+
 /**
  * Lexer/scanner for the metagrammar language (EBNF).
  * 
@@ -132,22 +134,23 @@ public class Lexer implements Iterator<IToken> {
 	 *             if I/O error occours
 	 */
 	private boolean isKeywordNextToken() throws IOException {
-		final Keyword[] keywords = Keyword.values();
-		Arrays.sort(keywords, new Comparator<Keyword>() {
+		final Type[] keywordTypes = Keyword.values();
+		Arrays.sort(keywordTypes, new Comparator<Type>() {
 
 			@Override
-			public int compare(final Keyword first, final Keyword second) {
+			public int compare(final Type first, final Type second) {
 				return second.getLength() - first.getLength();
 			}
 		});
 		boolean found = false;
-		for (int index = 0; index < keywords.length && !found; index++) {
-			final Keyword keyword = keywords[index];
-			final int keywordLength = keyword.getLength();
+		for (int index = 0; index < keywordTypes.length && !found; index++) {
+			final Type keywordType = keywordTypes[index];
+			final int keywordLength = keywordType.getLength();
 			input.mark(keywordLength);
 			final char[] nextToken = new char[keywordLength];
 			if (input.read(nextToken, 0, keywordLength) == keywordLength) {
-				found = keyword.getValue().equals(String.valueOf(nextToken));
+				found = keywordType.getValue()
+						.equals(String.valueOf(nextToken));
 			}
 			input.reset();
 		}
@@ -267,7 +270,8 @@ public class Lexer implements Iterator<IToken> {
 			nextChar = input.read();
 		}
 
-		final Identifier result = new Identifier(value.toString());
+		final Identifier result = new Identifier(value.toString(),
+				input.getLineNumber(), currentColumn);
 		if (!identifiersTable.contains(result)) {
 			identifiersTable.add(result);
 		}
@@ -281,24 +285,24 @@ public class Lexer implements Iterator<IToken> {
 	 *             if I/O error occours
 	 */
 	private IToken scanKeyword() throws IOException {
-		final Keyword[] keywords = Keyword.values();
-		Keyword result = null;
+		final Type[] keywordTypes = Keyword.values();
+		Type result = null;
 		int index = 0;
-		for (; index < keywords.length && result == null; index++) {
-			final Keyword keyword = keywords[index];
-			final int keywordLength = keyword.getLength();
+		for (; index < keywordTypes.length && result == null; index++) {
+			final Type keywordType = keywordTypes[index];
+			final int keywordLength = keywordType.getLength();
 			input.mark(keywordLength);
 			final char[] nextToken = new char[keywordLength];
 			if (input.read(nextToken, 0, keywordLength) == keywordLength) {
-				if (keyword.getValue().equals(String.valueOf(nextToken))) {
-					result = keyword;
+				if (keywordType.getValue().equals(String.valueOf(nextToken))) {
+					result = keywordType;
 				} else {
 					input.reset();
 				}
 			}
 		}
 		currentColumn += result.getLength();
-		return result;
+		return new Keyword(result, input.getLineNumber(), currentColumn);
 	}
 
 	/**
@@ -314,7 +318,8 @@ public class Lexer implements Iterator<IToken> {
 			nextChar = input.read();
 		}
 		final int intValue = Integer.parseInt(nextToken.toString());
-		final Number result = new Number(intValue);
+		final Number result = new Number(intValue, input.getLineNumber(),
+				currentColumn);
 		currentColumn += result.getLength();
 		return result;
 	}
@@ -335,7 +340,8 @@ public class Lexer implements Iterator<IToken> {
 			nextToken.append((char) nextChar);
 			nextChar = input.read();
 		}
-		final Special result = new Special(nextToken.toString());
+		final Special result = new Special(nextToken.toString(),
+				input.getLineNumber(), currentColumn);
 		currentColumn += result.getLength() + 2;
 		return result;
 	}
@@ -356,7 +362,8 @@ public class Lexer implements Iterator<IToken> {
 			nextToken.append((char) nextChar);
 			nextChar = input.read();
 		}
-		final Terminal result = new Terminal(nextToken.toString());
+		final Terminal result = new Terminal(nextToken.toString(),
+				input.getLineNumber(), currentColumn);
 		currentColumn += result.getLength() + 2;
 		return result;
 	}

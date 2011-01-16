@@ -6,7 +6,7 @@ package lexer.ebnf;
  * @author The0retico
  * 
  */
-class Identifier implements IToken {
+class Identifier extends Token implements IToken {
 
 	/**
 	 * Name of this identifier.
@@ -16,8 +16,13 @@ class Identifier implements IToken {
 	/**
 	 * @param string
 	 *            name for this identifier
+	 * @param line
+	 *            number on which this token starts in input
+	 * @param column
+	 *            number - position in line - where this token starts in input
 	 */
-	Identifier(final String string) {
+	Identifier(final String string, final int line, final int column) {
+		super(line, column);
 		name = string;
 	}
 
