@@ -61,4 +61,9 @@ class Identifier implements IToken {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "Identifier [name=" + name + "]";
+	}
+
 }
