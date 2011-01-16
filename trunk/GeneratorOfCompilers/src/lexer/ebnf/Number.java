@@ -1,5 +1,7 @@
 package lexer.ebnf;
 
+import java.io.IOException;
+
 /**
  * Number token in EBNF syntax for repetitions.
  * 
@@ -7,6 +9,40 @@ package lexer.ebnf;
  * 
  */
 class Number extends Token implements IToken {
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return true if next token is a number, false otherwise
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static boolean isNextIn(final LineAndColumnNumberReader reader)
+			throws IOException {
+		final char nextSymbol = (char) Lexer.peek(reader);
+		return Character.isDigit(nextSymbol);
+	}
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return number as the next token.
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static Number scanFrom(final LineAndColumnNumberReader reader)
+			throws IOException {
+		int nextChar = reader.read();
+		final StringBuilder nextToken = new StringBuilder();
+		while (nextChar != -1 && Character.isDigit((char) nextChar)) {
+			nextToken.append((char) nextChar);
+			nextChar = reader.read();
+		}
+		final int intValue = Integer.parseInt(nextToken.toString());
+		final Number result = new Number(intValue, reader.getLineNumber(),
+				reader.getColumnNumber());
+		return result;
+	}
 
 	/**
 	 * Number value of this token.

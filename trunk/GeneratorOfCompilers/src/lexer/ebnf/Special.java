@@ -1,5 +1,7 @@
 package lexer.ebnf;
 
+import java.io.IOException;
+
 /**
  * Token with special content for extending EBNF.
  * 
@@ -7,6 +9,40 @@ package lexer.ebnf;
  * 
  */
 class Special extends Token implements IToken {
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return true if next token is a Special sequence string, false otherwise
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static boolean isNextIn(final LineAndColumnNumberReader reader)
+			throws IOException {
+		final char nextSymbol = (char) Lexer.peek(reader);
+		return nextSymbol == '?';
+	}
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return Special sequence string as the next token.
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static Special scanFrom(final LineAndColumnNumberReader reader)
+			throws IOException {
+		reader.skip(1);
+		int nextChar = reader.read();
+		final StringBuilder nextToken = new StringBuilder();
+		while (nextChar != -1 && (char) nextChar != '?') {
+			nextToken.append((char) nextChar);
+			nextChar = reader.read();
+		}
+		final Special result = new Special(nextToken.toString(),
+				reader.getLineNumber(), reader.getColumnNumber());
+		return result;
+	}
 
 	/**
 	 * Value of this Special sequence string.

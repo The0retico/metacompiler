@@ -6,14 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
-
-import lexer.ebnf.Keyword.Type;
 
 /**
  * Lexer/scanner for the metagrammar language (EBNF).
@@ -29,6 +25,20 @@ public class Lexer implements Iterator<IToken> {
 	 */
 	public static boolean isNewLine(final char symbol) {
 		return symbol == '\r' || symbol == '\n';
+	}
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return next character in the stream
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static int peek(final LineAndColumnNumberReader reader) throws IOException {
+		reader.mark(1);
+		final int result = reader.read();
+		reader.reset();
+		return result;
 	}
 
 	/**
@@ -84,7 +94,7 @@ public class Lexer implements Iterator<IToken> {
 	 *             if I/O error occurs
 	 */
 	private boolean atEnd() throws IOException {
-		return peek() == -1;
+		return peek(input) == -1;
 	}
 
 	@Override
@@ -116,76 +126,7 @@ public class Lexer implements Iterator<IToken> {
 	 *             if I/O error occours
 	 */
 	private boolean isBlank() throws IOException {
-		return isWhiteSpace() || isNewLine((char) peek());
-	}
-
-	/**
-	 * @return true if next token is an identifier, false otherwise.
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private boolean isIdentifierNextToken() throws IOException {
-		final char nextSymbol = (char) peek();
-		return Character.isJavaIdentifierStart(nextSymbol);
-	}
-
-	/**
-	 * @return true if next token is a keyword, false otherwise
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private boolean isKeywordNextToken() throws IOException {
-		final Type[] keywordTypes = Keyword.values();
-		Arrays.sort(keywordTypes, new Comparator<Type>() {
-
-			@Override
-			public int compare(final Type first, final Type second) {
-				return second.getLength() - first.getLength();
-			}
-		});
-		boolean found = false;
-		for (int index = 0; index < keywordTypes.length && !found; index++) {
-			final Type keywordType = keywordTypes[index];
-			final int keywordLength = keywordType.getLength();
-			input.mark(keywordLength);
-			final char[] nextToken = new char[keywordLength];
-			if (input.read(nextToken, 0, keywordLength) == keywordLength) {
-				found = keywordType.getValue()
-						.equals(String.valueOf(nextToken));
-			}
-			input.reset();
-		}
-		return found;
-	}
-
-	/**
-	 * @return true if next token is a number, false otherwise
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private boolean isNumberNextToken() throws IOException {
-		final char nextSymbol = (char) peek();
-		return Character.isDigit(nextSymbol);
-	}
-
-	/**
-	 * @return true if next token is a Special sequence string, false otherwise
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private boolean isSpecialNextToken() throws IOException {
-		final char nextSymbol = (char) peek();
-		return nextSymbol == '?';
-	}
-
-	/**
-	 * @return true if next token is a Terminal string, false otherwise
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private boolean isTerminalNextToken() throws IOException {
-		final char currentSymbol = (char) peek();
-		return currentSymbol == '\'' || currentSymbol == '"';
+		return isWhiteSpace() || isNewLine((char) peek(input));
 	}
 
 	/**
@@ -194,7 +135,7 @@ public class Lexer implements Iterator<IToken> {
 	 *             if I/O error occours
 	 */
 	private boolean isWhiteSpace() throws IOException {
-		final char currentSymbol = (char) peek();
+		final char currentSymbol = (char) peek(input);
 		return currentSymbol == ' ' || currentSymbol == '\t';
 	}
 
@@ -206,20 +147,24 @@ public class Lexer implements Iterator<IToken> {
 			if (currentToken != null) {
 				result = currentToken;
 				currentToken = null;
-			} else if (isKeywordNextToken()) {
-				result = scanKeyword();
-			} else if (isNumberNextToken()) {
-				result = scanNumber();
-			} else if (isIdentifierNextToken()) {
-				result = scanIdentifier();
-			} else if (isTerminalNextToken()) {
-				result = scanTerminal();
-			} else if (isSpecialNextToken()) {
-				result = scanSpecial();
+			} else if (Keyword.isNextIn(input)) {
+				result = Keyword.scanFrom(input);
+			} else if (Number.isNextIn(input)) {
+				result = Number.scanFrom(input);
+			} else if (Identifier.isNextIn(input)) {
+				final Identifier identifier = Identifier.scanFrom(input);
+				if (!identifiersTable.contains(result)) {
+					identifiersTable.add(identifier);
+				}
+				result = identifier;
+			} else if (Terminal.isNextIn(input)) {
+				result = Terminal.scanFrom(input);
+			} else if (Special.isNextIn(input)) {
+				result = Special.scanFrom(input);
 			} else {
 				result = null;
 				throw new NoSuchElementException(input.getLineNumber() + ":"
-						+ input.getColumnNumber() + ":'" + (char) peek()
+						+ input.getColumnNumber() + ":'" + (char) peek(input)
 						+ "' Error! Does not start a token.");
 			}
 		} catch (final IOException e) {
@@ -230,123 +175,10 @@ public class Lexer implements Iterator<IToken> {
 		return result;
 	}
 
-	/**
-	 * @return next character in the stream
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private int peek() throws IOException {
-		input.mark(1);
-		final int result = input.read();
-		input.reset();
-		return result;
-	}
-
 	@Override
 	public final void remove() {
 		throw new UnsupportedOperationException(
 				"Lexer does not support removing of tokens.");
-	}
-
-	/**
-	 * @return next scanned identifier token
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private IToken scanIdentifier() throws IOException {
-		int nextChar = (char) input.read();
-		final StringBuilder value = new StringBuilder();
-		while (nextChar != -1 && Character.isJavaIdentifierPart(nextChar)) {
-			value.append((char) nextChar);
-			nextChar = input.read();
-		}
-
-		final Identifier result = new Identifier(value.toString(),
-				input.getLineNumber(), input.getColumnNumber());
-		if (!identifiersTable.contains(result)) {
-			identifiersTable.add(result);
-		}
-		return result;
-	}
-
-	/**
-	 * @return a keyword as a next token
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private IToken scanKeyword() throws IOException {
-		final Type[] keywordTypes = Keyword.values();
-		Type result = null;
-		int index = 0;
-		for (; index < keywordTypes.length && result == null; index++) {
-			final Type keywordType = keywordTypes[index];
-			final int keywordLength = keywordType.getLength();
-			input.mark(keywordLength);
-			final char[] nextToken = new char[keywordLength];
-			if (input.read(nextToken, 0, keywordLength) == keywordLength) {
-				if (keywordType.getValue().equals(String.valueOf(nextToken))) {
-					result = keywordType;
-				} else {
-					input.reset();
-				}
-			}
-		}
-		return new Keyword(result, input.getLineNumber(),
-				input.getColumnNumber());
-	}
-
-	/**
-	 * @return number as the next token.
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private IToken scanNumber() throws IOException {
-		int nextChar = input.read();
-		final StringBuilder nextToken = new StringBuilder();
-		while (nextChar != -1 && Character.isDigit((char) nextChar)) {
-			nextToken.append((char) nextChar);
-			nextChar = input.read();
-		}
-		final int intValue = Integer.parseInt(nextToken.toString());
-		final Number result = new Number(intValue, input.getLineNumber(),
-				input.getColumnNumber());
-		return result;
-	}
-
-	/**
-	 * @return Special sequence string as the next token.
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private IToken scanSpecial() throws IOException {
-		input.skip(1);
-		int nextChar = input.read();
-		final StringBuilder nextToken = new StringBuilder();
-		while (nextChar != -1 && (char) nextChar != '?') {
-			nextToken.append((char) nextChar);
-			nextChar = input.read();
-		}
-		final Special result = new Special(nextToken.toString(),
-				input.getLineNumber(), input.getColumnNumber());
-		return result;
-	}
-
-	/**
-	 * @return Terminal string as the next token.
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private IToken scanTerminal() throws IOException {
-		final char quote = (char) input.read();
-		int nextChar = input.read();
-		final StringBuilder nextToken = new StringBuilder();
-		while (nextChar != -1 && nextChar != quote) {
-			nextToken.append((char) nextChar);
-			nextChar = input.read();
-		}
-		final Terminal result = new Terminal(nextToken.toString(),
-				input.getLineNumber(), input.getColumnNumber());
-		return result;
 	}
 
 	/**
@@ -375,7 +207,7 @@ public class Lexer implements Iterator<IToken> {
 		input.skip(2);
 		int nextChar = input.read();
 		while (nextChar != -1
-				&& ((char) nextChar != '*' || (char) peek() != ')')) {
+				&& ((char) nextChar != '*' || (char) peek(input) != ')')) {
 			nextChar = input.read();
 		}
 		input.skip(1);
