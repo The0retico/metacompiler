@@ -39,6 +39,8 @@ public class LexerTest {
 				{ ")", new IToken[] { Keyword.RIGHT_GROUPING } },
 				{ "]", new IToken[] { Keyword.RIGHT_OPTION } },
 				{ "}", new IToken[] { Keyword.RIGHT_REPETITION } },
+				{ "=", new IToken[] { Keyword.DEFINITION } },
+				{ "= ", new IToken[] { Keyword.DEFINITION } },
 				{ " = ", new IToken[] { Keyword.DEFINITION } },
 				{ "\t,\t", new IToken[] { Keyword.CONCATENATION } },
 				{ "\n|\n", new IToken[] { Keyword.ALTERNATION } },

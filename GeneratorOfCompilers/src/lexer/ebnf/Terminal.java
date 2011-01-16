@@ -61,4 +61,9 @@ class Terminal implements IToken {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "Terminal [value=" + value + "]";
+	}
+
 }

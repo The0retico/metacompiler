@@ -60,4 +60,10 @@ class Special implements IToken {
 		result = prime * result + (value == null ? 0 : value.hashCode());
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return "Special [value=" + value + "]";
+	}
+
 }
