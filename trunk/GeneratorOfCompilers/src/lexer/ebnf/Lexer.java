@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Arrays;
@@ -24,14 +23,18 @@ import lexer.ebnf.Keyword.Type;
  */
 public class Lexer implements Iterator<IToken> {
 	/**
-	 * Streamed input Source of bytes for scanning tokens.
+	 * @param symbol
+	 *            character to be tested if it is a newline character
+	 * @return true if the symbol is a newline character, false otherwise
 	 */
-	private final LineNumberReader input;
+	public static boolean isNewLine(final char symbol) {
+		return symbol == '\r' || symbol == '\n';
+	}
 
 	/**
-	 * Current position of the scanner in the current line of input.
+	 * Streamed input Source of bytes for scanning tokens.
 	 */
-	private int currentColumn;
+	private final LineAndColumnNumberReader input;
 
 	/**
 	 * Current scanned token from input.
@@ -62,9 +65,7 @@ public class Lexer implements Iterator<IToken> {
 	 *            to be used as a source for input.
 	 */
 	private Lexer(final Reader reader) {
-		input = new LineNumberReader(reader);
-		input.setLineNumber(1);
-		currentColumn = 1;
+		input = new LineAndColumnNumberReader(reader);
 		identifiersTable = new HashSet<Identifier>();
 	}
 
@@ -115,7 +116,7 @@ public class Lexer implements Iterator<IToken> {
 	 *             if I/O error occours
 	 */
 	private boolean isBlank() throws IOException {
-		return isWhiteSpace() || isNewLine();
+		return isWhiteSpace() || isNewLine((char) peek());
 	}
 
 	/**
@@ -155,16 +156,6 @@ public class Lexer implements Iterator<IToken> {
 			input.reset();
 		}
 		return found;
-	}
-
-	/**
-	 * @return true if the symbol si a newline character, false otherwise
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	private boolean isNewLine() throws IOException {
-		final char currentSymbol = (char) peek();
-		return currentSymbol == '\r' || currentSymbol == '\n';
 	}
 
 	/**
@@ -228,7 +219,7 @@ public class Lexer implements Iterator<IToken> {
 			} else {
 				result = null;
 				throw new NoSuchElementException(input.getLineNumber() + ":"
-						+ currentColumn + ":'" + (char) peek()
+						+ input.getColumnNumber() + ":'" + (char) peek()
 						+ "' Error! Does not start a token.");
 			}
 		} catch (final IOException e) {
@@ -271,11 +262,10 @@ public class Lexer implements Iterator<IToken> {
 		}
 
 		final Identifier result = new Identifier(value.toString(),
-				input.getLineNumber(), currentColumn);
+				input.getLineNumber(), input.getColumnNumber());
 		if (!identifiersTable.contains(result)) {
 			identifiersTable.add(result);
 		}
-		currentColumn += result.getLength();
 		return result;
 	}
 
@@ -301,8 +291,8 @@ public class Lexer implements Iterator<IToken> {
 				}
 			}
 		}
-		currentColumn += result.getLength();
-		return new Keyword(result, input.getLineNumber(), currentColumn);
+		return new Keyword(result, input.getLineNumber(),
+				input.getColumnNumber());
 	}
 
 	/**
@@ -319,8 +309,7 @@ public class Lexer implements Iterator<IToken> {
 		}
 		final int intValue = Integer.parseInt(nextToken.toString());
 		final Number result = new Number(intValue, input.getLineNumber(),
-				currentColumn);
-		currentColumn += result.getLength();
+				input.getColumnNumber());
 		return result;
 	}
 
@@ -334,15 +323,11 @@ public class Lexer implements Iterator<IToken> {
 		int nextChar = input.read();
 		final StringBuilder nextToken = new StringBuilder();
 		while (nextChar != -1 && (char) nextChar != '?') {
-			if (isNewLine()) {
-				currentColumn = 1;
-			}
 			nextToken.append((char) nextChar);
 			nextChar = input.read();
 		}
 		final Special result = new Special(nextToken.toString(),
-				input.getLineNumber(), currentColumn);
-		currentColumn += result.getLength() + 2;
+				input.getLineNumber(), input.getColumnNumber());
 		return result;
 	}
 
@@ -356,15 +341,11 @@ public class Lexer implements Iterator<IToken> {
 		int nextChar = input.read();
 		final StringBuilder nextToken = new StringBuilder();
 		while (nextChar != -1 && nextChar != quote) {
-			if (isNewLine()) {
-				currentColumn = 1;
-			}
 			nextToken.append((char) nextChar);
 			nextChar = input.read();
 		}
 		final Terminal result = new Terminal(nextToken.toString(),
-				input.getLineNumber(), currentColumn);
-		currentColumn += result.getLength() + 2;
+				input.getLineNumber(), input.getColumnNumber());
 		return result;
 	}
 
@@ -378,11 +359,7 @@ public class Lexer implements Iterator<IToken> {
 		while (!atEnd() && (isBlank() || startsComment())) {
 			if (startsComment()) {
 				skipComment();
-			} else if (isNewLine()) {
-				currentColumn = 1;
-				input.skip(1);
 			} else {
-				currentColumn++;
 				input.skip(1);
 			}
 		}
@@ -399,14 +376,9 @@ public class Lexer implements Iterator<IToken> {
 		int nextChar = input.read();
 		while (nextChar != -1
 				&& ((char) nextChar != '*' || (char) peek() != ')')) {
-			if (isNewLine()) {
-				currentColumn = 1;
-			}
 			nextChar = input.read();
-			currentColumn++;
 		}
 		input.skip(1);
-		currentColumn++;
 	}
 
 	/**

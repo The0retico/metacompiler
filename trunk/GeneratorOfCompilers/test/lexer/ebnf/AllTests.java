@@ -12,7 +12,8 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses(value = { NumberTest.class, IdentifierTest.class,
-		SpecialTest.class, TerminalTest.class, LexerTest.class,
+		SpecialTest.class, TerminalTest.class,
+		LineAndColumnNumberReaderTest.class, LexerTest.class,
 		LexerFailureTest.class })
 public final class AllTests {
 };
