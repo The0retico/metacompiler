@@ -8,7 +8,41 @@ import java.io.IOException;
  * @author The0retico
  * 
  */
-class Identifier extends Token implements IToken {
+public class Identifier extends Token implements IToken {
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return true if next token is an identifier, false otherwise.
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static boolean isNextIn(final LineAndColumnNumberReader reader)
+			throws IOException {
+		final char nextSymbol = (char) Lexer.peek(reader);
+		return Character.isJavaIdentifierStart(nextSymbol);
+	}
+
+	/**
+	 * @param reader
+	 *            TODO
+	 * @return next scanned identifier token
+	 * @throws IOException
+	 *             if I/O error occours
+	 */
+	static Identifier scanFrom(final LineAndColumnNumberReader reader)
+			throws IOException {
+		int nextChar = (char) reader.read();
+		final StringBuilder value = new StringBuilder();
+		while (nextChar != -1 && Character.isJavaIdentifierPart(nextChar)) {
+			value.append((char) nextChar);
+			reader.mark(1);
+			nextChar = reader.read();
+		}
+		reader.reset();
+		return new Identifier(value.toString(), reader.getLineNumber(),
+				reader.getColumnNumber());
+	}
 
 	/**
 	 * Name of this identifier.
@@ -23,7 +57,7 @@ class Identifier extends Token implements IToken {
 	 * @param column
 	 *            number - position in line - where this token starts in input
 	 */
-	Identifier(final String string, final int line, final int column) {
+	public Identifier(final String string, final int line, final int column) {
 		super(line, column);
 		name = string;
 	}
@@ -71,40 +105,6 @@ class Identifier extends Token implements IToken {
 	@Override
 	public String toString() {
 		return "Identifier [name=" + name + "]";
-	}
-
-	/**
-	 * @param reader
-	 *            TODO
-	 * @return next scanned identifier token
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	static Identifier scanFrom(
-			final LineAndColumnNumberReader reader) throws IOException {
-		int nextChar = (char) reader.read();
-		final StringBuilder value = new StringBuilder();
-		while (nextChar != -1 && Character.isJavaIdentifierPart(nextChar)) {
-			value.append((char) nextChar);
-			reader.mark(1);
-			nextChar = reader.read();
-		}
-		reader.reset();
-		return new Identifier(value.toString(), reader.getLineNumber(),
-				reader.getColumnNumber());
-	}
-
-	/**
-	 * @param reader
-	 *            TODO
-	 * @return true if next token is an identifier, false otherwise.
-	 * @throws IOException
-	 *             if I/O error occours
-	 */
-	static boolean isNextIn(
-			final LineAndColumnNumberReader reader) throws IOException {
-		final char nextSymbol = (char) Lexer.peek(reader);
-		return Character.isJavaIdentifierStart(nextSymbol);
 	}
 
 }
