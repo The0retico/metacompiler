@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author martinsarvas
  * 
  */
-class Terminal extends Token implements IToken {
+public class Terminal extends Token implements IToken {
 
 	/**
 	 * @param reader
@@ -53,7 +53,7 @@ class Terminal extends Token implements IToken {
 	 * @param string
 	 *            value for this Terminal string
 	 */
-	Terminal(final String string, final int line, final int column) {
+	public Terminal(final String string, final int line, final int column) {
 		super(line, column);
 		value = string;
 	}

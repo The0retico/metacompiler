@@ -9,8 +9,8 @@ import java.util.Comparator;
  * 
  * @author sarvasmartin
  */
-class Keyword extends Token implements IToken {
-	enum Type {
+public class Keyword extends Token implements IToken {
+	public enum Type {
 		/**
 		 * Grammar rule definition token.
 		 */
