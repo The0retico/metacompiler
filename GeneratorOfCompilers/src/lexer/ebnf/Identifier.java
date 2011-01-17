@@ -86,8 +86,10 @@ class Identifier extends Token implements IToken {
 		final StringBuilder value = new StringBuilder();
 		while (nextChar != -1 && Character.isJavaIdentifierPart(nextChar)) {
 			value.append((char) nextChar);
+			reader.mark(1);
 			nextChar = reader.read();
 		}
+		reader.reset();
 		return new Identifier(value.toString(), reader.getLineNumber(),
 				reader.getColumnNumber());
 	}

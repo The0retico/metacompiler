@@ -12,7 +12,7 @@ Factor = NonTerminal |
 	 '?', {Character}, '?' |
 	 '-' Expression;
 NonTerminal = Character, {Character};
-Terminal = ''' Character, {Character}, ''' |
+Terminal = "'" Character, {Character}, "'" |
 	   '"' Character, {Character}, '"';
 Character = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' |
 	    'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' |
