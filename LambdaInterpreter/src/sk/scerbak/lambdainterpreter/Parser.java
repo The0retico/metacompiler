@@ -181,7 +181,13 @@ public final class Parser {
 
 	private static IExpression parseConstant(final String input) {
 		IExpression result;
-		if ("PRED".equals(input)) {
+		if ("I".equals(input)) {
+			result = Calculus.I;
+		} else if ("S".equals(input)) {
+			result = Calculus.S;
+		} else if ("K".equals(input)) {
+			result = Calculus.K;
+		} else if ("PRED".equals(input)) {
 			result = Calculus.PRED;
 		} else if ("SUCC".equals(input)) {
 			result = Calculus.SUCC;

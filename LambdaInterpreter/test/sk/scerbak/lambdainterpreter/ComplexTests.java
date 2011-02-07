@@ -45,8 +45,7 @@ public class ComplexTests {
 	 */
 	@Test
 	public final void andOnBooleans() {
-		assertNormalizes(FALSE, // def("x", "y").var("y"),
-				apply(AND, TRUE, FALSE));
+		assertNormalizes(FALSE, apply(AND, TRUE, FALSE));
 	}
 
 	/**
@@ -54,8 +53,7 @@ public class ComplexTests {
 	 */
 	@Test
 	public final void exponentialOnChurchNumbers() {
-		final IExpression exp = def("m", "n", "f").apply(var("n"), var("m"),
-				var("f"));
+		final IExpression exp = def("m", "n", "f").apply("n", "m", "f");
 		assertNormalizes(nat(4), apply(exp, nat(2), nat(2)));
 	}
 
@@ -90,10 +88,8 @@ public class ComplexTests {
 	@Test
 	public final void multiplicationOfChurchNumbers() {
 		final IExpression mult = def("m", "n", "f").apply(var("n"),
-				apply(var("m"), var("f")));
-		final IExpression two = nat(2);
-		final IExpression three = nat(3);
-		assertNormalizes(nat(6), apply(mult, two, three));
+				apply("m", "f"));
+		assertNormalizes(nat(6), apply(mult, nat(2), nat(3)));
 	}
 
 	/**
@@ -101,8 +97,7 @@ public class ComplexTests {
 	 */
 	@Test
 	public final void predecessorOnChurchNubmers() {
-		final IExpression three = nat(3);
-		assertNormalizes(nat(2), apply(PRED, three));
+		assertNormalizes(nat(2), apply(PRED, nat(3)));
 	}
 
 	/**
@@ -124,7 +119,7 @@ public class ComplexTests {
 	@Test
 	public final void sum() {
 		final IExpression plus = def("m", "n", "f", "x").apply(var("m"),
-				var("f"), apply(var("n"), var("f"), var("x")));
+				var("f"), apply("n", "f", "x"));
 		final IExpression sum = def("sum", "n")
 				.apply(IF,
 						apply(ISZERO, var("n")),
@@ -132,8 +127,7 @@ public class ComplexTests {
 						apply(plus, var("n"),
 								apply(var("sum"), apply(PRED, var("n")))));
 		final int sumSix = 21;
-		final IExpression six = nat(6);
-		assertNormalizes(nat(sumSix), apply(Y, sum, six));
+		assertNormalizes(nat(sumSix), apply(Y, sum, nat(6)));
 
 	}
 

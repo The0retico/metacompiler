@@ -10,7 +10,7 @@ import java.util.List;
  * @author The0retico
  * 
  */
-final class Mock implements IExpression {
+public final class Mock implements IExpression {
 
 	/**
 	 * List of free variables.

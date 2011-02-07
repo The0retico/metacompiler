@@ -109,7 +109,7 @@ public final class SKITransformer implements IVisitor {
 		if (boundVariable.equals(variable.getLabel())) {
 			result = I;
 		} else {
-			result = apply(K, variable);
+			result = apply(K, result);
 		}
 	}
 

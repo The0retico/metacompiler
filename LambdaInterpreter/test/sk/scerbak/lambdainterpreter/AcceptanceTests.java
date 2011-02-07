@@ -29,8 +29,8 @@ public class AcceptanceTests {
 	/**
 	 * First fixture for exercise 1.
 	 */
-	private final IExpression fixtureE1A = apply(
-			def("x").apply(var("x"), var("y")), def("y").var("y"));
+	private final IExpression fixtureE1A = apply(def("x").apply("x", "y"),
+			def("y").var("y"));
 
 	/**
 	 * Second fixture for exercise 1.
@@ -42,8 +42,8 @@ public class AcceptanceTests {
 	 * Third fixture for exercise 1.
 	 */
 	private final IExpression fixtureE1C = apply(
-			def("x", "y").apply(var("x"), var("z"), apply(var("y"), var("z"))),
-			def("x").apply(var("y"), def("y").var("y")));
+			def("x", "y").apply(var("x"), var("z"), apply("y", "z")), def("x")
+					.apply(var("y"), def("y").var("y")));
 
 	/**
 	 * First fixture for exercise 2.
