@@ -61,17 +61,16 @@ public final class DeBruijnPrinter implements IVisitor {
 
 	@Override
 	public void visit(final Abstraction abstraction) {
-		final int currentAbstractionLevel = abstractionLevel;
 		final String variableName = abstraction.getVariable();
 		int originalLevel = -1;
 		if (variableLevels.containsKey(variableName)) {
 			originalLevel = variableLevels.get(variableName);
 		}
-		variableLevels.put(variableName, currentAbstractionLevel);
+		variableLevels.put(variableName, abstractionLevel);
 		abstractionLevel++;
 		output.append("(|");
 		abstraction.getBody().accept(this);
-		abstractionLevel = currentAbstractionLevel;
+		abstractionLevel--;
 		if (originalLevel != -1) {
 			variableLevels.remove(variableName);
 			variableLevels.put(variableName, originalLevel);
@@ -111,8 +110,8 @@ public final class DeBruijnPrinter implements IVisitor {
 					- variableLevels.get(variableName) - 1;
 			output.append(deBruijnIndex);
 		} else {
-			numberOfFreeVariables++;
 			output.append(abstractionLevel + numberOfFreeVariables);
+			numberOfFreeVariables++;
 		}
 	}
 

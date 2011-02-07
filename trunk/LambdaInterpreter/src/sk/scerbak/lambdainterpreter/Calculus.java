@@ -1,5 +1,8 @@
 package sk.scerbak.lambdainterpreter;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Library, Facade and Fluent API for abstract syntax of lambda expressions.
  * 
@@ -14,16 +17,6 @@ public final class Calculus {
 	 * @author The0retico
 	 */
 	public static final class Definition {
-		/**
-		 * @param variableNames
-		 *            variables for nested abstractions
-		 * @return definition object to capture body definition for an
-		 *         abstraction
-		 */
-		static Definition define(final String[] variableNames) {
-			return new Definition(variableNames);
-		}
-
 		/**
 		 * Variables for nested abstraction this definition captures.
 		 */
@@ -48,6 +41,19 @@ public final class Calculus {
 		public IExpression apply(final IExpression function,
 				final IExpression... arguments) {
 			return def(vars(variables), Calculus.apply(function, arguments));
+		}
+
+		/**
+		 * @param functionVariable
+		 *            name for the application
+		 * @param argumentVariables
+		 *            for the application
+		 * @return new application of variables
+		 */
+		public IExpression apply(final String functionVariable,
+				final String... argumentVariables) {
+			return def(vars(variables),
+					Calculus.apply(functionVariable, argumentVariables));
 		}
 
 		/**
@@ -123,13 +129,33 @@ public final class Calculus {
 	}
 
 	/**
+	 * @param functionVariable
+	 *            for the application
+	 * @param argumentVariables
+	 *            for the application
+	 * @return new application of variables
+	 */
+	public static IExpression apply(final String functionVariable,
+			final String... argumentVariables) {
+		final List<IExpression> argumentList = new LinkedList<IExpression>();
+		for (final String name : argumentVariables) {
+			argumentList.add(var(name));
+		}
+		final IExpression function = var(functionVariable);
+		final int argumentSize = argumentVariables.length;
+		final IExpression[] arguments = new IExpression[argumentSize];
+		argumentList.toArray(arguments);
+		return apply(function, arguments);
+	}
+
+	/**
 	 * @param variableNames
 	 *            for nested abstractions
 	 * @return new definition helper for more convenient creation of nested
 	 *         abstractions
 	 */
 	public static Definition def(final String... variableNames) {
-		return Definition.define(variableNames);
+		return new Definition(variableNames);
 	}
 
 	/**

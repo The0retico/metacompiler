@@ -26,9 +26,9 @@ public class ParserTest {
 	@Parameters
 	public static Collection<Object[]> stringExpressions() {
 		final Object[][] expressions = new Object[][] { { "0" }, { "1" },
-				{ "Y" }, { "x" }, { "(x|1)" }, { "(x y)" }, { "((x|x) y)" },
+				{ "Y" }, { "x" }, { "(x|1)" }, { "(x y)" }, { "(I y)" },
 				{ "(x z y)" }, { "(PLUS 1 3 5 7 11 13)" }, { "(a b (c d))" },
-				{ "(x|(y|((x|x) y)))" } };
+				{ "(x|(y|(I y)))" } };
 		return Arrays.asList(expressions);
 	}
 
