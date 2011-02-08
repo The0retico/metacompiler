@@ -1,7 +1,14 @@
 #summary List of items to be done on this project
 
-Next to be implemented (add information here):
- * consider refactoring the model, so it does not include constants and natural numbers, they should be treted as regular applications, but move their creation to the calculus facade
+MetaCompiler:
+ * extend BNF parsing for semantic definitions (lambda expressions)
+ * generate lambda expressions instead of input
+ * grammar transformers for left-recursion and left-factoring
+ * add SLR parser
+ * reimplement (recursive descent?) BNF parser for BNFGrammars (bootstraping) test
+ * consider implementing proper lexer (Aho-Corasick?)
+
+LambdaInterpreter:
  * finish decoupling of parser and printing from tests and from implementation (add mocking support for Calculus facade)
  * refactor beta-reduction and normalization to Visitor
  * implement printing to syntax with de Bruijn indexes using Visitor
