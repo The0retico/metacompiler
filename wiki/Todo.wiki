@@ -7,6 +7,7 @@ MetaCompiler:
  * add SLR parser
  * reimplement (recursive descent?) BNF parser for BNFGrammars (bootstraping) test
  * consider implementing proper lexer (Aho-Corasick?)
+ * add various test languages (ListProcessor, SimpleImperative)
 
 LambdaInterpreter:
  * finish decoupling of parser and printing from tests and from implementation (add mocking support for Calculus facade)
