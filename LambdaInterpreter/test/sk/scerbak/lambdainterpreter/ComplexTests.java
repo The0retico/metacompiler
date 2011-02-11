@@ -32,6 +32,10 @@ import org.junit.Test;
  */
 public class ComplexTests {
 
+	private static final IExpression sum = def("sum", "n").apply(IF,
+			apply(ISZERO, var("n")), nat(0),
+			apply(PLUS, var("n"), apply(var("sum"), apply(PRED, var("n")))));;
+
 	/**
 	 * Addition of Church numbers.
 	 */
@@ -92,6 +96,30 @@ public class ComplexTests {
 		assertNormalizes(nat(6), apply(mult, nat(2), nat(3)));
 	}
 
+	@Test
+	public final void nepar() {
+		final IExpression nepar = def("nepar", "n").apply(
+				IF,
+				apply(ISZERO, apply(PRED, var("n"))),
+				nat(1),
+				apply(PLUS, apply(PRED, apply(MULT, var("n"), nat(2))),
+						apply(var("nepar"), apply(PRED, var("n")))));
+		final int neparFour = 16;
+		assertNormalizes(nat(neparFour), apply(Y, nepar, nat(4)));
+	}
+
+	@Test
+	public final void par() {
+		final IExpression par = def("par", "n").apply(
+				IF,
+				apply(ISZERO, var("n")),
+				nat(0),
+				apply(PLUS, apply(MULT, var("n"), nat(2)),
+						apply(var("par"), apply(PRED, var("n")))));
+		final int parThree = 12;
+		assertNormalizes(nat(parThree), apply(Y, par, nat(3)));
+	}
+
 	/**
 	 * Predecessor on church numbers.
 	 */
@@ -118,14 +146,7 @@ public class ComplexTests {
 	 */
 	@Test
 	public final void sum() {
-		final IExpression plus = def("m", "n", "f", "x").apply(var("m"),
-				var("f"), apply("n", "f", "x"));
-		final IExpression sum = def("sum", "n")
-				.apply(IF,
-						apply(ISZERO, var("n")),
-						nat(0),
-						apply(plus, var("n"),
-								apply(var("sum"), apply(PRED, var("n")))));
+		def("m", "n", "f", "x").apply(var("m"), var("f"), apply("n", "f", "x"));
 		final int sumSix = 21;
 		assertNormalizes(nat(sumSix), apply(Y, sum, nat(6)));
 
