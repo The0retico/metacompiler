@@ -28,7 +28,7 @@ public class ParserTest {
 		final Object[][] expressions = new Object[][] { { "0" }, { "1" },
 				{ "Y" }, { "x" }, { "(x|1)" }, { "(x y)" }, { "(I y)" },
 				{ "(x z y)" }, { "(PLUS 1 3 5 7 11 13)" }, { "(a b (c d))" },
-				{ "(x|(y|(I y)))" } };
+				{ "(x|(y|(I y)))" }, { "(test|(test test))" } };
 		return Arrays.asList(expressions);
 	}
 
